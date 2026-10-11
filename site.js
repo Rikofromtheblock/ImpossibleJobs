@@ -184,8 +184,9 @@
     root.classList.toggle('dock-on', state === 'open');
     root.classList.toggle('dock-min', state === 'min');
     dockToggle.setAttribute('aria-expanded', state === 'open' ? 'true' : 'false');
-    dockToggle.querySelector('.lbl').textContent = state === 'open' ? 'minimise' : 'open modules';
-    dockToggle.setAttribute('aria-label', state === 'open' ? 'minimise modules' : 'show modules');
+    dockToggle.querySelector('.lbl').textContent = state === 'open' ? 'close' : 'open modules';
+    dockToggle.setAttribute('aria-label', state === 'open' ? 'close modules' : 'open modules');
+    if (state === 'open') { dock.scrollTop = 0; var g = $('dockGrid'); if (g) g.scrollTop = 0; }
     dock.setAttribute('aria-hidden', state === 'hidden' ? 'true' : 'false');
     dockMods.forEach(function (m) { if (state === 'hidden') m.setAttribute('tabindex', '-1'); else m.removeAttribute('tabindex'); });
     // the boot animation runs every time the cards slide into view
@@ -211,6 +212,7 @@
     });
   }
   var forceDock = location.hash === '#modules';
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && dockState === 'open') { userMin = true; setDock('min'); } });
   var heat = 0;
   function updateDock(y) {
     if (!dock) return;
@@ -350,12 +352,13 @@
 
   /* ---------------- the rocket: a real launch, then free flight on its own clock ---------------- */
   (function rocket() {
+    if (document.body.getAttribute('data-page') === 'board') return;   // the mission board is a quiet, serious system: no rocket
     var sky = document.querySelector('.sky');
     var layer = document.createElement('div');
     layer.className = 'flyer front'; layer.setAttribute('aria-hidden', 'true');
     var POOL = 170, pts = [];
     for (var i = 0; i < POOL; i++) { var d = document.createElement('i'); d.className = 'pt'; layer.appendChild(d); pts.push({ el: d, life: 0 }); }
-    layer.insertAdjacentHTML('beforeend',
+    layer.insertAdjacentHTML('afterbegin',
       '<svg class="flyer-rocket" viewBox="-4 -2 34 40" fill="none" stroke="#ff5f9e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
       '<path class="fl" d="M10.3 22c0 5 1.6 9 2.7 13 1.1-4 2.7-8 2.7-13z" fill="#ffc857" stroke="#ff8a3d"/>' +
       '<path d="M13 2c5 4 6 10 4 17H9C7 12 8 6 13 2z" fill="#07030f"/>' +
@@ -405,20 +408,31 @@
       return side === 0 ? { x: -out, y: rnd(h * 0.15, h * 0.85) } : side === 1 ? { x: w + out, y: rnd(h * 0.15, h * 0.85) }
            : side === 2 ? { x: rnd(w * 0.15, w * 0.85), y: -out } : { x: rnd(w * 0.15, w * 0.85), y: h + out };
     }
+    // A pass is a single gentle arc from one edge to a different edge.
+    // Total change of heading over the whole pass is at most 25 degrees.
+    var MAX_TURN = 25 * Math.PI / 180, arc = null;
     function planPass(w, h) {
-      var inSide = Math.floor(Math.random() * 4);
-      var others = [0, 1, 2, 3].filter(function (k) { return k !== inSide; });
-      var outSide = others[Math.floor(Math.random() * 3)];
-      var start = edgePoint(inSide, w, h, 110);
-      x = start.x; y = start.y;
-      route = [];
-      var n = Math.random() < 0.5 ? 1 : 2;                 // one or two turns on screen, then away
-      for (var i = 0; i < n; i++) route.push({ x: rnd(w * 0.22, w * 0.78), y: rnd(Math.min(140, h * 0.2), Math.max(160, h * 0.8)), depth: Math.random() < 0.55 ? rnd(0.2, 1) : rnd(-1, -0.2) });
-      var exit = edgePoint(outSide, w, h, 320); exit.off = true; exit.depth = rnd(-1, 1);
-      route.push(exit);
-      wp = route[0]; depthT = wp.depth;
-      phi = Math.atan2(wp.y - y, wp.x - x);
-      v = w < 700 ? 260 : 420; ang = phi * 180 / Math.PI + 90; sc = 1; depth = depthT;
+      var best = null;
+      for (var tries = 0; tries < 40; tries++) {
+        var inSide = Math.floor(Math.random() * 4);
+        var others = [0, 1, 2, 3].filter(function (k) { return k !== inSide; });
+        var outSide = others[Math.floor(Math.random() * 3)];
+        var A = edgePoint(inSide, w, h, 140), B = edgePoint(outSide, w, h, 140);
+        var chord = Math.hypot(B.x - A.x, B.y - A.y), mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
+        // a real crossing: long enough, and passing through the middle of the screen rather than clipping a corner
+        if (chord > Math.min(w, h) * 0.9 && mx > w * 0.2 && mx < w * 0.8 && my > h * 0.15 && my < h * 0.85) { best = { A: A, B: B, chord: chord }; break; }
+      }
+      if (!best) { var A2 = edgePoint(0, w, h, 140), B2 = edgePoint(1, w, h, 140); best = { A: A2, B: B2, chord: Math.hypot(B2.x - A2.x, B2.y - A2.y) }; }
+      var delta = rnd(-MAX_TURN, MAX_TURN);                       // total turn for this pass, |delta| <= 25 deg
+      var heading = Math.atan2(best.B.y - best.A.y, best.B.x - best.A.x);
+      var len = Math.abs(delta) < 1e-3 ? best.chord : best.chord * (delta / 2) / Math.sin(delta / 2);   // arc length
+      v = w < 700 ? 260 : 420;
+      arc = { omega: delta / (len / v), len: len, done: 0 };     // constant turn rate: a true circular arc
+      x = best.A.x; y = best.A.y;
+      phi = heading - delta / 2;                                  // start heading; ends at heading + delta / 2
+      ang = phi * 180 / Math.PI + 90; sc = 1;
+      depthT = Math.random() < 0.55 ? rnd(0.2, 1) : rnd(-1, -0.2); depth = depthT;
+      wp = { off: true };
     }
     function nextWaypoint() { route.shift(); wp = route[0] || null; if (wp) depthT = wp.depth; }
 
@@ -443,48 +457,41 @@
         var spread = small ? 0.55 : 1;
         // a ground cloud rolling out across the pad and over the wordmark
         flame = 0.5 + thrust * 1.4;
-        for (var k = 0; k < 3; k++) { var tp = tail(flameLen() * rnd(0.55, 0.95)); emit('smoke', tp.x + rnd(-3, 3), tp.y, rnd(-140, 140) * thrust, rnd(-20, 10), rnd(10, 18), rnd(1.4, 2.4)); }
+        for (var k = 0; k < 3; k++) { var tp = tail(flameLen() * rnd(0.3, 0.8)); emit('smoke', tp.x + rnd(-3, 3), tp.y, rnd(-140, 140) * thrust, rnd(0, 25), rnd(10, 16), rnd(1.4, 2.4)); }
         if (modeT > 1.4) { setMode('ascent'); liftT = now; if (countdown) countdown.textContent = 'liftoff'; }
       } else if (mode === 'ascent') {
         thrust = 1; shake = Math.max(0, 1.6 - modeT * 0.7);
         var acc = 70 + modeT * 160;
         vy -= acc * dt;
         var climbed = pad ? pad.y - y : 0;
-        if (climbed > h * 0.12) { var pitch = Math.min(32, (climbed - h * 0.12) / (h * 0.5) * 32); ang += (pitch - ang) * Math.min(1, dt * 2.4); vx = -vy * Math.tan(ang * Math.PI / 180); }
+        if (climbed > h * 0.12) { var pitch = Math.min(25, (climbed - h * 0.12) / (h * 0.5) * 25); ang += (pitch - ang) * Math.min(1, dt * 2.4); vx = -vy * Math.tan(ang * Math.PI / 180); }
         x += vx * dt; y += vy * dt;
         sc += (1 - sc) * Math.min(1, dt * 0.9);
         flame = 1.9;
-        for (var q = 0; q < 2; q++) { var tq = tail(flameLen() * rnd(0.55, 0.95)); emit('smoke', tq.x + rnd(-3, 3), tq.y, tq.dx * rnd(20, 80) + rnd(-40, 40) * Math.abs(tq.dy), tq.dy * rnd(20, 80), rnd(16, 26) * (small ? 0.7 : 1), rnd(1.8, 3)); }
-        if (Math.random() < 0.6) { var ts = tail(flameLen() * rnd(0.6, 1)); emit('spark s0', ts.x, ts.y, ts.dx * rnd(80, 160) + rnd(-30, 30) * Math.abs(ts.dy), ts.dy * rnd(80, 160), rnd(5, 8), 0.4); }
+        for (var q = 0; q < 2; q++) { var tq = tail(flameLen() * rnd(0, 0.45)); emit('smoke', tq.x + rnd(-2, 2), tq.y, tq.dx * rnd(10, 50) + rnd(-30, 30) * Math.abs(tq.dy), tq.dy * rnd(10, 50), rnd(16, 26) * (small ? 0.7 : 1), rnd(1.8, 3)); }
+        if (Math.random() < 0.6) { var ts = tail(flameLen() * rnd(0.2, 0.7)); emit('spark s0', ts.x, ts.y, ts.dx * rnd(80, 160) + rnd(-30, 30) * Math.abs(ts.dy), ts.dy * rnd(80, 160), rnd(5, 8), 0.4); }
         if (modeT > 1.2 && countdown) countdown.style.opacity = 0;
         if (y < -180) { setMode('away'); awayFor = rnd(0.8, 1.6); }
       } else if (mode === 'away') {
         if (modeT > awayFor) { planPass(w, h); setMode('fly'); }
       } else if (mode === 'fly') {
-        var cruise = small ? 260 : 420, aLat = small ? 340 : 560, accel = 260;
-        if (!wp) planPass(w, h);
-        var dx = wp.x - x, dy = wp.y - y, dist = Math.hypot(dx, dy);
-        var diff = wrapA(Math.atan2(dy, dx) - phi);
-        var vT = cruise * (1 - 0.3 * Math.min(1, Math.abs(diff) / Math.PI));
-        v += Math.max(-accel * dt, Math.min(accel * dt, vT - v));
-        var omegaMax = aLat / Math.max(v, 80);                 // tighter turns only when slow
-        var omega = Math.max(-omegaMax, Math.min(omegaMax, diff * 2.2));
-        phi += omega * dt + Math.sin(now / 900) * 0.08 * dt;
-        x += Math.cos(phi) * v * dt; y += Math.sin(phi) * v * dt;
+        var cruise = small ? 260 : 420;
+        if (!arc) planPass(w, h);
+        var step = v * dt;
+        phi += arc.omega * dt;
+        x += Math.cos(phi) * step; y += Math.sin(phi) * step;
+        arc.done += step;
         thrust = 0.55 + 0.45 * Math.min(1, v / cruise);
-        var radius = v * v / aLat;
-        if (!wp.off && (dist < 120 || (dist < radius * 2 && Math.abs(diff) > 1.0))) nextWaypoint();   // no circling
-        if (modeT > 5 && wp && !wp.off) { route = [route[route.length - 1]]; wp = route[0]; depthT = wp.depth; }   // time to leave
-        var outside = x < -150 || x > w + 150 || y < -150 || y > innerHeight + 150;
-        if ((wp && wp.off && outside) || x < -500 || x > w + 500 || y < -500 || y > innerHeight + 500 || modeT > 10) {
-          setMode('away'); awayFor = rnd(3, 7); wp = null; route = [];               // rest off-screen before the next pass
+        if (arc.done > arc.len * 0.5 && !arc.flip) { arc.flip = true; if (Math.random() < 0.5) depthT = -depthT; }   // may slip behind or in front halfway
+        if (arc.done >= arc.len || modeT > 12) {
+          setMode('away'); awayFor = rnd(3, 7); arc = null; wp = null;   // rest off-screen before the next pass
         }
-        var tA = phi * 180 / Math.PI + 90, df = ((tA - ang + 540) % 360) - 180; ang += df * Math.min(1, dt * 12);
+        ang = phi * 180 / Math.PI + 90;
         depth += (depthT - depth) * Math.min(1, dt * 0.9);
         sc += ((1 + 0.3 * depth) - sc) * Math.min(1, dt * 2);
         var rad = (ang + 90) * Math.PI / 180;
         flame = 0.5 + thrust * 0.9;
-        if (Math.random() < 0.45) { var tk = tail(flameLen() * rnd(0.6, 1)); emit('spark s' + Math.floor(Math.random() * 3), tk.x, tk.y, tk.dx * 70 + rnd(-25, 25), tk.dy * 70 + rnd(-25, 25), rnd(6, 10) * sc, rnd(0.45, 0.8)); }
+        if (Math.random() < 0.45) { var tk = tail(flameLen() * rnd(0.15, 0.6)); emit('spark s' + Math.floor(Math.random() * 3), tk.x, tk.y, tk.dx * 70 + rnd(-25, 25), tk.dy * 70 + rnd(-25, 25), rnd(6, 10) * sc, rnd(0.45, 0.8)); }
       }
 
 

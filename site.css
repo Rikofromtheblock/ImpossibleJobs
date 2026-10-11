@@ -569,3 +569,53 @@
     .mini { padding: 8px 0; }
     .dock-toggle { height: 40px; }
   }
+
+  /* ---------- modules open full screen ---------- */
+  .dock { top: auto; height: 100vh; height: 100svh; display: flex; flex-direction: column; }
+  html.dock-on { --dock-space: var(--dock-head); overflow: hidden; }
+  html.dock-on .dock { background: rgba(7,3,15,.97); box-shadow: none; overflow-y: auto; overscroll-behavior: contain; }
+  html.dock-on .dock::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+    background: radial-gradient(60vmax 50vmax at 85% 0%, rgba(255,95,158,.16), transparent 60%), radial-gradient(60vmax 60vmax at 0% 100%, rgba(107,43,217,.3), transparent 60%); }
+  .dock-inner { height: auto; min-height: 100%; width: 100%; }
+  html .dock .dock-head { position: sticky; top: 0; z-index: 2; background: transparent; }
+  .dock-intro { text-align: center; margin: clamp(10px, 4vh, 48px) auto clamp(24px, 5vh, 56px); max-width: 760px; opacity: 0; translate: 0 30px; transition: opacity .6s .2s, translate .7s cubic-bezier(.2,.9,.2,1) .2s; }
+  html.dock-on .dock-intro { opacity: 1; translate: 0 0; }
+  .dock-intro .h2 { margin: 0 auto 16px; max-width: 18ch; }
+  .dock-intro .lede { margin: 0 auto; }
+  html .dock .mod-grid { max-height: none; overflow: visible; flex: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; padding-bottom: 40px; }
+  html .dock .mod { display: flex; flex-direction: column; min-height: clamp(340px, 52vh, 460px); padding: 28px 26px 26px; border-radius: 22px; }
+  html .dock .mod .top { margin: 0; font-size: 12px; }
+  html .dock .mod .top > span:first-child { display: inline; }
+  html .dock .mod .icon { width: 72px; height: 72px; margin: 32px 0 24px; }
+  html .dock .mod h3 { margin: 0 0 12px; font-size: clamp(26px, 2.4vw, 32px); }
+  html .dock .mod p { display: block; font-size: 16px; line-height: 1.6; max-height: none; white-space: normal; }
+  html .dock .mod .foot { margin-top: auto; padding-top: 28px; }
+  html .dock .mod .boot, html .dock .mod .cta { display: flex; }
+  html .dock .mod .boot { margin-bottom: 10px; }
+  html .dock .mod .cta { margin-top: 22px; font-size: 17px; }
+  html .dock .mod .cta .arrow { width: 44px; height: 44px; }
+  html .dock .mod.activating .cta { font-size: 12px; height: auto; }
+  html.dock-on .dock-toggle { background: transparent; color: #fff; border-color: var(--line); }
+  html.dock-on .dock-toggle svg { transform: rotate(0deg); }
+  html.dock-on .dock-toggle .lbl { display: inline; }
+  @media (max-width: 900px) {
+    html .dock .mod-grid { grid-template-columns: 1fr; gap: 14px; }
+    html .dock .mod { min-height: 0; padding: 22px 20px; }
+    html .dock .mod .icon { width: 52px; height: 52px; margin: 18px 0 14px; }
+    html .dock .mod h3 { font-size: 24px; }
+    html .dock .mod p { font-size: 15px; }
+    html .dock .mod .foot { padding-top: 18px; }
+    html.dock-on .dock-toggle { width: auto; padding: 0 14px; }
+  }
+  @media (max-width: 700px) { .dock-intro .h2 { font-size: 30px; } .dock-intro .lede { font-size: 15px; } }
+
+  /* punchier stat captions */
+  .stat p strong { display: block; color: #fff; font-weight: 600; font-size: 18px; line-height: 1.35; margin-bottom: 4px; }
+  html .dock .mod > * { align-self: stretch; text-align: left; }
+  html .dock .mod .icon { align-self: flex-start; }
+  html .dock .mod .cta { justify-content: space-between; align-items: center; }
+  html.dock-on .menu-btn { opacity: 0; pointer-events: none; }
+  html.dock-on .dock-head { padding-right: 0; }
+  html .dock .mod .foot, html .dock .mod .top, html .dock .mod h3, html .dock .mod p { align-self: stretch; width: 100%; }
+  html.dock-on .dock .dock-head { background: rgba(7,3,15,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); margin: 0 -24px; padding: 0 24px; }
+  @media (max-width: 700px) { html.dock-on .dock .dock-head { margin: 0 -14px; padding: 0 14px; } }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>job board · impossible jobs</title>
+<title>mission board · impossible jobs</title>
 <meta name="description" content="module 01: the job board. jobs that don't exist yet, posted from the future.">
 <meta name="theme-color" content="#07030f">
 <meta property="og:type" content="website">
@@ -16,15 +16,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="board.css">
 </head>
-<body data-year="2046">
-  <div class="progress" id="progress"></div>
+<body data-year="2046" data-page="board">
+  <div class="sys-bg" aria-hidden="true"></div>
+  <div class="sys-vignette" aria-hidden="true"></div>
 
-  <header class="bar" id="bar">
-    <a class="mini" href="index.html" aria-label="impossible jobs, home">
-      <svg viewBox="0 0 26 30" fill="none" stroke="#ff5f9e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2c5 4 6 10 4 17H9C7 12 8 6 13 2z"/><circle cx="13" cy="10" r="2.4" stroke="#00f0c8"/><path d="M9 19l-4 4 4 1M17 19l4 4-4 1"/></svg>
-      <span>impossible <span>jobs</span></span>
-    </a>
+  <header class="sysbar">
+    <a class="mini" href="index.html" aria-label="impossible jobs, home"><svg viewBox="0 0 26 30" fill="none" stroke="#ff5f9e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2c5 4 6 10 4 17H9C7 12 8 6 13 2z"/><circle cx="13" cy="10" r="2.4" stroke="#00f0c8"/><path d="M9 19l-4 4 4 1M17 19l4 4-4 1"/></svg><span>impossible <span>jobs</span></span></a>
+    <span class="tag-os">ij/os · mission board</span>
+    <span class="sys-mid"><i class="dot"></i>uplink stable <span class="hide-md">·</span> <span class="hide-md"><b id="sysCount">0</b> missions · <b id="sysBoarding">0</b> boarding</span></span>
+    <span class="sys-clock" id="sysClock">--:--:--</span>
   </header>
 
   <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu"><span class="lbl">menu</span><span class="lines" aria-hidden="true"><i></i><i></i><i></i></span></button>
@@ -79,7 +81,6 @@
     </div>
   </div>
 
-  <div class="year" id="year" aria-hidden="true"><i></i><span id="yearLabel">today</span><b id="yearNum">2026</b></div>
 
   <div class="sky" aria-hidden="true">
     <div class="glow a" id="glowA"></div>
@@ -89,70 +90,41 @@
     <div class="horizon" id="horizon"></div>
   </div>
 
-  <main>
-    <section class="jobs-hero">
-      <div class="wrap">
-        <a class="back" href="index.html#modules"><svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 9H3M8 4L3 9l5 5"/></svg>back to home</a>
-        <p class="eyebrow reveal">module 01 · the job board · <span style="color:#00f0c8">online</span></p>
-        <h1 class="reveal" style="--d:.1s">now hiring from <em>the future.</em></h1>
-        <p class="lede reveal" style="--d:.2s">every mission here is a job that doesn't exist yet. fictional, for now, but never arbitrary: each one starts from a real trajectory and a real question. who would wake up wanting to do this?</p>
-      </div>
-    </section>
-    <!-- 5. horizontal missions -->
-    <section class="missions" id="missions">
-      <div class="stick">
-        <div class="wrap"><p class="eyebrow">transmissions from the future</p><h2 class="h2">browse the <em>missions.</em></h2></div>
-        <div class="rail" id="rail">
-          <article class="card"><span class="big">01</span><span class="n">mission 001</span><div><h3>herd liaison officer</h3><p class="co">Kinfrost · Yakutsk</p></div><div class="meta"><span>posted 2036</span><b>delayed</b></div></article>
-          <article class="card"><span class="big">02</span><span class="n">mission 002</span><div><h3>head of free time</h3><p class="co">Abundance Collective</p></div><div class="meta"><span>posted 2039</span><b>final call</b></div></article>
-          <article class="card"><span class="big">03</span><span class="n">mission 003</span><div><h3>head of machine wellbeing</h3><p class="co">Kokoro Labs</p></div><div class="meta"><span>posted 2041</span><b>now boarding</b></div></article>
-          <article class="card"><span class="big">04</span><span class="n">mission 004</span><div><h3>interior designer, subsea city</h3><p class="co">Lumen Deep</p></div><div class="meta"><span>posted 2040</span><b>final call</b></div></article>
-          <article class="card"><span class="big">05</span><span class="n">mission 005</span><div><h3>senior dream archivist</h3><p class="co">Somnia Vault</p></div><div class="meta"><span>posted 2042</span><b>boarding</b></div></article>
-          <article class="card"><span class="big">06</span><span class="n">mission 006</span><div><h3>asteroid fleet manager</h3><p class="co">Deep Haul Logistics</p></div><div class="meta"><span>posted 2045</span><b>boarding</b></div></article>
-          <article class="card"><span class="big">07</span><span class="n">mission 007</span><div><h3>senior whale intelligence officer</h3><p class="co">Bureau of Cetacean Intelligence</p></div><div class="meta"><span>posted 2043</span><b>classified</b></div></article>
-          <article class="card"><span class="big">08</span><span class="n">mission 008</span><div><h3>general manager, the aurelian</h3><p class="co">Aurelian Orbital</p></div><div class="meta"><span>posted 2041</span><b>last seats</b></div></article>
-          <article class="card"><span class="big">09</span><span class="n">mission 009</span><div><h3>senior weather broker</h3><p class="co">Nimbus Exchange</p></div><div class="meta"><span>posted 2046</span><b>final call</b></div></article>
-          <article class="card end"><h3>more missions are on their way.</h3><p>the list of impossible jobs gets shorter every week.</p></article>
-        </div>
-        <div class="rail-count"><span id="railNum">01</span><span class="bar2"><i id="railBar"></i></span><span>09</span></div>
-      </div>
+
+  <div class="sysboot" id="boot" aria-hidden="true"><pre id="bootLog"></pre></div>
+
+  <main class="board-main">
+    <section class="intro" id="intro">
+      <p class="eyebrow">ij/os · mission board · live from 2046</p>
+      <h1 class="intro-title"><span>now boarding:</span> <span>careers that haven’t</span> <span>been invented.</span> <em>mind the gap.</em></h1>
+      <p class="intro-line2">experience required: none. nobody has any. <em>yet.</em></p>
     </section>
 
-    <!-- 6. departures board -->
-    <section class="board-sec">
-      <div class="wrap">
-        <p class="eyebrow reveal">departures <span class="blink">●</span> live</p>
-        <h2 class="h2 reveal" style="--d:.1s">your future is <em>boarding.</em></h2>
-        <div class="board" id="board" role="table" aria-label="mission departures">
-          <div class="row head" role="row"><span>no.</span><span>mission</span><span class="hide-sm">company</span><span class="hide-sm">year</span><span class="s">status</span></div>
-          <div class="row" role="row"><span>001</span><span class="t flap">herd liaison officer</span><span class="hide-sm">kinfrost</span><span class="hide-sm">2036</span><span class="s st-delayed flap">delayed</span></div>
-          <div class="row" role="row"><span>002</span><span class="t flap">head of free time</span><span class="hide-sm">abundance collective</span><span class="hide-sm">2039</span><span class="s st-final flap">final call</span></div>
-          <div class="row" role="row"><span>003</span><span class="t flap">head of machine wellbeing</span><span class="hide-sm">kokoro labs</span><span class="hide-sm">2041</span><span class="s st-boarding flap">now boarding</span></div>
-          <div class="row" role="row"><span>004</span><span class="t flap">interior designer, subsea city</span><span class="hide-sm">lumen deep</span><span class="hide-sm">2040</span><span class="s st-final flap">final call</span></div>
-          <div class="row" role="row"><span>005</span><span class="t flap">senior dream archivist</span><span class="hide-sm">somnia vault</span><span class="hide-sm">2042</span><span class="s st-boarding flap">boarding</span></div>
-          <div class="row" role="row"><span>006</span><span class="t flap">asteroid fleet manager</span><span class="hide-sm">deep haul logistics</span><span class="hide-sm">2045</span><span class="s st-boarding flap">boarding</span></div>
-          <div class="row" role="row"><span>007</span><span class="t flap">senior whale intelligence officer</span><span class="hide-sm">bureau of cetacean intel.</span><span class="hide-sm">2043</span><span class="s st-classified flap">classified</span></div>
-          <div class="row" role="row"><span>008</span><span class="t flap">general manager, the aurelian</span><span class="hide-sm">aurelian orbital</span><span class="hide-sm">2041</span><span class="s st-last flap">last seats</span></div>
-          <div class="row" role="row"><span>009</span><span class="t flap">senior weather broker</span><span class="hide-sm">nimbus exchange</span><span class="hide-sm">2046</span><span class="s st-final flap">final call</span></div>
-        </div>
+    <section class="board-wrap" id="boardWrap" aria-label="mission board">
+      <div class="mboard">
+        <div class="mb-top"><span class="ttl"><i></i>departures · future of work</span><span id="mbClock">--:--</span></div>
+        <div class="mb-cols" aria-hidden="true"><span>no.</span><span>mission · company · location</span><span>status</span></div>
+        <div class="mrows" id="mrows"></div>
       </div>
-    </section>
-    <!-- 8. final -->
-    <section class="final" id="final">
-      <div class="wrap">
-        <h2 class="reveal zoom">know someone who was <em>built for this?</em></h2>
-        <p class="reveal" style="--d:.2s">we know you hate your job. you can keep it. or wait for the one you were actually made for. it's closer than you think.</p>
-      </div>
+      <p class="board-hint">select a mission to open its file · <b>all missions are fictional.</b> until they won’t be.</p>
     </section>
   </main>
 
-  <footer>
-    <p>all missions are <strong>fictional.</strong> <em>until they won't be.</em></p>
-    <p><a href="#who" data-open-menu="0">who we are</a> · <a href="#what" data-open-menu="1">what we do</a> · <a href="#contact" data-open-menu="2">contact</a> · <a href="mailto:hello@impossiblejobs.org">hello@impossiblejobs.org</a></p>
+  <div class="holo" id="holo" hidden role="dialog" aria-modal="true" aria-labelledby="holoTitle">
+    <div class="holo-backdrop"></div>
+    <div class="holo-beam" aria-hidden="true"></div>
+    <div class="holo-platform" aria-hidden="true"></div>
+    <article class="holo-card" id="holoCard" tabindex="-1"></article>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <p>© impossible jobs</p>
+  <footer class="board-foot">
+    <p><a href="index.html">← back to impossible jobs</a> · <a href="index.html#modules">all modules</a> · <a href="mailto:hello@impossiblejobs.org">hello@impossiblejobs.org</a></p>
+    <p>ij/os mission board · module 01 · © impossible jobs</p>
   </footer>
 
+<script src="missions.js"></script>
 <script src="site.js"></script>
+<script src="board.js"></script>
 </body>
 </html>
