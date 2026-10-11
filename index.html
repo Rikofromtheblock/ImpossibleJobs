@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>impossible jobs</title>
+<meta name="description" content="the job you were made for hasn't been posted yet. work today leaves most people disengaged. the jobs of the future don't have to.">
+<meta name="theme-color" content="#07030f">
+<meta property="og:type" content="website">
+<meta property="og:title" content="impossible jobs">
+<meta property="og:description" content="the job you were made for hasn't been posted yet.">
+<meta property="og:image" content="https://impossiblejobs.org/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+
+  <header class="bar" id="bar">
+    <a class="mini" href="#top" aria-label="impossible jobs, home">
+      <svg viewBox="0 0 26 30" fill="none" stroke="#ff5f9e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2c5 4 6 10 4 17H9C7 12 8 6 13 2z"/><circle cx="13" cy="10" r="2.4" stroke="#00f0c8"/><path d="M9 19l-4 4 4 1M17 19l4 4-4 1"/></svg>
+      <span>impossible <span>jobs</span></span>
+    </a>
+  </header>
+
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu"><span class="lbl">menu</span><span class="lines" aria-hidden="true"><i></i><i></i><i></i></span></button>
+
+  <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="menu" aria-hidden="true">
+    <div class="menu-inner">
+      <div class="mnav" role="tablist" aria-orientation="vertical" aria-label="about impossible jobs">
+        <button role="tab" id="t-who" aria-controls="p-who"><span>01</span>who we are</button>
+        <button role="tab" id="t-what" aria-controls="p-what"><span>02</span>what we do</button>
+        <button role="tab" id="t-contact" aria-controls="p-contact"><span>03</span>contact</button>
+        <a class="home" href="#top">back to the start</a>
+      </div>
+      <div>
+        <div class="mpanel" role="tabpanel" id="p-who" aria-labelledby="t-who">
+          <p class="eyebrow pink">01 · who we are</p>
+          <h3>you don't know us yet. <em>that's sort of the point.</em></h3>
+          <p>we come from a little further down the timeline. not far. just far enough that introductions are awkward, our references won't land for another decade, and our LinkedIn says "starting soon".</p>
+          <p>here's what we can tell you: <strong>we are experts in people.</strong> we have studied how humans work, why they light up, why they switch off, and exactly how long they can pretend to listen in a meeting. we usually know what you're good at before your CV does.</p>
+          <p>we came back for one reason. too many brilliant people are spending their lives in jobs that were never designed for them. we'd like to fix that before it becomes history.</p>
+          <p class="fine">so who exactly are we? that will become apparent. sooner than you think. keep watching the sky.</p>
+        </div>
+        <div class="mpanel" role="tabpanel" id="p-what" aria-labelledby="t-what" hidden>
+          <p class="eyebrow pink">02 · what we do</p>
+          <h3>a launch sequence, <em>not a launch.</em></h3>
+          <p>impossible jobs isn't one product. it's a series of modules that switch on one at a time, each designed to bring you a little closer to work that actually fits who you are.</p>
+          <p>the first three are coming online now. after that, we keep going. over time we'll activate more and more products and modules: each one <strong>more relevant, more personal and more engaging</strong> than the last, and frankly more fun than anything work has offered you so far.</p>
+          <p>some will help you understand yourself. some will show you futures you didn't know you could want. some will put you to the test. a few we can't describe yet. temporal regulations. you understand.</p>
+          <ul class="roadmap">
+            <li class="on"><i></i>module 01 · the job board · online</li>
+            <li class="soon"><i></i>module 02 · find who you are · activating</li>
+            <li class="soon"><i></i>module 03 · think you can do it? · activating</li>
+            <li><i></i>modules 04 to ∞ · classified</li>
+          </ul>
+          <a class="mail" href="#modules" data-open-dock>see the modules</a>
+        </div>
+        <div class="mpanel" role="tabpanel" id="p-contact" aria-labelledby="t-contact" hidden>
+          <p class="eyebrow pink">03 · contact</p>
+          <h3>come and find us. <em>eventually.</em></h3>
+          <div class="addr">
+            <b>impossible jobs hq</b><br>
+            floor 88, the unwritten tower<br>
+            dock 7, ring 3, lagrange station L2<br>
+            earth–moon orbit, sector 2046<br>
+            postcode: IMP-055-1BL<br>
+            opening hours: whenever you're ready
+          </div>
+          <p class="fine">deliveries by rocket only. please don't send drones, they get lost crossing the time zones.</p>
+          <p>for anything that can't wait until 2046:</p>
+          <a class="mail" href="mailto:hello@impossiblejobs.org">hello@impossiblejobs.org</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- modules dock: slides up after the hero, holds the lower third of the screen -->
+  <aside class="dock" id="dock" aria-label="modules">
+    <div class="dock-inner">
+      <div class="dock-head">
+        <p class="dock-title"><span class="dot"></span><span class="hide-sm">launch sequence <span class="sep">·</span></span> <b>modules 01–03</b> <span class="sep hide-sm">·</span> <span class="hide-sm">1 online, 2 activating</span></p>
+        <span class="dock-nudge" aria-hidden="true">psst. three modules are waiting for you.</span>
+        <span class="dock-year" aria-hidden="true"><i></i><b id="dockYear">2026</b></span>
+        <button class="dock-toggle" id="dockToggle" aria-expanded="false" aria-controls="dockGrid"><span class="lbl">open modules</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5l4 4 4-4"/></svg></button>
+      </div>
+        <div class="mod-grid" id="dockGrid">
+        <a class="mod online" data-i="0" href="jobs.html" data-status="online" style="--w:100%; --d:0s; --c:#00f0c8">
+          <span class="scan"></span>
+          <div class="top"><span>module 01</span><span class="status"><i></i><b>online</b></span></div>
+          <svg class="icon" viewBox="0 0 76 76" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="6" y="12" width="64" height="52" rx="8" stroke="#00f0c8"/><path d="M16 27h22M16 38h30M16 49h18" stroke="#ffffff"/><path d="M52 27h8M53 38h7M50 49h10" stroke="#ff5f9e"/></svg>
+          <h3>the job board</h3>
+          <p>jobs that don't exist yet, posted before anyone else has imagined them.</p>
+          <div class="foot">
+            <div class="boot"><span>system status</span><span class="pct">100%</span></div>
+            <div class="boot-bar"><i></i></div>
+            <div class="cta"><span>enter the job board</span><span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h12M10 4l5 5-5 5"/></svg></span></div>
+          </div>
+        </a>
+        <div class="mod activating" data-i="1" data-status="activating" style="--w:64%; --d:.35s">
+          <span class="scan"></span>
+          <div class="top"><span>module 02</span><span class="status"><i></i><b>activating</b></span></div>
+          <svg class="icon" viewBox="0 0 76 76" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="38" cy="38" r="31" stroke="#ff5f9e" stroke-dasharray="4 6"/><circle cx="38" cy="38" r="21" stroke="#00f0c8"/><circle cx="38" cy="32" r="6" stroke="#ffffff"/><path d="M27 50c2-6.5 6-9.5 11-9.5s9 3 11 9.5" stroke="#ffffff"/></svg>
+          <h3>find who you are</h3>
+          <p>before the job, the person. discover what you're actually made of, and what you were made for.</p>
+          <div class="foot">
+            <div class="boot"><span>system status</span><span class="pct">64%</span></div>
+            <div class="boot-bar"><i></i></div>
+            <div class="cta"><span>activating · stand by</span></div>
+          </div>
+        </div>
+        <div class="mod activating" data-i="2" data-status="activating" style="--w:37%; --d:.7s">
+          <span class="scan"></span>
+          <div class="top"><span>module 03</span><span class="status"><i></i><b>activating</b></span></div>
+          <svg class="icon" viewBox="0 0 76 76" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="38" cy="38" r="28" stroke="#00f0c8"/><circle cx="38" cy="38" r="16" stroke="#ffffff"/><circle cx="38" cy="38" r="3.5" fill="#ff5f9e" stroke="#ff5f9e"/><path d="M38 4v12M38 60v12M4 38h12M60 38h12" stroke="#ff5f9e"/></svg>
+          <h3>think you can do it?</h3>
+          <p>the candidate screening for impossible jobs. not everyone gets through. that's the point.</p>
+          <div class="foot">
+            <div class="boot"><span>system status</span><span class="pct">37%</span></div>
+            <div class="boot-bar"><i></i></div>
+            <div class="cta"><span>activating · stand by</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="year" id="year" aria-hidden="true"><i></i><span id="yearLabel">today</span><b id="yearNum">2026</b></div>
+
+  <div class="sky" aria-hidden="true">
+    <div class="glow a" id="glowA"></div>
+    <div class="glow b" id="glowB"></div>
+    <div class="stars far" id="starsFar"></div>
+    <div class="stars" id="stars"></div>
+    <div class="horizon" id="horizon"></div>
+  </div>
+
+  <main>
+    <!-- 1. hero -->
+    <section class="hero" id="top">
+      <div class="stick">
+        <div class="logo" id="heroLogo">
+          <svg class="rocket" id="rocket" viewBox="0 0 26 34" fill="none" stroke="#ff5f9e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M13 2c5 4 6 10 4 17H9C7 12 8 6 13 2z"/>
+            <circle cx="13" cy="10" r="2.4" stroke="#00f0c8"/>
+            <path d="M9 19l-4 4 4 1M17 19l4 4-4 1"/>
+            <path class="flame" d="M10.5 22c0 4 1.5 7 2.5 10 1-3 2.5-6 2.5-10" stroke="#ffc857" fill="rgba(255,95,158,.5)"/>
+          </svg>
+          <span class="wordmark">impossible <span>jobs</span></span>
+        </div>
+        <h1 class="slogan" id="slogan">the job you were made for hasn't been <em>posted yet.</em></h1>
+        <p class="sub" id="sub">the work of today wasn't designed around you. the work of tomorrow still can be.</p>
+        <div class="hint" id="hint"><i></i>scroll into the future</div>
+      </div>
+    </section>
+
+    <!-- 2. word scrub -->
+    <section class="scrub" id="scrub">
+      <div class="stick">
+        <div class="wrap">
+          <p id="scrubText" data-hot="want to.|what makes you human.">most people go to work because they need to. very few go because they want to. somewhere along the way, work stopped asking for what makes you human.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. the state of work, today -->
+    <section class="state" id="state">
+      <div class="wrap">
+        <div class="report-head">
+          <div>
+            <p class="eyebrow pink reveal">status report · human work</p>
+            <h2 class="h2 reveal" style="--d:.1s">the way we work <em>isn't working.</em></h2>
+            <p class="lede reveal" style="--d:.2s">jobs today ask for our time, our output and our compliance. they rarely ask for our curiosity, our creativity or our need to connect. the numbers show it.</p>
+          </div>
+          <div class="stamp reveal" style="--d:.3s">year: <b>2026</b><br>condition: <b>critical</b><br>sample: the global workforce</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="people-sec" id="peopleSec">
+      <div class="stick">
+        <div class="wrap people-layout">
+          <div class="people" id="people" role="img" aria-label="100 people, of whom only 20 are engaged at work"></div>
+          <div>
+            <div class="big-num"><span id="peopleNum">0</span><small> in 100</small></div>
+            <p class="big-cap">employees worldwide are <strong>engaged at work.</strong> the other 80 show up, and switch off.<sup><a href="#src1"> 1</a></sup></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap stat-grid">
+        <div class="stat reveal" style="--c:#ff5f9e">
+          <div class="k">stress</div>
+          <div class="num"><span class="count" data-to="40">0</span>%</div>
+          <p>of employees felt stress for a lot of the previous day.<sup><a href="#src1"> 1</a></sup></p>
+          <div class="meter" style="--w:40%"><i></i></div>
+        </div>
+        <div class="stat reveal" style="--d:.12s; --c:#ffc857">
+          <div class="k">connection</div>
+          <div class="num"><span class="count" data-to="22">0</span>%</div>
+          <p>felt lonely for a lot of the previous day. at work, surrounded by people.<sup><a href="#src1"> 1</a></sup></p>
+          <div class="meter" style="--w:22%"><i></i></div>
+        </div>
+        <div class="stat reveal" style="--d:.24s; --c:#00f0c8">
+          <div class="k">life</div>
+          <div class="num"><span class="count" data-to="34">0</span>%</div>
+          <p>of employees are thriving in their lives. two in three are not.<sup><a href="#src1"> 1</a></sup></p>
+          <div class="meter" style="--w:34%"><i></i></div>
+        </div>
+        <div class="stat reveal" style="--c:#ff5f9e">
+          <div class="k">purpose</div>
+          <div class="num"><span class="count" data-to="18">0</span>%</div>
+          <p>of US workers say their job has a purpose they personally believe in. 45% work mainly for the paycheck.<sup><a href="#src2"> 2</a></sup></p>
+          <div class="meter" style="--w:18%"><i></i></div>
+        </div>
+        <div class="stat reveal" style="--d:.12s; --c:#ffc857">
+          <div class="k">creativity</div>
+          <div class="num"><span class="count" data-to="46">0</span>%</div>
+          <p>of US workers say they have enough time in their day for creative tasks. less than half.<sup><a href="#src4"> 4</a></sup></p>
+          <div class="meter" style="--w:46%"><i></i></div>
+        </div>
+        <div class="stat reveal" style="--d:.24s; --c:#00f0c8">
+          <div class="k">meaning</div>
+          <div class="num"><span class="count" data-to="89">0</span>%</div>
+          <p>of Gen Z say a sense of purpose is important to their job satisfaction. the hunger is there.<sup><a href="#src3"> 3</a></sup></p>
+          <div class="meter" style="--w:89%"><i></i></div>
+        </div>
+        <div class="stat wide reveal" style="--c:#ff5f9e">
+          <div class="num">$<span class="count" data-to="10">0</span>T</div>
+          <p><strong style="color:#fff;font-weight:600">the price of switched-off work:</strong> low engagement cost the world economy about $10 trillion in lost productivity last year. roughly 9% of global GDP.<sup><a href="#src1"> 1</a></sup></p>
+        </div>
+        <div class="stat wide reveal" style="--c:#ffc857">
+          <div class="num"><span class="count" data-to="12">0</span>B</div>
+          <p><strong style="color:#fff;font-weight:600">the human cost:</strong> an estimated 12 billion workdays are lost every year to depression and anxiety, costing the global economy nearly $1 trillion.<sup><a href="#src6"> 6</a></sup></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. why impossible jobs was born -->
+    <section class="gap-sec" id="gapSec">
+      <div class="stick">
+        <div class="wrap">
+          <div class="gap-intro">
+            <p class="eyebrow">why impossible jobs was born</p>
+            <h2 class="h2">we found a gap in how work is <em>designed.</em></h2>
+          </div>
+          <div class="split" id="split">
+            <div class="side l" id="sideL">
+              <h3>what jobs ask for</h3>
+              <ul><li>hours</li><li>output</li><li>compliance</li><li>titles from the past</li></ul>
+            </div>
+            <div class="side r" id="sideR">
+              <h3>what people are made of</h3>
+              <ul><li>curiosity</li><li>creativity</li><li>connection</li><li>a future to grow into</li></ul>
+            </div>
+            <div class="rift" aria-hidden="true">
+              <div class="rift-beam" id="riftBeam"></div>
+              <div class="rift-label" id="riftLabel"><span class="wordmark">impossible <span>jobs</span></span><span class="t">born in the gap</span></div>
+            </div>
+          </div>
+          <p class="lede gap-out" id="gapOut">every job description ever written starts from a vacancy. almost none start from a human being. only 30% of hiring managers call personal purpose "very important" in a new hire. 77% say that about communication skills.<sup><a href="#src2"> 2</a></sup></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="born">
+      <div class="wrap born-grid">
+        <div>
+          <p class="eyebrow reveal">our story</p>
+          <p class="pull reveal" style="--d:.1s">the jobs that will define the next decades <em>don't exist yet.</em> that is the opportunity.</p>
+        </div>
+        <div>
+          <p class="lede reveal" style="--d:.15s">for generations, work has been built around tasks, not people. we fit ourselves into roles designed for machines, factories and org charts, and we call the mismatch normal.</p>
+          <p class="lede reveal" style="--d:.25s">but the future of work is still unwritten. for the first time in generations, we get to ask the question before the jobs exist: what would people actually love to do? impossible jobs was born to ask it, out loud, one job at a time.</p>
+          <p class="lede reveal" style="--d:.35s">by 2030, 170 million new jobs will be created, and nearly 40% of the skills work requires will change.<sup><a href="#src5"> 5</a></sup> the future is being hired for right now.</p>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- 7. the goal -->
+    <section class="goal-sec" id="goalSec">
+      <div class="stick">
+        <div class="wrap people-layout">
+          <div class="people" id="people2" role="img" aria-label="100 people, all of them fulfilled by their work"></div>
+          <div>
+            <p class="eyebrow">our final goal</p>
+            <div class="goal-num"><span id="goalNum">20</span><small> in 100</small></div>
+            <p class="big-cap"><strong>more fulfilled people. future happiness.</strong> we won't stop until the work people do feels like the life they want, not the price they pay for it. people with a strong sense of purpose at work are 5.6 times as likely to be engaged.<sup><a href="#src2"> 2</a></sup></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. final -->
+    <section class="final" id="final">
+      <div class="wrap">
+        <h2 class="reveal zoom">know someone who was <em>built for this?</em></h2>
+        <p class="reveal" style="--d:.2s">we know you hate your job. you can keep it. or wait for the one you were actually made for. it's closer than you think.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>the jobs of the future are <strong>fictional.</strong> <em>until they won't be.</em></p>
+    <p><a href="#who" data-open-menu="0">who we are</a> · <a href="#what" data-open-menu="1">what we do</a> · <a href="#contact" data-open-menu="2">contact</a> · <a href="mailto:hello@impossiblejobs.org">hello@impossiblejobs.org</a></p>
+    <ol>
+      <li id="src1">1. <a href="https://www.gallup.com/workplace/697904/state-of-the-global-workplace-2026.aspx" target="_blank" rel="noopener">Gallup, State of the Global Workplace 2026</a> (2025 data)</li>
+      <li id="src2">2. <a href="https://news.gallup.com/poll/697403/purposeful-work-boosts-engagement-few-experience.aspx" target="_blank" rel="noopener">Gallup, Purposeful Work Boosts Engagement, but Few Experience It</a> (2025, US workers)</li>
+      <li id="src3">3. <a href="https://www.deloitte.com/global/en/about/press-room/deloitte-2025-gen-z-and-millennial-survey.html" target="_blank" rel="noopener">Deloitte, 2025 Gen Z and Millennial Survey</a> (44 countries)</li>
+      <li id="src4">4. <a href="https://blog.dropbox.com/topics/work-culture/survey-productivity-myth-why-doing-less-leads-to-more-impact" target="_blank" rel="noopener">Dropbox and YouGov, The productivity myth</a> (2025, US workers)</li>
+      <li id="src5">5. <a href="https://www.weforum.org/press/2025/01/future-of-jobs-report-2025-78-million-new-job-opportunities-by-2030-but-urgent-upskilling-needed-to-prepare-workforces/" target="_blank" rel="noopener">World Economic Forum, Future of Jobs Report 2025</a></li>
+      <li id="src6">6. <a href="https://www.who.int/europe/news/item/28-09-2022-who-and-ilo-call-for-new-measures-to-tackle-mental-health-issues-at-work" target="_blank" rel="noopener">WHO and ILO, mental health at work</a> (2022)</li>
+    </ol>
+    <p>© impossible jobs</p>
+    <p>© impossible jobs</p>
+  </footer>
+
+<script src="site.js"></script>
+</body>
+</html>
