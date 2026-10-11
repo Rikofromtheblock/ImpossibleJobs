@@ -1,3 +1,199 @@
+/* ---------------- IJ audio: generative music + ambience, synthesized live (no audio files) ---------------- */
+window.IJAudio = (function () {
+  var ctx = null, master = null, musicBus = null, fxBus = null, delay = null, started = false, timer = null;
+  var enabled = true;
+  try { enabled = localStorage.getItem('ij-sound') !== '0'; } catch (e) {}
+  var page = document.body ? document.body.getAttribute('data-page') : null;
+  var listeners = [];
+  function notify() { listeners.forEach(function (f) { f(); }); }
+
+  function build() {
+    var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
+    ctx = new AC();
+    var comp = ctx.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 5;
+    master = ctx.createGain(); master.gain.value = 0.0001;
+    master.connect(comp); comp.connect(ctx.destination);
+    musicBus = ctx.createGain(); musicBus.gain.value = 0.9; musicBus.connect(master);
+    fxBus = ctx.createGain(); fxBus.gain.value = 0.55; fxBus.connect(master);
+    // a soft echo shared by the arpeggios and data blips
+    delay = ctx.createDelay(1.5); delay.delayTime.value = 0.36;
+    var fb = ctx.createGain(); fb.gain.value = 0.38; var dl = ctx.createBiquadFilter(); dl.type = 'lowpass'; dl.frequency.value = 2400;
+    delay.connect(dl); dl.connect(fb); fb.connect(delay); dl.connect(musicBus);
+    return true;
+  }
+  function noiseBuffer() {
+    var b = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate), d = b.getChannelData(0);
+    for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return b;
+  }
+  var mtof = function (m) { return 440 * Math.pow(2, (m - 69) / 12); };
+
+  /* --- home page: a slow, warm synth track (A minor: Am · F · C · G), endlessly varied --- */
+  function startMusic() {
+    var bpm = 84, beat = 60 / bpm, next = ctx.currentTime + 0.1, step = 0;
+    var chords = [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]];   // Am F C G
+    var noise = noiseBuffer();
+    function pad(notes, t, dur) {
+      notes.forEach(function (n) {
+        [-7, 7].forEach(function (cents) {
+          var o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+          o.type = 'sawtooth'; o.frequency.value = mtof(n); o.detune.value = cents;
+          f.type = 'lowpass'; f.frequency.setValueAtTime(500, t); f.frequency.linearRampToValueAtTime(1100, t + dur * 0.5); f.frequency.linearRampToValueAtTime(600, t + dur);
+          g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.022, t + 1.4); g.gain.setValueAtTime(0.022, t + dur - 1.2); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.8);
+          o.connect(f); f.connect(g); g.connect(musicBus); o.start(t); o.stop(t + dur + 1);
+        });
+      });
+    }
+    function bass(n, t) {
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = mtof(n - 24);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.12, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + beat * 0.9);
+      o.connect(g); g.connect(musicBus); o.start(t); o.stop(t + beat);
+    }
+    function pluck(n, t, v) {
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'triangle'; o.frequency.value = mtof(n);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+      o.connect(g); g.connect(musicBus); g.connect(delay); o.start(t); o.stop(t + 0.4);
+    }
+    function hat(t, v) {
+      var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+      s.buffer = noise; f.type = 'highpass'; f.frequency.value = 7000;
+      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+      s.connect(f); f.connect(g); g.connect(musicBus); s.start(t, Math.random()); s.stop(t + 0.06);
+    }
+    function kick(t) {
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.18);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.16, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+      o.connect(g); g.connect(musicBus); o.start(t); o.stop(t + 0.32);
+    }
+    function schedule() {
+      while (next < ctx.currentTime + 0.25) {
+        var bar = Math.floor(step / 8), chord = chords[Math.floor(bar / 2) % 4], inBar = step % 8;   // 8 eighth-notes per bar, 2 bars per chord
+        if (step % 16 === 0) pad(chord, next, beat * 8);
+        if (inBar % 2 === 0) bass(chord[0], next);
+        if (bar >= 4 && inBar % 4 === 0) kick(next);                       // the beat joins after the intro
+        if (bar >= 2 && inBar % 2 === 1) hat(next, 0.012 + Math.random() * 0.01);
+        if (bar >= 2 && Math.random() < 0.62) {                             // a wandering arpeggio over two octaves
+          var n = chord[Math.floor(Math.random() * 3)] + (Math.random() < 0.5 ? 12 : 24);
+          pluck(n, next, 0.025 + Math.random() * 0.02);
+        }
+        next += beat / 2; step++;
+      }
+    }
+    schedule(); timer = setInterval(schedule, 60);
+  }
+
+  /* --- mission board: a cold control-room ambience --- */
+  function startAmbient() {
+    [[45, -6], [52, 5], [57, -3]].forEach(function (d) {                    // a low drone (A · E · A)
+      var o = ctx.createOscillator(), f = ctx.createBiquadFilter(), g = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
+      o.type = 'sawtooth'; o.frequency.value = mtof(d[0]); o.detune.value = d[1];
+      f.type = 'lowpass'; f.frequency.value = 260; f.Q.value = 4;
+      lfo.frequency.value = 0.04 + Math.random() * 0.05; lg.gain.value = 140; lfo.connect(lg); lg.connect(f.frequency);
+      g.gain.value = 0.045;
+      o.connect(f); f.connect(g); g.connect(musicBus); o.start(); lfo.start();
+    });
+    var s = ctx.createBufferSource(), nf = ctx.createBiquadFilter(), ng = ctx.createGain();   // air handling
+    s.buffer = noiseBuffer(); s.loop = true; nf.type = 'bandpass'; nf.frequency.value = 420; nf.Q.value = 0.7; ng.gain.value = 0.02;
+    s.connect(nf); nf.connect(ng); ng.connect(musicBus); s.start();
+    (function blips() {                                                    // distant data chatter
+      if (ctx.state === 'running') {
+        var t = ctx.currentTime, n = 1 + Math.floor(Math.random() * 4);
+        for (var i = 0; i < n; i++) {
+          var o = ctx.createOscillator(), g = ctx.createGain(), tt = t + i * 0.09;
+          o.type = 'sine'; o.frequency.value = 1100 + Math.random() * 1600;
+          g.gain.setValueAtTime(0.0001, tt); g.gain.exponentialRampToValueAtTime(0.012, tt + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, tt + 0.08);
+          o.connect(g); g.connect(musicBus); g.connect(delay); o.start(tt); o.stop(tt + 0.1);
+        }
+      }
+      timer = setTimeout(blips, 1800 + Math.random() * 4200);
+    })();
+  }
+
+  function fadeTo(v, secs) { if (!master) return; var t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(Math.max(0.0001, master.gain.value), t); master.gain.exponentialRampToValueAtTime(Math.max(0.0001, v), t + secs); }
+  function start() {
+    if (!enabled) return;
+    if (!ctx && !build()) return;
+    if (ctx.state === 'suspended') ctx.resume();
+    if (!started) { started = true; if (page === 'board') startAmbient(); else startMusic(); }
+    fadeTo(1, 2.5); notify(); setTimeout(notify, 250);
+  }
+  function setEnabled(v) {
+    enabled = v; try { localStorage.setItem('ij-sound', v ? '1' : '0'); } catch (e) {}
+    if (v) start(); else if (ctx) { fadeTo(0.0001, 0.6); setTimeout(function () { if (!enabled) ctx.suspend(); }, 700); }
+    notify();
+  }
+  // browsers allow sound only after the visitor's first click, tap or key press
+  function firstGesture() { window.__ijFirst = performance.now(); start(); ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) { removeEventListener(ev, firstGesture, true); }); }
+  ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) { addEventListener(ev, firstGesture, true); });
+  document.addEventListener('visibilitychange', function () {
+    if (!ctx || !enabled || !started) return;
+    if (document.hidden) ctx.suspend(); else ctx.resume();
+  });
+
+  return {
+    get enabled() { return enabled; }, get playing() { return enabled && started && ctx && ctx.state === 'running'; },
+    get ctx() { return ctx; }, get fx() { return fxBus; }, get echo() { return delay; },
+    setEnabled: setEnabled, onChange: function (f) { listeners.push(f); }
+  };
+})();
+
+/* sound switches: any element with data-sound-toggle */
+(function soundSwitches() {
+  function paint() {
+    document.querySelectorAll('[data-sound-toggle]').forEach(function (b) {
+      var A = window.IJAudio, lbl = b.querySelector('.lbl');
+      b.classList.toggle('on', A.enabled); b.classList.toggle('armed', A.enabled && !A.playing);
+      b.setAttribute('aria-pressed', A.enabled ? 'true' : 'false');
+      if (lbl) lbl.textContent = !A.enabled ? 'sound off' : (A.playing ? 'sound on' : 'tap for sound');
+    });
+  }
+  document.querySelectorAll('[data-sound-toggle]').forEach(function (b) {
+    b.addEventListener('click', function (e) {
+      var A = window.IJAudio;
+      // the first click on the page both unlocks audio and lands here: treat it as "start", not "switch off"
+      if (performance.now() - (window.__ijFirst || 0) < 600) { setTimeout(paint, 120); return; }
+      A.setEnabled(!A.enabled);
+    });
+  });
+  window.IJAudio.onChange(paint);
+  paint(); setInterval(paint, 1500);
+})();
+
+(function cursor() {
+  // custom reticle cursor, only for real mice / trackpads
+  if (!window.matchMedia || !window.matchMedia('(pointer: fine)').matches) return;
+  var root = document.documentElement;
+  var ring = document.createElement('div'), dot = document.createElement('div');
+  ring.className = 'cur-ring'; dot.className = 'cur-dot';
+  ring.setAttribute('aria-hidden', 'true'); dot.setAttribute('aria-hidden', 'true');
+  ring.innerHTML = '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14"/><path class="tick" d="M20 1v5M20 34v5M1 20h5M34 20h5"/></svg>';
+  function mount() { document.body.appendChild(ring); document.body.appendChild(dot); root.classList.add('has-cursor'); }
+  if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);
+  var x = -100, y = -100, rx = -100, ry = -100, moving = false;
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var HOT = 'a, button, [role="tab"], [role="button"], label, input, select, textarea, summary, .mrow, .mod, .dock-head';
+  addEventListener('pointermove', function (e) {
+    if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+    x = e.clientX; y = e.clientY; root.classList.add('cursor-in');
+    dot.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+    root.classList.toggle('cursor-hot', !!(e.target.closest && e.target.closest(HOT)));
+    if (!moving) { moving = true; requestAnimationFrame(follow); }
+  }, { passive: true });
+  function follow() {
+    var k = still ? 1 : 0.22;
+    rx += (x - rx) * k; ry += (y - ry) * k;
+    ring.style.transform = 'translate3d(' + rx.toFixed(1) + 'px,' + ry.toFixed(1) + 'px,0)';
+    if (Math.abs(x - rx) > 0.2 || Math.abs(y - ry) > 0.2) requestAnimationFrame(follow); else moving = false;
+  }
+  document.addEventListener('mouseleave', function () { root.classList.remove('cursor-in'); });
+  addEventListener('blur', function () { root.classList.remove('cursor-in'); });
+  addEventListener('pointerdown', function () { root.classList.add('cursor-down'); });
+  addEventListener('pointerup', function () { root.classList.remove('cursor-down'); });
+})();
+
 (function () {
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var $ = function (id) { return document.getElementById(id); };

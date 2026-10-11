@@ -295,3 +295,25 @@ html.holo-open .menu-btn { opacity: 0; pointer-events: none; }
 .intro.docked .intro-title > em { display: inline-block; margin-left: .25em; }
 @media (prefers-reduced-motion: reduce) { .intro-line2 { opacity: 1; transform: none; transition: none; } }
 .intro-line2, .intro-title { text-wrap: balance; }
+
+/* sound switch */
+.snd { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--sys-line); background: transparent;
+  color: var(--muted); font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; cursor: pointer; transition: color .25s, border-color .25s, box-shadow .25s; }
+.snd:hover, .snd:focus-visible { color: #fff; border-color: var(--cyan); outline: none; }
+.snd .w1, .snd .w2 { display: none; }
+.snd.on { color: var(--cyan); border-color: rgba(0,240,200,.5); box-shadow: 0 0 14px rgba(0,240,200,.25); }
+.snd.on .w1, .snd.on .w2 { display: inline; } .snd.on .x { display: none; }
+@media (max-width: 700px) { .snd .lbl { display: none; } .snd { width: 38px; padding: 0; justify-content: center; margin-left: auto; } .sys-clock { margin-left: 0; } }
+
+/* mission file actions */
+.hc-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.hc-apply, .hc-wa, .hc-copy { display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 22px; border-radius: 999px; text-decoration: none; cursor: pointer;
+  font: 700 15px/1 'Poppins', sans-serif; transition: transform .25s, box-shadow .25s, border-color .25s, color .25s; }
+.hc-apply { background: var(--pink); color: #07030f; border: 0; }
+.hc-apply:hover, .hc-apply:focus-visible { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,95,158,.45); outline: none; color: #07030f; }
+.hc-wa { background: transparent; color: #fff; border: 1px solid rgba(37,211,102,.6); }
+.hc-wa svg { color: #25d366; }
+.hc-wa:hover, .hc-wa:focus-visible { border-color: #25d366; box-shadow: 0 8px 24px rgba(37,211,102,.25); outline: none; color: #fff; }
+.hc-copy { background: transparent; color: var(--lavender); border: 1px solid var(--line); font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; padding: 0 18px; }
+.hc-copy:hover, .hc-copy:focus-visible { border-color: var(--cyan); color: #fff; outline: none; }
+@media (max-width: 760px) { .hc-actions { width: 100%; } .hc-apply, .hc-wa { flex: 1 1 auto; justify-content: center; } }

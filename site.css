@@ -619,3 +619,33 @@
   html .dock .mod .foot, html .dock .mod .top, html .dock .mod h3, html .dock .mod p { align-self: stretch; width: 100%; }
   html.dock-on .dock .dock-head { background: rgba(7,3,15,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); margin: 0 -24px; padding: 0 24px; }
   @media (max-width: 700px) { html.dock-on .dock .dock-head { margin: 0 -14px; padding: 0 14px; } }
+
+/* ---------- custom cursor: a targeting reticle (mouse and trackpad only) ---------- */
+html.has-cursor, html.has-cursor * { cursor: none !important; }
+.cur-ring, .cur-dot { position: fixed; left: 0; top: 0; z-index: 99999; pointer-events: none; will-change: transform; opacity: 0; transition: opacity .25s; }
+html.cursor-in .cur-ring, html.cursor-in .cur-dot { opacity: 1; }
+.cur-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 10px var(--pink), 0 0 2px #fff; }
+.cur-ring { width: 40px; height: 40px; margin: -20px 0 0 -20px; }
+.cur-ring svg { width: 100%; height: 100%; overflow: visible; animation: curspin 8s linear infinite; transition: transform .25s cubic-bezier(.2,.9,.2,1); }
+.cur-ring circle { fill: none; stroke: var(--cyan); stroke-width: 1.5; stroke-dasharray: 17 5; filter: drop-shadow(0 0 4px rgba(0,240,200,.7)); transition: stroke .25s, fill .25s; }
+.cur-ring .tick { stroke: var(--cyan); stroke-width: 1.5; stroke-linecap: round; transition: stroke .25s; }
+@keyframes curspin { to { rotate: 360deg; } }
+html.cursor-hot .cur-ring svg { transform: scale(1.45); animation-duration: 2.4s; }
+html.cursor-hot .cur-ring circle { stroke: var(--pink); fill: rgba(255,95,158,.08); filter: drop-shadow(0 0 6px rgba(255,95,158,.8)); }
+html.cursor-hot .cur-ring .tick { stroke: var(--pink); }
+html.cursor-hot .cur-dot { background: #fff; }
+html.cursor-down .cur-ring svg { transform: scale(.8); }
+@media (prefers-reduced-motion: reduce) { .cur-ring svg { animation: none; } }
+
+/* ---------- sound switch (both pages) ---------- */
+.snd { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: rgba(7,3,15,.7);
+  color: var(--muted); font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; cursor: pointer; transition: color .25s, border-color .25s, box-shadow .25s; }
+.snd:hover, .snd:focus-visible { color: #fff; border-color: var(--cyan); outline: none; }
+.snd .w1, .snd .w2 { display: none; }
+.snd.on { color: var(--cyan); border-color: rgba(0,240,200,.5); box-shadow: 0 0 14px rgba(0,240,200,.25); }
+.snd.on .w1, .snd.on .w2 { display: inline; } .snd.on .x { display: none; }
+.snd.armed { animation: sndArmed 1.6s ease-in-out infinite; }
+@keyframes sndArmed { 50% { box-shadow: 0 0 22px rgba(0,240,200,.55); } }
+.snd-float { position: fixed; top: 12px; right: 160px; z-index: 70; height: 48px; padding: 0 16px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+html.menu-open .snd-float, html.dock-on .snd-float { opacity: 0; pointer-events: none; }
+@media (max-width: 700px) { .snd-float { right: 136px; width: 48px; padding: 0; justify-content: center; } .snd-float .lbl { display: none; } }

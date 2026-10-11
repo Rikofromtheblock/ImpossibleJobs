@@ -8,6 +8,42 @@
   var words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
   var statusClass = function (s) { return /final/.test(s) ? 'hs-final' : /last/.test(s) ? 'hs-last' : /board/.test(s) ? 'hs-boarding' : /delay/.test(s) ? 'hs-delayed' : 'hs-classified'; };
 
+  /* ---------- sound: synthesized live, no audio files ---------- */
+  var SFX = (function () {
+    // board sound effects share the site's audio engine and on/off switch (site.js: IJAudio)
+    var last = 0;
+    function ready() { var A = window.IJAudio; return A && A.playing ? A : null; }
+    function env(g, t, peak, dur) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); }
+    function blip(A, f, type, peak, dur, drop, when) {
+      var ctx = A.ctx, t = ctx.currentTime + (when || 0), o = ctx.createOscillator(), g = ctx.createGain(), hp = ctx.createBiquadFilter();
+      o.type = type; o.frequency.setValueAtTime(f, t); if (drop) o.frequency.exponentialRampToValueAtTime(f * drop, t + dur);
+      hp.type = 'highpass'; hp.frequency.value = 700;
+      env(g, t, peak, dur); o.connect(hp); hp.connect(g); g.connect(A.fx); o.start(t); o.stop(t + dur + 0.02);
+    }
+    return {
+      tick: function () {
+        var A = ready(); if (!A) return; var n = performance.now(); if (n - last < 26) return; last = n;
+        var f = 1500 + Math.random() * 2200;
+        blip(A, f, 'square', 0.035, 0.022, 0.5);
+        if (Math.random() < 0.3) blip(A, f * 1.5, 'triangle', 0.02, 0.03, 0.8);
+      },
+      settle: function () { var A = ready(); if (!A) return; blip(A, 880, 'sine', 0.05, 0.07, 1, 0); blip(A, 1320, 'sine', 0.045, 0.09, 1, 0.045); },
+      open: function () {
+        var A = ready(); if (!A) return; var ctx = A.ctx, t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine'; o.frequency.setValueAtTime(180, t); o.frequency.exponentialRampToValueAtTime(1600, t + 0.45);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.07, t + 0.1); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
+        o.connect(g); g.connect(A.fx); o.start(t); o.stop(t + 0.65);
+        [523, 784, 1046, 1568].forEach(function (f, i) { blip(A, f, 'square', 0.018, 0.08, 1, 0.42 + i * 0.06); });
+      },
+      close: function () {
+        var A = ready(); if (!A) return; var ctx = A.ctx, t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine'; o.frequency.setValueAtTime(1200, t); o.frequency.exponentialRampToValueAtTime(160, t + 0.32);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.06, t + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.36);
+        o.connect(g); g.connect(A.fx); o.start(t); o.stop(t + 0.4);
+      }
+    };
+  })();
+
   /* ---------- system bar ---------- */
   var MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
   function clock() {
@@ -37,7 +73,7 @@
     return line;
   }
   var active = [], ticking = false;
-  function setCell(c, ch) { c.firstChild.textContent = ch; c._tog = !c._tog; c.classList.remove(c._tog ? 'f2' : 'f1'); c.classList.add(c._tog ? 'f1' : 'f2'); }
+  function setCell(c, ch) { SFX.tick(); c.firstChild.textContent = ch; c._tog = !c._tog; c.classList.remove(c._tog ? 'f2' : 'f1'); c.classList.add(c._tog ? 'f1' : 'f2'); }
   function runFlaps(cells, startDelay, done) {
     var now = performance.now();
     cells.forEach(function (c, i) {
@@ -79,7 +115,7 @@
     return b;
   });
   function flipBoard() {
-    rows.forEach(function (r, i) { runFlaps(r._cells, i * 140, function () { r.classList.add('settled'); }); });
+    rows.forEach(function (r, i) { runFlaps(r._cells, i * 140, function () { r.classList.add('settled'); SFX.settle(); }); });
     // once the board has settled, one random row re-flips every 4 seconds (never the same row twice in a row)
     if (!reduce && rows.length) setTimeout(function () {
       var last = -1;
@@ -88,7 +124,7 @@
         var n = rows.length > 1 ? Math.floor(Math.random() * (rows.length - 1)) : 0;
         if (n >= last && rows.length > 1) n++;          // skip the row that flipped last time
         last = n;
-        runFlaps(rows[n]._cells, 0);
+        runFlaps(rows[n]._cells, 0, SFX.settle);
       }, 4000);
     }, rows.length * 140 + 2500);
   }
@@ -172,8 +208,12 @@
             '<h3' + h() + '>our values</h3><ol class="hc-values hl" style="--k:' + (k++) + '">' + (m.values || []).map(function (v, j) { return '<li><b>0' + (j + 1) + '</b>' + esc(v) + '</li>'; }).join('') + '</ol>' +
           '</section>' +
         '</div>' +
-        '<div class="hc-cta hl" style="--k:' + (k++) + '"><div><p class="big">know someone who was <em>built for this?</em></p><p class="small">' + esc(m.slide5_future_line) + ' send them this mission, or comment MISSION on our instagram to apply.</p></div>' +
-          '<button class="hc-share" type="button" data-share>share this mission <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></div>' +
+        '<div class="hc-cta hl" style="--k:' + (k++) + '"><div><p class="big">built for this? <em>apply now.</em></p><p class="small">' + esc(m.slide5_future_line) + ' or send this mission to someone who was.</p></div>' +
+          '<div class="hc-actions">' +
+            '<a class="hc-apply" href="' + applyHref(m) + '">apply now <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>' +
+            '<a class="hc-wa" href="' + whatsappHref(m) + '" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2a8.2 8.2 0 01-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 01-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 00-.7.3 3 3 0 00-.9 2.2 5.2 5.2 0 001.1 2.7 11.8 11.8 0 004.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 001.8-1.3 2.2 2.2 0 00.1-1.3c0-.1-.2-.2-.5-.3z"/></svg>share on whatsapp</a>' +
+            '<button class="hc-copy" type="button" data-share>copy link</button>' +
+          '</div></div>' +
         '<div class="hc-foot hl" style="--k:' + (k++) + '"><span>this mission is fictional. until it won’t be.</span>' +
           '<div class="hc-nav"><button type="button" data-go="' + ((i - 1 + M.length) % M.length) + '">← ' + esc(prev.num) + '</button><button type="button" data-go="' + ((i + 1) % M.length) + '">' + esc(next.num) + ' →</button></div></div>' +
       '</div>';
@@ -182,7 +222,7 @@
   function rectOf(el) { var r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height }; }
   function openCard(i, fromEl, instant) {
     var m = M[i]; if (!m) return;
-    current = i; lastRow = fromEl || rows[i];
+    current = i; lastRow = fromEl || rows[i]; SFX.open();
     render(m, i);
     holo.hidden = false;
     document.documentElement.style.overflow = 'hidden';
@@ -208,6 +248,7 @@
   }
   function closeCard() {
     if (current < 0) return;
+    SFX.close();
     var done = function () { holo.hidden = true; holo.classList.remove('on'); document.documentElement.style.overflow = ''; document.documentElement.classList.remove('holo-open'); card.innerHTML = ''; if (lastRow) lastRow.focus({ preventScroll: true }); };
     try { history.replaceState(null, '', location.pathname); } catch (e) {}
     current = -1;
@@ -239,11 +280,19 @@
       else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
     }
   });
+  function missionUrl(m) { return location.origin + location.pathname + '#mission-' + m.num; }
+  function applyHref(m) {
+    var subject = 'Application: mission ' + m.num + ' · ' + m.title + ' (' + m.company + ')';
+    var body = 'Hello impossible jobs,\n\nI would like to apply for mission ' + m.num + ': ' + m.title + ' at ' + m.company + '.\n\nWhy I was built for this:\n\n\nWhere I am today (role, sector, years of experience):\n\n\nLink to my profile or CV:\n\n\n' + missionUrl(m);
+    return 'mailto:hello@impossiblejobs.org?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  }
+  function whatsappHref(m) {
+    var text = 'I just found the job you were built for: ' + m.title + ' at ' + m.company + '. ' + m.punchline + ' ' + missionUrl(m);
+    return 'https://wa.me/?text=' + encodeURIComponent(text);
+  }
   function toast(msg) { var t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove('on'); }, 2200); }
   function share(m) {
-    var url = location.origin + location.pathname + '#mission-' + m.num;
-    var data = { title: m.title + ' · impossible jobs', text: 'know someone who was built for this? ' + m.title + ' at ' + m.company + '.', url: url };
-    if (navigator.share) { navigator.share(data).catch(function () {}); return; }
+    var url = missionUrl(m);
     var copy = function () { toast('link copied. send it to them.'); };
     if (navigator.clipboard) navigator.clipboard.writeText(url).then(copy, function () { toast(url); }); else toast(url);
   }
