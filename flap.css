@@ -1,0 +1,61 @@
+/* impossible jobs — the mark (flap.css)
+   still = the ij monogram (.ij-mono, bare, neon)
+   moving = the split-flap tile (.ij-flap, built by flap.js)
+   the astronaut is a lit LED figure with no tile (.ij-flap[data-mode="static"]) */
+
+/* ---------- the still mark: ij monogram ---------- */
+.ij-mono { display: inline-block; flex: none; vertical-align: middle; overflow: visible;
+  filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 5px #ff5f9e) drop-shadow(0 0 14px rgba(255,95,158,.8)) drop-shadow(0 0 32px rgba(0,240,200,.45)); }
+.ij-mono.sm { filter: drop-shadow(0 0 1px rgba(255,255,255,.9)) drop-shadow(0 0 4px rgba(255,95,158,.85)) drop-shadow(0 0 10px rgba(0,240,200,.35)); }
+
+/* ---------- the moving mark: portrait split-flap tile ---------- */
+.flap { --s: 56px; position: relative; display: inline-block; flex: none; vertical-align: middle;
+  width: var(--s); height: calc(var(--s) * 1.25); perspective: calc(var(--s) * 4); border-radius: calc(var(--s) * .18); }
+.flap.led { box-shadow: 0 0 calc(var(--s)*.1) rgba(255,95,158,.55), 0 0 calc(var(--s)*.3) rgba(255,95,158,.35), 0 0 calc(var(--s)*.7) rgba(0,240,200,.25); }
+.flap .half { position: absolute; left: 0; width: 100%; height: 50%; overflow: hidden; display: block; background: #06030d; }
+.flap .half.t { top: 0; border-radius: calc(var(--s)*.18) calc(var(--s)*.18) 0 0; }
+.flap .half.b { bottom: 0; border-radius: 0 0 calc(var(--s)*.18) calc(var(--s)*.18); background: #08040f; }
+.flap .seam { position: absolute; left: 0; right: 0; top: 50%; height: calc(var(--s)*.025); transform: translateY(-50%); background: #07030f; z-index: 4; pointer-events: none; display: block; }
+.flap .seam::before, .flap .seam::after { content: ""; position: absolute; top: 50%; width: calc(var(--s)*.1); height: calc(var(--s)*.1); border-radius: 50%;
+  background: #07030f; transform: translateY(-50%); box-shadow: inset 0 calc(var(--s)*.012) 0 rgba(216,204,240,.35); }
+.flap .seam::before { left: calc(var(--s)*-.03); }
+.flap .seam::after { right: calc(var(--s)*-.03); }
+.flap .leaf { position: absolute; left: 0; top: 0; width: 100%; height: 50%; transform-origin: 50% 100%; transform-style: preserve-3d; z-index: 3; display: block; }
+.flap .leaf .face { position: absolute; inset: 0; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: block; }
+.flap .leaf .face.front { background: #06030d; border-radius: calc(var(--s)*.18) calc(var(--s)*.18) 0 0; }
+.flap .leaf .face.back { background: #08040f; transform: rotateX(180deg); border-radius: 0 0 calc(var(--s)*.18) calc(var(--s)*.18); }
+.flap .leaf.go { animation: ijflip var(--dur, .42s) linear forwards; }
+@keyframes ijflip { from { transform: rotateX(0); } to { transform: rotateX(-180deg); } }
+.flap .leaf .face::after { content: ""; position: absolute; inset: 0; background: linear-gradient(#000, transparent); opacity: 0; }
+.flap .leaf.go .face.front::after { animation: ijshade var(--dur, .42s) linear forwards; }
+@keyframes ijshade { 0% { opacity: 0; } 50% { opacity: .45; } 100% { opacity: .6; } }
+
+/* faces: icons rasterised to a 24x24 LED grid, upscaled hard, lit like neon */
+.flap img, .flap .half svg, .flap .face svg { position: absolute; left: 0; width: 100%; height: calc(var(--s) * 1.25); object-fit: contain; display: block; max-width: none; }
+.flap img { image-rendering: pixelated; image-rendering: crisp-edges;
+  filter: brightness(1.9) saturate(1.6) contrast(1.1)
+    drop-shadow(0 0 calc(var(--s)*.01) #fff) drop-shadow(0 0 calc(var(--s)*.02) #fff)
+    drop-shadow(0 0 calc(var(--s)*.05) #ff5f9e) drop-shadow(0 0 calc(var(--s)*.11) rgba(255,95,158,.9))
+    drop-shadow(0 0 calc(var(--s)*.22) rgba(255,95,158,.6)) drop-shadow(0 0 calc(var(--s)*.4) rgba(0,240,200,.45)); }
+.flap.tiny img { filter: brightness(1.9) saturate(1.6) drop-shadow(0 0 1px #fff) drop-shadow(0 0 3px #ff5f9e) drop-shadow(0 0 6px rgba(0,240,200,.4)); }
+.flap .half.t img, .flap .half.t svg, .flap .face.front img, .flap .face.front svg { top: 0; }
+.flap .half.b img, .flap .half.b svg, .flap .face.back img, .flap .face.back svg { bottom: 0; }
+/* LED dot mask */
+.flap.led .half::before, .flap.led .leaf .face::before { content: ""; position: absolute; left: 0; width: 100%; height: calc(var(--s) * 1.25); pointer-events: none; z-index: 2;
+  --cell: calc(var(--s) / 24); background: radial-gradient(circle at center, transparent 0 42%, rgba(7,3,15,.4) 54% 100%); background-size: var(--cell) var(--cell); mix-blend-mode: multiply; }
+.flap.led .half.t::before, .flap.led .leaf .face.front::before { top: 0; }
+.flap.led .half.b::before, .flap.led .leaf .face.back::before { bottom: 0; }
+.flap.tiny .half::before, .flap.tiny .leaf .face::before { display: none; }
+
+/* still = no tile: the lit figure straight on the page */
+.flap.bare, .flap.bare .half, .flap.bare .leaf .face { background: transparent !important; box-shadow: none !important; }
+.flap.bare .seam, .flap.bare .half::before, .flap.bare .leaf .face::before { display: none; }
+
+/* still figure: one face, no halves, nothing clipping the glow */
+.flap .solo { position: absolute; inset: 0; display: block; overflow: visible; }
+.flap .solo img, .flap .solo svg { top: 0; }
+
+/* hero hand-off: the LED rocket goes dark while the real one ignites on the tile */
+.flap.launch img, .flap.launch svg { opacity: 0; transition: opacity .25s; }
+
+@media (prefers-reduced-motion: reduce) { .flap .leaf.go { animation: none; } }

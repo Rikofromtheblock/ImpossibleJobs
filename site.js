@@ -1,142 +1,314 @@
 /* ---------------- IJ audio: generative music + ambience, synthesized live (no audio files) ---------------- */
 window.IJAudio = (function () {
-  var ctx = null, master = null, musicBus = null, fxBus = null, delay = null, started = false, timer = null;
+  var ctx = null, master = null, musicBus = null, musicFilter = null, padBus = null, fxBus = null, delay = null, started = false, timers = [];
   var enabled = true;
   try { enabled = localStorage.getItem('ij-sound') !== '0'; } catch (e) {}
   var page = document.body ? document.body.getAttribute('data-page') : null;
+  var BOARD = page === 'board';
   var listeners = [];
   function notify() { listeners.forEach(function (f) { f(); }); }
+  var ss = { get: function (k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} } };
 
   function build() {
     var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
     ctx = new AC();
-    var comp = ctx.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 5;
+    var comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
     master = ctx.createGain(); master.gain.value = 0.0001;
     master.connect(comp); comp.connect(ctx.destination);
-    musicBus = ctx.createGain(); musicBus.gain.value = 0.9; musicBus.connect(master);
+    // the music runs through one filter: wide open at home, muffled "through the walls" on the mission board
+    musicFilter = ctx.createBiquadFilter(); musicFilter.type = 'lowpass'; musicFilter.Q.value = 0.8;
+    musicFilter.frequency.value = BOARD ? 900 : 18000;
+    musicBus = ctx.createGain(); musicBus.gain.value = BOARD ? 0.5 : 0.85;
+    musicBus.connect(musicFilter); musicFilter.connect(master);
+    padBus = ctx.createGain(); padBus.gain.value = 1; padBus.connect(musicBus);       // ducked by the kick
     fxBus = ctx.createGain(); fxBus.gain.value = 0.55; fxBus.connect(master);
-    // a soft echo shared by the arpeggios and data blips
-    delay = ctx.createDelay(1.5); delay.delayTime.value = 0.36;
-    var fb = ctx.createGain(); fb.gain.value = 0.38; var dl = ctx.createBiquadFilter(); dl.type = 'lowpass'; dl.frequency.value = 2400;
+    delay = ctx.createDelay(1.5); delay.delayTime.value = 60 / 118 * 0.75;            // dotted-eighth echo
+    var fb = ctx.createGain(); fb.gain.value = 0.36; var dl = ctx.createBiquadFilter(); dl.type = 'lowpass'; dl.frequency.value = 3200;
     delay.connect(dl); dl.connect(fb); fb.connect(delay); dl.connect(musicBus);
     return true;
   }
-  function noiseBuffer() {
-    var b = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate), d = b.getChannelData(0);
-    for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-    return b;
-  }
+  var NOISE = null;
+  function noise() { if (NOISE) return NOISE; var b = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate), d = b.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return (NOISE = b); }
   var mtof = function (m) { return 440 * Math.pow(2, (m - 69) / 12); };
 
-  /* --- home page: a slow, warm synth track (A minor: Am · F · C · G), endlessly varied --- */
-  function startMusic() {
-    var bpm = 84, beat = 60 / bpm, next = ctx.currentTime + 0.1, step = 0;
-    var chords = [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]];   // Am F C G
-    var noise = noiseBuffer();
-    function pad(notes, t, dur) {
-      notes.forEach(function (n) {
-        [-7, 7].forEach(function (cents) {
-          var o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-          o.type = 'sawtooth'; o.frequency.value = mtof(n); o.detune.value = cents;
-          f.type = 'lowpass'; f.frequency.setValueAtTime(500, t); f.frequency.linearRampToValueAtTime(1100, t + dur * 0.5); f.frequency.linearRampToValueAtTime(600, t + dur);
-          g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.022, t + 1.4); g.gain.setValueAtTime(0.022, t + dur - 1.2); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.8);
-          o.connect(f); f.connect(g); g.connect(musicBus); o.start(t); o.stop(t + dur + 1);
-        });
+  /* --- the track: upbeat space synth, 118 BPM, A minor (Am9 · Fmaj7 · Cadd9 · G6/9), endlessly varied --- */
+  var BPM = 118, S16 = 60 / BPM / 4, step = 0, nextT = 0;
+  var CH = [[57, 60, 64, 71], [53, 57, 60, 64], [48, 52, 55, 62], [55, 59, 62, 69]];
+  var ROOT = [45, 41, 48, 43];
+  function voice(type, f, t, dur, peak, dest, attack) {
+    var o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + (attack || 0.005)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(dest); o.start(t); o.stop(t + dur + 0.05); return g;
+  }
+  function kick(t, v) {
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(44, t + 0.12);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
+    o.connect(g); g.connect(musicBus); o.start(t); o.stop(t + 0.35);
+    padBus.gain.cancelScheduledValues(t); padBus.gain.setValueAtTime(0.32, t); padBus.gain.linearRampToValueAtTime(1, t + S16 * 3.2);   // sidechain pump
+  }
+  function hiss(t, hp, dur, v, bp) {
+    var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    s.buffer = noise(); f.type = bp ? 'bandpass' : 'highpass'; f.frequency.value = hp; if (bp) f.Q.value = 0.9;
+    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); g.connect(musicBus); s.start(t, Math.random()); s.stop(t + dur + 0.02);
+  }
+  function pad(notes, t, dur) {
+    notes.forEach(function (n) {
+      [-9, 9].forEach(function (c) {
+        var o = ctx.createOscillator(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+        o.type = 'sawtooth'; o.frequency.value = mtof(n); o.detune.value = c;
+        f.type = 'lowpass'; f.frequency.setValueAtTime(900, t); f.frequency.linearRampToValueAtTime(2200, t + dur * 0.6);
+        g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.014, t + 0.25); g.gain.setValueAtTime(0.014, t + dur - 0.2); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.3);
+        o.connect(f); f.connect(g); g.connect(padBus); o.start(t); o.stop(t + dur + 0.4);
       });
+    });
+  }
+  function bass(n, t) {
+    var o = ctx.createOscillator(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    o.type = 'sawtooth'; o.frequency.value = mtof(n);
+    f.type = 'lowpass'; f.frequency.setValueAtTime(1400, t); f.frequency.exponentialRampToValueAtTime(260, t + S16 * 1.6); f.Q.value = 6;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.09, t + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t + S16 * 1.8);
+    o.connect(f); f.connect(g); g.connect(musicBus); o.start(t); o.stop(t + S16 * 2);
+  }
+  function zap(t) { var o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'square'; o.frequency.setValueAtTime(2600, t); o.frequency.exponentialRampToValueAtTime(180, t + 0.35);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.02, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.38); o.connect(g); g.connect(musicBus); g.connect(delay); o.start(t); o.stop(t + 0.4); }
+  function riser(t, dur) { var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = noise(); s.loop = true;
+    f.type = 'bandpass'; f.Q.value = 2; f.frequency.setValueAtTime(300, t); f.frequency.exponentialRampToValueAtTime(7000, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.05, t + dur * 0.95); g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.05);
+    s.connect(f); f.connect(g); g.connect(musicBus); s.start(t); s.stop(t + dur + 0.1); }
+  var ARP = [0, 1, 2, 3, 2, 1, 0, 2, 3, 1, 2, 0, 3, 2, 1, 3];
+  function schedule() {
+    while (nextT < ctx.currentTime + 0.2) {
+      var t = nextT, s16 = step % 16, bar = Math.floor(step / 16), ci = Math.floor(bar / 2) % 4, chord = CH[ci], phrase = bar % 16;
+      var drums = bar >= 4, full = drums && phrase !== 15;                       // a breath every 16 bars
+      if (s16 === 0 && bar % 2 === 0) pad(chord, t, S16 * 32);
+      if (bar >= 2 && s16 % 2 === 0 && (full || s16 < 8)) bass(ROOT[ci] + (s16 % 4 === 2 ? 12 : 0), t);
+      if (drums && s16 % 4 === 0 && full) kick(t, BOARD ? 0.11 : 0.24);
+      if (drums && !BOARD && (s16 === 4 || s16 === 12) && full) hiss(t, 1700, 0.12, 0.05, true);                    // clap
+      if (drums && !BOARD && s16 % 4 === 2) hiss(t, 8000, 0.09, 0.03);                                             // open hat
+      if (drums && !BOARD && s16 % 2 === 1) hiss(t, 9000, 0.03, 0.012 + Math.random() * 0.008);                   // closed hat
+      if (bar >= 1 && Math.random() < 0.85) voice('square', mtof(chord[ARP[s16] % 4] + 24), t, S16 * 0.9, 0.012 + (s16 % 4 === 0 ? 0.006 : 0), delay);
+      if (bar >= 1 && s16 % 2 === 0) voice('triangle', mtof(chord[ARP[s16] % 4] + 24), t, S16 * 1.6, 0.018, musicBus);
+      if (phrase === 14 && s16 === 0) riser(t, S16 * 32);                         // build into the next phrase
+      if (drums && s16 === 14 && Math.random() < 0.22) zap(t);                    // the odd laser
+      nextT += S16; step++;
     }
-    function bass(n, t) {
-      var o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = 'sine'; o.frequency.value = mtof(n - 24);
-      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.12, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + beat * 0.9);
-      o.connect(g); g.connect(musicBus); o.start(t); o.stop(t + beat);
-    }
-    function pluck(n, t, v) {
-      var o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = 'triangle'; o.frequency.value = mtof(n);
-      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
-      o.connect(g); g.connect(musicBus); g.connect(delay); o.start(t); o.stop(t + 0.4);
-    }
-    function hat(t, v) {
-      var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
-      s.buffer = noise; f.type = 'highpass'; f.frequency.value = 7000;
-      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
-      s.connect(f); f.connect(g); g.connect(musicBus); s.start(t, Math.random()); s.stop(t + 0.06);
-    }
-    function kick(t) {
-      var o = ctx.createOscillator(), g = ctx.createGain();
-      o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.18);
-      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.16, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
-      o.connect(g); g.connect(musicBus); o.start(t); o.stop(t + 0.32);
-    }
-    function schedule() {
-      while (next < ctx.currentTime + 0.25) {
-        var bar = Math.floor(step / 8), chord = chords[Math.floor(bar / 2) % 4], inBar = step % 8;   // 8 eighth-notes per bar, 2 bars per chord
-        if (step % 16 === 0) pad(chord, next, beat * 8);
-        if (inBar % 2 === 0) bass(chord[0], next);
-        if (bar >= 4 && inBar % 4 === 0) kick(next);                       // the beat joins after the intro
-        if (bar >= 2 && inBar % 2 === 1) hat(next, 0.012 + Math.random() * 0.01);
-        if (bar >= 2 && Math.random() < 0.62) {                             // a wandering arpeggio over two octaves
-          var n = chord[Math.floor(Math.random() * 3)] + (Math.random() < 0.5 ? 12 : 24);
-          pluck(n, next, 0.025 + Math.random() * 0.02);
-        }
-        next += beat / 2; step++;
-      }
-    }
-    schedule(); timer = setInterval(schedule, 60);
+  }
+  function startMusic() {
+    nextT = ctx.currentTime + 0.08;
+    // carry on from where the other page left off (same tempo and key), aligned to the next bar
+    var saved = null; try { saved = JSON.parse(ss.get('ij-music') || 'null'); } catch (e) {}
+    if (saved && Date.now() - saved.at < 20000) {
+      var elapsed = (Date.now() - saved.at) / 1000, s = saved.step + Math.round(elapsed / S16);
+      step = Math.max(64, Math.ceil(s / 16) * 16);
+    } else step = 0;
+    schedule(); timers.push(setInterval(schedule, 40));
+    addEventListener('pagehide', function () { ss.set('ij-music', JSON.stringify({ step: step, at: Date.now() })); });
   }
 
-  /* --- mission board: a cold control-room ambience --- */
+  /* --- mission board only: a cold control-room ambience on top of the muffled track --- */
   function startAmbient() {
-    [[45, -6], [52, 5], [57, -3]].forEach(function (d) {                    // a low drone (A · E · A)
+    [[45, -6], [52, 5], [57, -3]].forEach(function (d) {
       var o = ctx.createOscillator(), f = ctx.createBiquadFilter(), g = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
       o.type = 'sawtooth'; o.frequency.value = mtof(d[0]); o.detune.value = d[1];
       f.type = 'lowpass'; f.frequency.value = 260; f.Q.value = 4;
       lfo.frequency.value = 0.04 + Math.random() * 0.05; lg.gain.value = 140; lfo.connect(lg); lg.connect(f.frequency);
-      g.gain.value = 0.045;
-      o.connect(f); f.connect(g); g.connect(musicBus); o.start(); lfo.start();
+      g.gain.value = 0.035; o.connect(f); f.connect(g); g.connect(master); o.start(); lfo.start();
     });
-    var s = ctx.createBufferSource(), nf = ctx.createBiquadFilter(), ng = ctx.createGain();   // air handling
-    s.buffer = noiseBuffer(); s.loop = true; nf.type = 'bandpass'; nf.frequency.value = 420; nf.Q.value = 0.7; ng.gain.value = 0.02;
-    s.connect(nf); nf.connect(ng); ng.connect(musicBus); s.start();
-    (function blips() {                                                    // distant data chatter
+    var s = ctx.createBufferSource(), nf = ctx.createBiquadFilter(), ng = ctx.createGain();
+    s.buffer = noise(); s.loop = true; nf.type = 'bandpass'; nf.frequency.value = 420; nf.Q.value = 0.7; ng.gain.value = 0.016;
+    s.connect(nf); nf.connect(ng); ng.connect(master); s.start();
+    (function blips() {
       if (ctx.state === 'running') {
         var t = ctx.currentTime, n = 1 + Math.floor(Math.random() * 4);
-        for (var i = 0; i < n; i++) {
-          var o = ctx.createOscillator(), g = ctx.createGain(), tt = t + i * 0.09;
+        for (var i = 0; i < n; i++) { var o = ctx.createOscillator(), g = ctx.createGain(), tt = t + i * 0.09;
           o.type = 'sine'; o.frequency.value = 1100 + Math.random() * 1600;
           g.gain.setValueAtTime(0.0001, tt); g.gain.exponentialRampToValueAtTime(0.012, tt + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, tt + 0.08);
-          o.connect(g); g.connect(musicBus); g.connect(delay); o.start(tt); o.stop(tt + 0.1);
-        }
+          o.connect(g); g.connect(master); g.connect(delay); o.start(tt); o.stop(tt + 0.1); }
       }
-      timer = setTimeout(blips, 1800 + Math.random() * 4200);
+      timers.push(setTimeout(blips, 1800 + Math.random() * 4200));
     })();
   }
 
+  /* --- mission board only: a busy airport terminal (crowd, footsteps, suitcases, announcements) --- */
+  var airBus = null;
+  function startAirport() {
+    var rnd = function (a, b) { return a + Math.random() * (b - a); };
+    airBus = ctx.createGain(); airBus.gain.value = 1; airBus.connect(master);
+    // a big terminal hall: synthesized reverb
+    var rev = ctx.createConvolver(), len = Math.floor(ctx.sampleRate * 3.2), ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (var c = 0; c < 2; c++) { var d = ir.getChannelData(c); for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
+    rev.buffer = ir;
+    var wet = ctx.createGain(); wet.gain.value = 0.5; rev.connect(wet); wet.connect(airBus);
+    var crowd = ctx.createGain(); crowd.gain.value = 2.2;
+    var crowdLP = ctx.createBiquadFilter(); crowdLP.type = 'lowpass'; crowdLP.frequency.value = 2600;
+    crowd.connect(crowdLP); crowdLP.connect(airBus); crowdLP.connect(rev);
+    var pan = function (p) { if (ctx.createStereoPanner) { var s = ctx.createStereoPanner(); s.pan.value = p; return s; } return ctx.createGain(); };
+    var VOWELS = [[800, 1200], [500, 1900], [320, 2300], [520, 900], [340, 800], [650, 1700], [450, 1500]];
+
+    // one "speaker" saying a phrase of invented syllables: a buzzing voice shaped by two moving formants
+    function phrase(t, opt) {
+      var n = opt.syl, o = ctx.createOscillator(), f1 = ctx.createBiquadFilter(), f2 = ctx.createBiquadFilter(), g = ctx.createGain(), g2 = ctx.createGain(), p = pan(opt.pan);
+      var nz = ctx.createBufferSource(), nf = ctx.createBiquadFilter(), ng = ctx.createGain();
+      o.type = 'sawtooth'; f1.type = f2.type = 'bandpass'; f1.Q.value = 3.5; f2.Q.value = 4.5;
+      nz.buffer = noise(); nf.type = 'highpass'; nf.frequency.value = 3200;
+      o.connect(f1); o.connect(f2); f1.connect(g); f2.connect(g2); g2.connect(g); g2.gain.value = 0.6;
+      nz.connect(nf); nf.connect(ng); ng.connect(p); g.connect(p); p.connect(opt.dest);
+      g.gain.setValueAtTime(0.0001, t); ng.gain.setValueAtTime(0.0001, t);
+      var tt = t, base = opt.pitch;
+      for (var i = 0; i < n; i++) {
+        var dur = rnd(opt.min, opt.max), v = VOWELS[Math.floor(Math.random() * VOWELS.length)], last = i === n - 1;
+        // intonation: drift down through the phrase, sometimes rise at the end like a question
+        var pf = base * (1 + 0.12 * Math.sin(i * 1.7) - 0.25 * (i / n) + (last && Math.random() < 0.3 ? 0.3 : 0));
+        o.frequency.setTargetAtTime(pf, tt, 0.03);
+        f1.frequency.setTargetAtTime(v[0] * opt.fs, tt, 0.02); f2.frequency.setTargetAtTime(v[1] * opt.fs, tt, 0.02);
+        if (Math.random() < 0.6) { ng.gain.setValueAtTime(0.0001, tt); ng.gain.exponentialRampToValueAtTime(opt.vol * 0.35, tt + 0.008); ng.gain.exponentialRampToValueAtTime(0.0001, tt + 0.04); }
+        g.gain.setValueAtTime(0.0001, tt + 0.02); g.gain.exponentialRampToValueAtTime(opt.vol, tt + 0.05); g.gain.exponentialRampToValueAtTime(opt.vol * 0.5, tt + dur * 0.8); g.gain.exponentialRampToValueAtTime(0.0001, tt + dur);
+        tt += dur + (Math.random() < 0.18 ? rnd(0.05, 0.18) : 0);
+      }
+      o.frequency.setValueAtTime(base, t); o.start(t); o.stop(tt + 0.1); nz.start(t, Math.random()); nz.stop(tt + 0.1);
+      return tt;
+    }
+    // the crowd: a handful of people talking at once, all over the hall
+    for (var k = 0; k < 9; k++) (function (k) {
+      var deep = Math.random() < 0.5, pitch = deep ? rnd(95, 140) : rnd(180, 250), fs = deep ? 0.92 : 1.12, where = rnd(-0.9, 0.9), dist = rnd(0.25, 1);
+      (function talk() {
+        if (ctx.state === 'running') {
+          var t = ctx.currentTime + rnd(0.05, 0.5);
+          var end = phrase(t, { syl: 3 + Math.floor(Math.random() * 10), min: 0.08, max: 0.2, pitch: pitch * rnd(0.95, 1.05), fs: fs, pan: where, vol: 0.05 * dist, dest: crowd });
+          timers.push(setTimeout(talk, (end - ctx.currentTime + rnd(0.3, 2.6)) * 1000));
+        } else timers.push(setTimeout(talk, 1000));
+      })();
+    })(k);
+    // a soft wash of distant voices underneath
+    var bed = ctx.createBufferSource(), bf = ctx.createBiquadFilter(), bg = ctx.createGain(), bl = ctx.createOscillator(), blg = ctx.createGain();
+    bed.buffer = noise(); bed.loop = true; bf.type = 'bandpass'; bf.frequency.value = 650; bf.Q.value = 0.8; bg.gain.value = 0.03;
+    bl.frequency.value = 0.13; blg.gain.value = 0.012; bl.connect(blg); blg.connect(bg.gain);
+    bed.connect(bf); bf.connect(bg); bg.connect(crowd); bed.start(); bl.start();
+
+    // footsteps crossing the hall
+    (function walker() {
+      if (ctx.state === 'running') {
+        var heels = Math.random() < 0.45, steps = 6 + Math.floor(Math.random() * 10), from = rnd(-1, 1), to = -from, t = ctx.currentTime + 0.1, gap = rnd(0.42, 0.58), vol = rnd(0.06, 0.12);
+        for (var i = 0; i < steps; i++) {
+          var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(), p = pan(from + (to - from) * i / steps), tt = t + i * gap + rnd(-0.02, 0.02);
+          s.buffer = noise(); f.type = 'bandpass'; f.frequency.value = heels ? rnd(2600, 3600) : rnd(900, 1400); f.Q.value = heels ? 3 : 1.5;
+          var e = vol * Math.sin(Math.PI * (i + 0.5) / steps);
+          g.gain.setValueAtTime(0.0001, tt); g.gain.exponentialRampToValueAtTime(Math.max(0.0002, e), tt + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, tt + (heels ? 0.05 : 0.07));
+          s.connect(f); f.connect(g); g.connect(p); p.connect(crowd); s.start(tt, Math.random()); s.stop(tt + 0.1);
+        }
+      }
+      timers.push(setTimeout(walker, rnd(2500, 8000)));
+    })();
+    // suitcases rolling over floor tiles
+    (function suitcase() {
+      if (ctx.state === 'running') {
+        var t = ctx.currentTime + 0.1, dur = rnd(3.5, 6.5), from = rnd(-1, 1), p = pan(from);
+        var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(), am = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain(), rum = ctx.createBiquadFilter();
+        s.buffer = noise(); s.loop = true; f.type = 'bandpass'; f.frequency.value = rnd(700, 1100); f.Q.value = 1.2; rum.type = 'lowpass'; rum.frequency.value = 220;
+        lfo.type = 'square'; lfo.frequency.value = rnd(7, 12); lg.gain.value = 0.5; am.gain.value = 0.5; lfo.connect(lg); lg.connect(am.gain);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.09, t + dur * 0.45); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        if (p.pan) p.pan.linearRampToValueAtTime(-from, t + dur);
+        s.connect(f); f.connect(am); s.connect(rum); rum.connect(am); am.connect(g); g.connect(p); p.connect(crowd);
+        s.start(t); s.stop(t + dur + 0.1); lfo.start(t); lfo.stop(t + dur + 0.1);
+      }
+      timers.push(setTimeout(suitcase, rnd(7000, 16000)));
+    })();
+    // announcements: chime, then a PA voice in two invented languages, echoing through the hall
+    var pa = ctx.createBiquadFilter(), pa2 = ctx.createBiquadFilter(), shaper = ctx.createWaveShaper(), paG = ctx.createGain(), curve = new Float32Array(256);
+    for (var i = 0; i < 256; i++) { var x = i / 128 - 1; curve[i] = Math.tanh(x * 2.2); }
+    shaper.curve = curve; pa.type = 'highpass'; pa.frequency.value = 380; pa2.type = 'lowpass'; pa2.frequency.value = 3300; paG.gain.value = 1.6;
+    pa.connect(shaper); shaper.connect(pa2); pa2.connect(paG); paG.connect(airBus); paG.connect(rev);
+    function chime(t, notes) {
+      notes.forEach(function (m, j) {
+        [1, 2.01, 3.02].forEach(function (h, k) {
+          var o = ctx.createOscillator(), g = ctx.createGain(), tt = t + j * 0.62;
+          o.type = 'sine'; o.frequency.value = mtof(m) * h;
+          g.gain.setValueAtTime(0.0001, tt); g.gain.exponentialRampToValueAtTime(0.11 / (k + 1), tt + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, tt + 1.6);
+          o.connect(g); g.connect(airBus); g.connect(rev); o.start(tt); o.stop(tt + 1.7);
+        });
+      });
+      return t + notes.length * 0.62 + 0.4;
+    }
+    function announce() {
+      if (ctx.state === 'running') {
+        var t = chime(ctx.currentTime + 0.1, Math.random() < 0.5 ? [79, 76, 72] : [84, 81, 77, 72]);
+        var voice = Math.random() < 0.5 ? { pitch: rnd(190, 225), fs: 1.1 } : { pitch: rnd(105, 130), fs: 0.93 };
+        var end = t, lines = 2 + Math.floor(Math.random() * 2);
+        for (var l = 0; l < lines; l++) end = phrase(end + rnd(0.15, 0.35), { syl: 7 + Math.floor(Math.random() * 9), min: 0.07, max: 0.16, pitch: voice.pitch, fs: voice.fs, pan: 0, vol: 0.12, dest: pa });
+        // the same message again in a second invented language
+        var v2 = { pitch: voice.pitch * rnd(0.9, 1.1), fs: voice.fs * rnd(0.95, 1.05) };
+        end += 0.9;
+        for (var l2 = 0; l2 < lines; l2++) end = phrase(end + rnd(0.15, 0.35), { syl: 6 + Math.floor(Math.random() * 10), min: 0.06, max: 0.14, pitch: v2.pitch, fs: v2.fs, pan: 0, vol: 0.11, dest: pa });
+        if (Math.random() < 0.5) chime(end + 0.5, [72, 76]);
+      }
+      timers.push(setTimeout(announce, rnd(26000, 48000)));
+    }
+    timers.push(setTimeout(announce, 6000));
+  }
+  function duck(on) { if (!airBus || !ctx) return; var t = ctx.currentTime; airBus.gain.cancelScheduledValues(t); airBus.gain.setValueAtTime(airBus.gain.value, t); airBus.gain.linearRampToValueAtTime(on ? 0.5 : 1, t + 0.6); }
+
   function fadeTo(v, secs) { if (!master) return; var t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(Math.max(0.0001, master.gain.value), t); master.gain.exponentialRampToValueAtTime(Math.max(0.0001, v), t + secs); }
+  function begin() {
+    if (!started) { started = true; startMusic(); if (BOARD) { startAmbient(); startAirport(); } }
+    var arriving = ss.get('ij-warp') && Date.now() - +ss.get('ij-warp') < 8000;
+    if (arriving) {                                                    // land softly after a page warp
+      ss.set('ij-warp', '');
+      var t = ctx.currentTime, from = BOARD ? 18000 : 400, to = BOARD ? 900 : 18000;
+      musicFilter.frequency.setValueAtTime(from, t); musicFilter.frequency.exponentialRampToValueAtTime(to, t + 1.6);
+      whoosh(true);
+    }
+    fadeTo(1, arriving ? 1.2 : 2.5); notify(); setTimeout(notify, 250);
+  }
   function start() {
     if (!enabled) return;
     if (!ctx && !build()) return;
-    if (ctx.state === 'suspended') ctx.resume();
-    if (!started) { started = true; if (page === 'board') startAmbient(); else startMusic(); }
-    fadeTo(1, 2.5); notify(); setTimeout(notify, 250);
+    if (ctx.state === 'running') { begin(); return; }
+    var p = ctx.resume(); if (p && p.then) p.then(function () { if (ctx.state === 'running') begin(); }); else begin();
+  }
+  function whoosh(down) {
+    var t = ctx.currentTime, s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    s.buffer = noise(); f.type = 'bandpass'; f.Q.value = 1.4;
+    f.frequency.setValueAtTime(down ? 5000 : 400, t); f.frequency.exponentialRampToValueAtTime(down ? 300 : 6000, t + 0.8);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.09, t + 0.25); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+    s.connect(f); f.connect(g); g.connect(fxBus); s.start(t); s.stop(t + 1);
+  }
+  // leaving for the other page: sweep the music away under a whoosh, then go
+  function warp(href) {
+    ss.set('ij-warp', String(Date.now()));
+    document.documentElement.classList.add('warping');
+    if (enabled && started && ctx && ctx.state === 'running') {
+      var t = ctx.currentTime;
+      musicFilter.frequency.cancelScheduledValues(t); musicFilter.frequency.setValueAtTime(musicFilter.frequency.value, t);
+      musicFilter.frequency.exponentialRampToValueAtTime(BOARD ? 18000 : 300, t + 0.7);
+      whoosh(!BOARD); fadeTo(0.2, 0.75);
+    }
+    setTimeout(function () { location.href = href; }, 720);
   }
   function setEnabled(v) {
     enabled = v; try { localStorage.setItem('ij-sound', v ? '1' : '0'); } catch (e) {}
     if (v) start(); else if (ctx) { fadeTo(0.0001, 0.6); setTimeout(function () { if (!enabled) ctx.suspend(); }, 700); }
     notify();
   }
-  // browsers allow sound only after the visitor's first click, tap or key press
   function firstGesture() { window.__ijFirst = performance.now(); start(); ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) { removeEventListener(ev, firstGesture, true); }); }
   ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) { addEventListener(ev, firstGesture, true); });
-  document.addEventListener('visibilitychange', function () {
-    if (!ctx || !enabled || !started) return;
-    if (document.hidden) ctx.suspend(); else ctx.resume();
+  // arriving from the other page: many browsers let the sound continue straight away; if not, it waits for a tap
+  if (enabled && ss.get('ij-warp')) start();
+  document.addEventListener('visibilitychange', function () { if (!ctx || !enabled || !started) return; if (document.hidden) ctx.suspend(); else ctx.resume(); });
+  // page-to-page links between home and the mission board get the warp transition
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]'); if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || a.target === '_blank') return;
+    var href = a.getAttribute('href'); if (!/^(index\.html|jobs\.html)(#.*)?$/.test(href)) return;
+    var dest = href.split('#')[0]; if ((BOARD && dest === 'jobs.html') || (!BOARD && dest === 'index.html')) return;
+    e.preventDefault(); warp(href);
   });
+  addEventListener('pageshow', function (e) { if (e.persisted) document.documentElement.classList.remove('warping'); });
 
   return {
     get enabled() { return enabled; }, get playing() { return enabled && started && ctx && ctx.state === 'running'; },
     get ctx() { return ctx; }, get fx() { return fxBus; }, get echo() { return delay; },
-    setEnabled: setEnabled, onChange: function (f) { listeners.push(f); }
+    setEnabled: setEnabled, duck: duck, onChange: function (f) { listeners.push(f); }
   };
 })();
 
@@ -566,7 +738,6 @@ window.IJAudio = (function () {
     var countdown = null;
 
     if (logoRocket) {
-      logoRocket.style.visibility = 'hidden';
       countdown = document.createElement('span'); countdown.className = 'countdown'; countdown.setAttribute('aria-hidden', 'true');
       logoRocket.parentNode.appendChild(countdown);
     }
@@ -596,7 +767,7 @@ window.IJAudio = (function () {
       if (!logoRocket) return null;
       var r = logoRocket.getBoundingClientRect();
       if (!r.width || r.bottom < 0 || r.top > innerHeight) return null;
-      return { x: r.left + r.width * (13 / 26), y: r.top + r.height * (22 / 34), w: r.width };   // the logo rocket's nozzle
+      return { x: r.left + r.width * 0.5, y: r.top + r.height * 0.65, w: r.width * 0.81 };   // the LED rocket's nozzle inside the hero tile (fins match the flyer's)
     }
     function setMode(m) { mode = m; modeT = 0; }
     function edgePoint(side, w, h, out) {
@@ -640,12 +811,12 @@ window.IJAudio = (function () {
 
       if (mode === 'pad') {
         pad = padPos();
-        if (!pad) { setMode('away'); awayFor = 0.4; }
+        if (!pad) { setMode('away'); awayFor = 0.4; document.dispatchEvent(new CustomEvent('ij:liftoff')); }   // scrolled off before launch: free the tile
         else {
           x = pad.x; y = pad.y; ang = 0; sc = pad.w / (SIZE * 0.765);
           var tl = 3.2 - (now - t0) / 1000;
           if (countdown) countdown.textContent = tl > 2.2 ? '' : tl > 1.5 ? 't-3' : tl > 0.8 ? 't-2' : tl > 0.1 ? 't-1' : '';
-          if (tl <= 0.1) setMode('ignition');
+          if (tl <= 0.1) { setMode('ignition'); document.dispatchEvent(new CustomEvent('ij:ignition')); }
         }
       } else if (mode === 'ignition') {
         if (countdown) countdown.textContent = 'ignition';
@@ -654,7 +825,7 @@ window.IJAudio = (function () {
         // a ground cloud rolling out across the pad and over the wordmark
         flame = 0.5 + thrust * 1.4;
         for (var k = 0; k < 3; k++) { var tp = tail(flameLen() * rnd(0.3, 0.8)); emit('smoke', tp.x + rnd(-3, 3), tp.y, rnd(-140, 140) * thrust, rnd(0, 25), rnd(10, 16), rnd(1.4, 2.4)); }
-        if (modeT > 1.4) { setMode('ascent'); liftT = now; if (countdown) countdown.textContent = 'liftoff'; }
+        if (modeT > 1.4) { setMode('ascent'); liftT = now; if (countdown) countdown.textContent = 'liftoff'; document.dispatchEvent(new CustomEvent('ij:liftoff')); }
       } else if (mode === 'ascent') {
         thrust = 1; shake = Math.max(0, 1.6 - modeT * 0.7);
         var acc = 70 + modeT * 160;
@@ -695,7 +866,7 @@ window.IJAudio = (function () {
       if (front !== layer._front) { layer.classList.toggle('front', front); layer._front = front; }
       var jx = shake ? rnd(-shake, shake) : 0, jy = shake ? rnd(-shake, shake) : 0;
       rk.style.transform = 'translate3d(' + (x - SIZE / 2 + jx).toFixed(1) + 'px,' + (y - SIZE * 1.18 * 0.6 + jy).toFixed(1) + 'px,0) rotate(' + ang.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
-      rk.style.opacity = mode === 'away' ? 0 : (front ? 1 : 0.72);
+      rk.style.opacity = (mode === 'away' || mode === 'pad') ? 0 : (front ? 1 : 0.72);   // on the pad, the rocket is the LED face of the tile
       fl.style.opacity = thrust > 0 ? 1 : 0;
       fl.style.transform = 'scaleY(' + (thrust > 0 ? flame + Math.random() * 0.3 : 0.2).toFixed(2) + ')';
 

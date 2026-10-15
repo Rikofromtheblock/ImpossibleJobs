@@ -39,7 +39,7 @@
     transition: background .4s, opacity .4s, transform .4s; opacity: 0; transform: translateY(-100%); }
   .bar.on { opacity: 1; transform: none; background: rgba(7,3,15,.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
   .mini { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 700; font-size: 20px; letter-spacing: -.03em; white-space: nowrap; }
-  .mini svg { width: 20px; }
+  .mini > svg { width: 20px; height: 20px; }
   .mini span span, .wordmark span { color: var(--pink); }
 
   /* time machine: the year advances as you scroll */
@@ -64,8 +64,6 @@
   .hero { height: 170vh; }
   .hero .stick { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 20px; overflow: hidden; }
   .logo { display: flex; align-items: center; gap: 14px; }
-  .rocket { width: clamp(38px, 6vw, 56px); height: auto; will-change: transform; }
-  .rocket .flame { opacity: 0; transform-origin: 13px 22px; }
   .wordmark { font-weight: 700; font-size: clamp(30px, 6vw, 56px); letter-spacing: -0.03em; line-height: 1; }
   .slogan { margin: clamp(40px, 8vh, 80px) 0 0; max-width: 15ch; font-weight: 800; font-size: clamp(42px, 8.4vw, 112px); line-height: 1.02; letter-spacing: -0.04em; will-change: transform, opacity; }
   .slogan em { font-style: normal; color: var(--pink); white-space: nowrap; }
@@ -649,3 +647,32 @@ html.cursor-down .cur-ring svg { transform: scale(.8); }
 .snd-float { position: fixed; top: 12px; right: 160px; z-index: 70; height: 48px; padding: 0 16px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 html.menu-open .snd-float, html.dock-on .snd-float { opacity: 0; pointer-events: none; }
 @media (max-width: 700px) { .snd-float { right: 136px; width: 48px; padding: 0; justify-content: center; } .snd-float .lbl { display: none; } }
+
+/* page-to-page warp */
+html::after { content: ""; position: fixed; inset: 0; z-index: 100000; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(0,240,200,.35), transparent 35%), #04020a; transition: opacity .65s cubic-bezier(.6,0,.4,1); }
+html.warping::after { opacity: 1; }
+html.warping body { transition: transform .7s cubic-bezier(.6,0,.4,1), filter .7s; transform: scale(1.06); filter: blur(4px); }
+
+  /* the mark (14 Oct 2026): still = ij monogram, moving = split-flap tile, character = astronaut. styles in flap.css */
+  .logo { gap: clamp(14px, 2vw, 22px); }
+  .hero-flap { --s: clamp(46px, 6.4vw, 72px) !important; }
+  .mini .ij-flap { margin-right: 2px; }
+  .menu-figure { display: block; margin: 0 0 18px; }
+  .final-figure { display: block; margin: 0 auto 28px; }
+  .rift-label .rift-mono { display: block; margin: 0 auto 14px; }
+  footer .foot-mark { margin: 0 0 10px; }
+
+  /* privacy page */
+  .legal { position: relative; z-index: 1; padding: 130px 24px 80px; }
+  .legal .wrap { max-width: 720px; }
+  .legal h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.05; letter-spacing: -.03em; font-weight: 800; margin: 14px 0 16px; }
+  .legal h1 em { font-style: normal; color: var(--pink); }
+  .legal h2 { font-size: 20px; font-weight: 700; color: #fff; margin: 44px 0 10px; letter-spacing: -.01em; }
+  .legal p, .legal li { color: var(--lavender); line-height: 1.75; font-size: 16px; font-weight: 300; }
+  .legal li { margin-bottom: 8px; }
+  .legal strong { color: #fff; font-weight: 600; }
+  .legal ul { padding-left: 20px; }
+  .legal a { color: var(--cyan); }
+  .legal .fine { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; color: var(--muted); }
+  .legal .todo { background: rgba(255,200,87,.14); color: var(--amber, #ffc857); padding: 1px 6px; border-radius: 4px; }

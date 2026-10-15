@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>mission board · impossible jobs</title>
 <meta name="description" content="module 01: the job board. jobs that don't exist yet, posted from the future.">
 <meta name="theme-color" content="#07030f">
@@ -17,13 +17,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
 <link rel="stylesheet" href="board.css">
+<link rel="stylesheet" href="flap.css">
 </head>
 <body data-year="2046" data-page="board">
   <div class="sys-bg" aria-hidden="true"></div>
   <div class="sys-vignette" aria-hidden="true"></div>
 
   <header class="sysbar">
-    <a class="mini" href="index.html" aria-label="impossible jobs, home"><svg viewBox="0 0 26 30" fill="none" stroke="#ff5f9e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2c5 4 6 10 4 17H9C7 12 8 6 13 2z"/><circle cx="13" cy="10" r="2.4" stroke="#00f0c8"/><path d="M9 19l-4 4 4 1M17 19l4 4-4 1"/></svg><span>impossible <span>jobs</span></span></a>
+    <a class="mini" href="index.html" aria-label="impossible jobs, home"><svg class="ij-mono sm" width="20" height="20" viewBox="0 0 100 100" fill="none" aria-hidden="true"><rect x="20" y="0" width="20" height="20" rx="2.5" fill="#ffffff"/><rect x="60" y="0" width="20" height="20" rx="2.5" fill="#ff5f9e"/><path d="M30 32v38" stroke="#ffffff" stroke-width="18"/><path d="M70 32v33a17 17 0 0 1-17 17H47" stroke="#ff5f9e" stroke-width="18"/></svg><span>impossible <span>jobs</span></span></a>
     <span class="tag-os">ij/os · mission board</span>
     <span class="sys-mid"><i class="dot"></i>uplink stable <span class="hide-md">·</span> <span class="hide-md"><b id="sysCount">0</b> missions · <b id="sysBoarding">0</b> boarding</span></span>
     <button class="snd" id="sndBtn" type="button" aria-pressed="true" aria-label="sound on or off" data-sound-toggle><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z"/><path class="w1" d="M11 6.2a2.5 2.5 0 010 3.6"/><path class="w2" d="M12.8 4.4a5 5 0 010 7.2"/><path class="x" d="M11 6l3.5 4M14.5 6L11 10"/></svg><span class="lbl">sound off</span></button>
@@ -42,6 +43,7 @@
       </div>
       <div>
         <div class="mpanel" role="tabpanel" id="p-who" aria-labelledby="t-who">
+          <span class="ij-flap menu-figure" data-size="72" data-mode="static" data-icon="floater" aria-hidden="true"></span>
           <p class="eyebrow pink">01 · who we are</p>
           <h3>you don't know us yet. <em>that's sort of the point.</em></h3>
           <p>we come from a little further down the timeline. not far. just far enough that introductions are awkward, our references won't land for another decade, and our LinkedIn says "starting soon".</p>
@@ -64,6 +66,7 @@
           <a class="mail" href="index.html#modules">see the modules</a>
         </div>
         <div class="mpanel" role="tabpanel" id="p-contact" aria-labelledby="t-contact" hidden>
+          <span class="ij-flap menu-figure" data-size="48" data-mode="spin" data-hold="3200" aria-hidden="true"></span>
           <p class="eyebrow pink">03 · contact</p>
           <h3>come and find us. <em>eventually.</em></h3>
           <div class="addr">
@@ -120,11 +123,13 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <footer class="board-foot">
-    <p><a href="index.html">← back to impossible jobs</a> · <a href="index.html#modules">all modules</a> · <a href="mailto:hello@impossiblejobs.org">hello@impossiblejobs.org</a></p>
+    <p class="foot-mark"><svg class="ij-mono sm" width="20" height="20" viewBox="0 0 100 100" fill="none" aria-hidden="true"><rect x="20" y="0" width="20" height="20" rx="2.5" fill="#ffffff"/><rect x="60" y="0" width="20" height="20" rx="2.5" fill="#ff5f9e"/><path d="M30 32v38" stroke="#ffffff" stroke-width="18"/><path d="M70 32v33a17 17 0 0 1-17 17H47" stroke="#ff5f9e" stroke-width="18"/></svg></p>
+    <p><a href="index.html">← back to impossible jobs</a> · <a href="index.html#modules">all modules</a> · <a href="privacy.html">privacy</a> · <a href="mailto:hello@impossiblejobs.org">hello@impossiblejobs.org</a></p>
     <p>ij/os mission board · module 01 · © impossible jobs</p>
   </footer>
 
 <script src="missions.js"></script>
+<script src="flap.js"></script>
 <script src="site.js"></script>
 <script src="board.js"></script>
 </body>

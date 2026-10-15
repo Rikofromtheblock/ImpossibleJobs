@@ -317,3 +317,9 @@ html.holo-open .menu-btn { opacity: 0; pointer-events: none; }
 .hc-copy { background: transparent; color: var(--lavender); border: 1px solid var(--line); font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; padding: 0 18px; }
 .hc-copy:hover, .hc-copy:focus-visible { border-color: var(--cyan); color: #fff; outline: none; }
 @media (max-width: 760px) { .hc-actions { width: 100%; } .hc-apply, .hc-wa { flex: 1 1 auto; justify-content: center; } }
+
+/* the still mark in the system bar and footer */
+.sysbar .mini > svg { width: 20px; height: 20px; }
+.board-foot .foot-mark { margin: 0 0 8px; }
+.hc-privacy { margin: 10px 0 0; font: 500 11px/1.6 var(--mono); letter-spacing: .06em; color: #8f84a8; }
+.hc-privacy a { color: var(--cyan); }
