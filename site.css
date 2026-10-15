@@ -509,24 +509,31 @@
   /* ---------- the flying rocket ---------- */
   .flyer { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
   .flyer.front { z-index: 30; }
-  .flyer-rocket { position: absolute; left: 0; top: 0; width: 64px; height: 75px; transform-origin: 50% 60%; will-change: transform;
-    filter: drop-shadow(0 0 10px rgba(255,95,158,.65)) drop-shadow(0 0 24px rgba(255,95,158,.3)); }
-  .flyer-rocket .fl { transform-origin: 13px 22px; transform-box: view-box; filter: drop-shadow(0 0 6px #ffc857); }
+  /* the flying rocket: the tile's LED sprite (32 x 48 units) in a 16-unit padded box, rotating and scaling around its nozzle.
+     Built exactly like the tile face: the same glow on the sprite, then the same LED dot screen over sprite and glow. */
+  .flyer-rocket { --s: 96px; position: absolute; left: 0; top: 0; display: block; transform-origin: 50% 45%; will-change: transform;
+    /* layer 1: the LED dot screen; layer 2: the glow fades out well before the box edge, so no square ever shows */
+    -webkit-mask-image: radial-gradient(circle at center, #000 0 42%, rgba(0,0,0,.6) 54% 100%), radial-gradient(closest-side at 50% 45%, #000 55%, transparent 100%);
+            mask-image: radial-gradient(circle at center, #000 0 42%, rgba(0,0,0,.6) 54% 100%), radial-gradient(closest-side at 50% 45%, #000 55%, transparent 100%);
+    -webkit-mask-size: calc(var(--s) / 24) calc(var(--s) / 24), 100% 100%; mask-size: calc(var(--s) / 24) calc(var(--s) / 24), 100% 100%;
+    -webkit-mask-repeat: repeat, no-repeat; mask-repeat: repeat, no-repeat;
+    -webkit-mask-composite: source-in; mask-composite: intersect; }
+  .flyer-rocket .fr-img { position: absolute; left: 25%; top: 20%; width: 50%; height: 60%; display: block; image-rendering: pixelated; image-rendering: crisp-edges;
+    filter: brightness(1.9) saturate(1.6) contrast(1.1)
+      drop-shadow(0 0 calc(var(--s)*.01) #fff) drop-shadow(0 0 calc(var(--s)*.02) #fff)
+      drop-shadow(0 0 calc(var(--s)*.05) #ff5f9e) drop-shadow(0 0 calc(var(--s)*.11) rgba(255,95,158,.9))
+      drop-shadow(0 0 calc(var(--s)*.22) rgba(255,95,158,.6)) drop-shadow(0 0 calc(var(--s)*.4) rgba(0,240,200,.45)); }
   .spark { position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%; opacity: 0; will-change: transform, opacity; }
   .spark.s0 { background: #ffc857; box-shadow: 0 0 10px #ffc857; }
   .spark.s1 { background: #ff5f9e; box-shadow: 0 0 10px #ff5f9e; }
   .spark.s2 { background: #00f0c8; box-shadow: 0 0 10px #00f0c8; }
   html.menu-open .flyer { opacity: 0; }
-  @media (max-width: 700px) { .flyer-rocket { width: 48px; height: 56px; } }
-  .flyer-rocket { width: 84px; height: 99px; }
-  @media (max-width: 700px) { .flyer-rocket { width: 60px; height: 71px; } }
-  .spark { width: 10px; height: 10px; left: -5px; top: -5px; }
-  .flyer-rocket { width: 100px; height: 118px; }
-  @media (max-width: 700px) { .flyer-rocket { width: 70px; height: 83px; } }
+  .spark { width: 8px; height: 8px; left: -4px; top: -4px; border-radius: 1px; }   /* LED pixels, like the rocket */
 
   /* rocket v2: launch + free flight */
   .pt { position: absolute; left: 0; top: 0; border-radius: 50%; opacity: 0; will-change: transform, opacity; }
   .pt.smoke { background: radial-gradient(circle, rgba(236,232,245,.75) 0%, rgba(216,204,240,.35) 45%, transparent 70%); filter: blur(1px); }
+  .pt.spark { border-radius: 10%; }   /* sparks are LED pixels, like the rocket */
   .pt.spark.s0 { background: #ffc857; box-shadow: 0 0 10px #ffc857; }
   .pt.spark.s1 { background: #ff5f9e; box-shadow: 0 0 10px #ff5f9e; }
   .pt.spark.s2 { background: #00f0c8; box-shadow: 0 0 10px #00f0c8; }
@@ -658,7 +665,6 @@ html.warping body { transition: transform .7s cubic-bezier(.6,0,.4,1), filter .7
   .logo { gap: clamp(14px, 2vw, 22px); }
   .hero-flap { --s: clamp(46px, 6.4vw, 72px) !important; }
   .mini .ij-flap { margin-right: 2px; }
-  .menu-figure { display: block; margin: 0 0 18px; }
   .final-figure { display: block; margin: 0 auto 28px; }
   .rift-label .rift-mono { display: block; margin: 0 auto 14px; }
   footer .foot-mark { margin: 0 0 10px; }
@@ -676,3 +682,9 @@ html.warping body { transition: transform .7s cubic-bezier(.6,0,.4,1), filter .7
   .legal a { color: var(--cyan); }
   .legal .fine { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; color: var(--muted); }
   .legal .todo { background: rgba(255,200,87,.14); color: var(--amber, #ffc857); padding: 1px 6px; border-radius: 4px; }
+
+  /* the logo stays on top of the open menu (and takes you home) */
+  html.menu-open .bar { z-index: 68; opacity: 1; transform: none; background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; pointer-events: none; transition: none; }
+  html.menu-open .bar .mini { pointer-events: auto; }
+
+  @media (max-width: 420px) { .bar { padding-left: 14px; } .bar .mini { font-size: 16px; gap: 7px; } }   /* keeps the wordmark clear of the round sound button */

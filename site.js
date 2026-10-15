@@ -403,6 +403,8 @@ window.IJAudio = (function () {
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && root.classList.contains('menu-open')) openMenu(false); });
     menu.addEventListener('click', function (e) { var a = e.target.closest('a[href^="#"], a[href^="index.html#"]'); if (a) openMenu(false); });
+    // the logo stays visible over the menu: clicking it closes the menu on the way home
+    document.querySelectorAll('.bar .mini, .sysbar .mini').forEach(function (a) { a.addEventListener('click', function () { if (root.classList.contains('menu-open')) openMenu(false); }); });
     // deep link: #who, #what, #contact open the menu on that panel
     var deep = { '#who': 0, '#what': 1, '#contact': 2 };
     if (deep.hasOwnProperty(location.hash)) { select(deep[location.hash]); openMenu(true); } else { select(0); }
@@ -477,6 +479,7 @@ window.IJAudio = (function () {
   function flapAll(scope) {
     scope.querySelectorAll('.flap').forEach(function (el, i) { flap(el, el.textContent, 18 + (i % 10) * 2); });
   }
+  window.IJBootModule = function (m) { bootModule(m); };   // the module rail (holo.js) replays the original boot sequence
   function bootModule(mod) {
     var run = mod._run = (mod._run || 0) + 1;
     var alive = function () { return mod._run === run; };
@@ -583,12 +586,13 @@ window.IJAudio = (function () {
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && dockState === 'open') { userMin = true; setDock('min'); } });
   var heat = 0;
   function updateDock(y) {
-    if (!dock) return;
+    // heat (how far down the page you are) also drives the module rail's blink rate, so it runs even without the old dock
     var goal = $('goalSec'), fin = $('final');
     var h = 1;
     if (goal && y > goal.offsetTop - innerHeight * 0.3) h = 2;
     if (fin && y > fin.offsetTop - innerHeight * 0.5) h = 3;
     if (h !== heat) { heat = h; root.setAttribute('data-heat', h); }
+    if (!dock) return;
     var want = forceDock || y > innerHeight * 0.85;
     if (y > innerHeight * 0.85) forceDock = false;
     if (!want) { setDock('hidden'); return; }
@@ -726,14 +730,20 @@ window.IJAudio = (function () {
     layer.className = 'flyer front'; layer.setAttribute('aria-hidden', 'true');
     var POOL = 170, pts = [];
     for (var i = 0; i < POOL; i++) { var d = document.createElement('i'); d.className = 'pt'; layer.appendChild(d); pts.push({ el: d, life: 0 }); }
-    layer.insertAdjacentHTML('afterbegin',
-      '<svg class="flyer-rocket" viewBox="-4 -2 34 40" fill="none" stroke="#ff5f9e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
-      '<path class="fl" d="M10.3 22c0 5 1.6 9 2.7 13 1.1-4 2.7-8 2.7-13z" fill="#ffc857" stroke="#ff8a3d"/>' +
-      '<path d="M13 2c5 4 6 10 4 17H9C7 12 8 6 13 2z" fill="#07030f"/>' +
-      '<circle cx="13" cy="10" r="2.4" stroke="#00f0c8" fill="rgba(0,240,200,.25)"/>' +
-      '<path d="M9 19l-4 4 4 1M17 19l4 4-4 1"/></svg>');
+    // the flying rocket IS the tile's LED rocket: same pixel sprite, same grid, same glow (sprites drawn by flap.js)
+    layer.insertAdjacentHTML('afterbegin', '<span class="flyer-rocket"><img class="fr-img" alt=""></span>');
     sky.parentNode.insertBefore(layer, sky.nextSibling);
-    var rk = layer.querySelector('.flyer-rocket'), fl = rk.querySelector('.fl');
+    var rk = layer.querySelector('.flyer-rocket'), rkImg = rk.querySelector('.fr-img');
+    var SRC = {}, frameKey = '', frameAt = 0;
+    function loadSprites() { if (!window.IJFlap) return; ['rk1', 'rk2', 'rk3'].forEach(function (k) { SRC[k] = IJFlap.sprite(k); }); frameKey = ''; }
+    loadSprites(); if (window.IJFlap && IJFlap.ready) IJFlap.ready.then(loadSprites);
+    // LED flame in steps: the tile's own small flame first, then longer burns, flickering
+    function pickFrame(now, thrust) {
+      if (now - frameAt < 70 && frameKey) return;
+      frameAt = now;
+      var k = !thrust || flame < 0.9 ? 'rk1' : flame < 1.5 ? (Math.random() < 0.55 ? 'rk2' : 'rk1') : (Math.random() < 0.65 ? 'rk3' : 'rk2');
+      if (k !== frameKey && SRC[k]) { rkImg.src = SRC[k]; frameKey = k; }
+    }
     var logoRocket = $('rocket');
     var countdown = null;
 
@@ -745,7 +755,12 @@ window.IJAudio = (function () {
     var rnd = function (a, b) { return a + Math.random() * (b - a); };
     var wrapA = function (a) { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
     var SIZE = 100, dockH = 0;
-    function measure() { SIZE = innerWidth < 700 ? 70 : 100; dockH = dock ? dock.offsetHeight : 0; }
+    var U = 3;   // px per sprite unit at scale 1 (sprite is 32 x 48 units, nozzle at 16, 20)
+    function measure() {
+      SIZE = innerWidth < 700 ? 70 : 100; dockH = dock ? dock.offsetHeight : 0; U = SIZE * 0.03;
+      // padded by 16 units so the glow isn't cut off; 16 units = 12 LED dots, so the dot screen stays on the sprite's grid
+      rk.style.width = (64 * U) + 'px'; rk.style.height = (80 * U) + 'px'; rk.style.setProperty('--s', (32 * U) + 'px');
+    }
     measure(); addEventListener('resize', measure);
     function dockSpace() { return root.classList.contains('dock-on') ? dockH : root.classList.contains('dock-min') ? 54 : 0; }
     function emit(type, x, y, vx, vy, size, life) {
@@ -761,13 +776,13 @@ window.IJAudio = (function () {
     var phi = -Math.PI / 2, v = 0, pad = null, wp = null, route = [], awayFor = 0, liftT = -1, flame = 0;
     // (x, y) is the nozzle. The exhaust direction is the rocket's "down" axis, rotated by ang.
     function tail(d) { var a = ang * Math.PI / 180; return { x: x - Math.sin(a) * d, y: y + Math.cos(a) * d, dx: -Math.sin(a), dy: Math.cos(a) }; }
-    function flameLen() { return 0.3835 * SIZE * sc * flame; }
+    function flameLen() { return 7 * U * sc * flame; }
 
     function padPos() {
       if (!logoRocket) return null;
       var r = logoRocket.getBoundingClientRect();
       if (!r.width || r.bottom < 0 || r.top > innerHeight) return null;
-      return { x: r.left + r.width * 0.5, y: r.top + r.height * 0.65, w: r.width * 0.81 };   // the LED rocket's nozzle inside the hero tile (fins match the flyer's)
+      return { x: r.left + r.width * 0.5, y: r.top + r.height * 0.6, unit: r.width / 32 };   // the tile draws the 32-unit rocket s px wide, centred in its 4:5 face: nozzle (16, 20) lands at 50% / 60%
     }
     function setMode(m) { mode = m; modeT = 0; }
     function edgePoint(side, w, h, out) {
@@ -813,7 +828,7 @@ window.IJAudio = (function () {
         pad = padPos();
         if (!pad) { setMode('away'); awayFor = 0.4; document.dispatchEvent(new CustomEvent('ij:liftoff')); }   // scrolled off before launch: free the tile
         else {
-          x = pad.x; y = pad.y; ang = 0; sc = pad.w / (SIZE * 0.765);
+          x = pad.x; y = pad.y; ang = 0; sc = pad.unit / U;   // same pixel size as the tile's rocket
           var tl = 3.2 - (now - t0) / 1000;
           if (countdown) countdown.textContent = tl > 2.2 ? '' : tl > 1.5 ? 't-3' : tl > 0.8 ? 't-2' : tl > 0.1 ? 't-1' : '';
           if (tl <= 0.1) { setMode('ignition'); document.dispatchEvent(new CustomEvent('ij:ignition')); }
@@ -865,10 +880,9 @@ window.IJAudio = (function () {
       var front = mode !== 'fly' || depth > 0;
       if (front !== layer._front) { layer.classList.toggle('front', front); layer._front = front; }
       var jx = shake ? rnd(-shake, shake) : 0, jy = shake ? rnd(-shake, shake) : 0;
-      rk.style.transform = 'translate3d(' + (x - SIZE / 2 + jx).toFixed(1) + 'px,' + (y - SIZE * 1.18 * 0.6 + jy).toFixed(1) + 'px,0) rotate(' + ang.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
+      rk.style.transform = 'translate3d(' + (x - 32 * U + jx).toFixed(2) + 'px,' + (y - 36 * U + jy).toFixed(2) + 'px,0) rotate(' + ang.toFixed(2) + 'deg) scale(' + sc.toFixed(4) + ')';
       rk.style.opacity = (mode === 'away' || mode === 'pad') ? 0 : (front ? 1 : 0.72);   // on the pad, the rocket is the LED face of the tile
-      fl.style.opacity = thrust > 0 ? 1 : 0;
-      fl.style.transform = 'scaleY(' + (thrust > 0 ? flame + Math.random() * 0.3 : 0.2).toFixed(2) + ')';
+      pickFrame(now, thrust);
 
       // particles: transforms only, no layout work
       for (var i = 0; i < POOL; i++) {

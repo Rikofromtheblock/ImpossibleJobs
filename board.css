@@ -323,3 +323,8 @@ html.holo-open .menu-btn { opacity: 0; pointer-events: none; }
 .board-foot .foot-mark { margin: 0 0 8px; }
 .hc-privacy { margin: 10px 0 0; font: 500 11px/1.6 var(--mono); letter-spacing: .06em; color: #8f84a8; }
 .hc-privacy a { color: var(--cyan); }
+
+/* the logo stays on top of the open menu */
+html.menu-open .sysbar { z-index: 68; background: transparent; border-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; pointer-events: none; }
+html.menu-open .sysbar > :not(.mini) { visibility: hidden; }
+html.menu-open .sysbar .mini { pointer-events: auto; }

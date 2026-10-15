@@ -17,6 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
 <link rel="stylesheet" href="flap.css">
+<link rel="stylesheet" href="holo.css">
 </head>
 <body>
   <div class="progress" id="progress"></div>
@@ -41,7 +42,7 @@
       </div>
       <div>
         <div class="mpanel" role="tabpanel" id="p-who" aria-labelledby="t-who">
-          <span class="ij-flap menu-figure" data-size="72" data-mode="static" data-icon="floater" aria-hidden="true"></span>
+          <div class="ij-crew" data-crew="who" aria-hidden="true"></div>
           <p class="eyebrow pink">01 · who we are</p>
           <h3>you don't know us yet. <em>that's sort of the point.</em></h3>
           <p>we come from a little further down the timeline. not far. just far enough that introductions are awkward, our references won't land for another decade, and our LinkedIn says "starting soon".</p>
@@ -50,6 +51,7 @@
           <p class="fine">so who exactly are we? that will become apparent. sooner than you think. keep watching the sky.</p>
         </div>
         <div class="mpanel" role="tabpanel" id="p-what" aria-labelledby="t-what" hidden>
+          <div class="ij-crew" data-crew="what" aria-hidden="true"></div>
           <p class="eyebrow pink">02 · what we do</p>
           <h3>a launch sequence, <em>not a launch.</em></h3>
           <p>impossible jobs isn't one product. it's a series of modules that switch on one at a time, each designed to bring you a little closer to work that actually fits who you are.</p>
@@ -64,7 +66,7 @@
           <a class="mail" href="#modules" data-open-dock>see the modules</a>
         </div>
         <div class="mpanel" role="tabpanel" id="p-contact" aria-labelledby="t-contact" hidden>
-          <span class="ij-flap menu-figure" data-size="48" data-mode="spin" data-hold="3200" aria-hidden="true"></span>
+          <div class="ij-crew" data-crew="contact" aria-hidden="true"></div>
           <p class="eyebrow pink">03 · contact</p>
           <h3>come and find us. <em>eventually.</em></h3>
           <div class="addr">
@@ -85,20 +87,29 @@
 
 
   <!-- modules dock: slides up after the hero, holds the lower third of the screen -->
-  <aside class="dock" id="dock" aria-label="modules">
-    <div class="dock-inner">
-      <div class="dock-head">
-        <p class="dock-title"><span class="dot"></span><span class="hide-sm">launch sequence <span class="sep">·</span></span> <b>modules 01–03</b> <span class="sep hide-sm">·</span> <span class="hide-sm">1 online, 2 activating</span></p>
-        <span class="dock-nudge" aria-hidden="true">psst. three modules are waiting for you.</span>
-        <span class="dock-year" aria-hidden="true"><i></i><b id="dockYear">2026</b></span>
-        <button class="dock-toggle" id="dockToggle" aria-expanded="false" aria-controls="dockGrid"><span class="lbl">open modules</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5l4 4 4-4"/></svg></button>
+  <!-- modules: a glass tab on the left edge that slides out into the three module cards (holo.js) -->
+  <nav class="mrail" id="mrail" aria-label="modules">
+    <button class="mrail-tab" type="button" aria-expanded="false" aria-controls="mrailPanel">
+      <span class="stub-os" aria-hidden="true">IJ/OS</span>
+      <span class="mrail-leds" aria-hidden="true"><i></i><i class="wait"></i><i class="wait b"></i></span>
+      <span class="stub-board" aria-hidden="true">now boarding</span>
+      <span class="mrail-lbl" aria-hidden="true">modules 01–03</span>
+      <span class="stub-dest" aria-hidden="true">dest. <b>2046</b></span>
+      <span class="stub-code" aria-hidden="true"><i style="height:2px"></i><i style="height:4px"></i><i style="height:1px"></i><i style="height:3px"></i><i style="height:1px"></i><i style="height:5px"></i><i style="height:2px"></i><i style="height:1px"></i><i style="height:3px"></i><i style="height:2px"></i></span>
+      <svg class="mrail-chev" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3l4 4-4 4"/></svg>
+      <span class="mrail-sr">now boarding: open the modules</span>
+    </button>
+    <span class="mrail-nudge" aria-hidden="true">psst. module 01 just switched on.</span>
+    <div class="mrail-panel" id="mrailPanel" role="region" aria-label="the modules">
+      <span class="mrail-scan" aria-hidden="true"></span>
+      <div class="mrail-head">
+        <div>
+          <p class="mrail-eyebrow"><span class="dot"></span>boarding pass · 1 online, 2 activating</p>
+          <h2 class="mrail-h">the first three modules are <em>switching on.</em></h2>
+        </div>
+        <button class="mrail-close" type="button" aria-label="close the modules"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
       </div>
-      <div class="dock-intro">
-        <p class="eyebrow">launch sequence · modules 01–03</p>
-        <h2 class="h2">the first three modules are <em>switching on.</em></h2>
-        <p class="lede">impossible jobs comes online one module at a time. these are the first three. many more are in the countdown.</p>
-      </div>
-        <div class="mod-grid" id="dockGrid">
+      <div class="mod-grid" id="railGrid">
         <a class="mod online" data-i="0" href="jobs.html" data-status="online" style="--w:100%; --d:0s; --c:#00f0c8">
           <span class="scan"></span>
           <div class="top"><span>module 01</span><span class="status"><i></i><b>online</b></span></div>
@@ -136,8 +147,9 @@
           </div>
         </div>
       </div>
+      <div class="mrail-foot"><p>many more are in the countdown.<br><span>this pass is fictional. until it won’t be.</span></p><span class="ticket-code" aria-hidden="true"><i style="width:2px"></i><i style="width:1px"></i><i style="width:2px"></i><i style="width:4px"></i><i style="width:1px"></i><i style="width:1px"></i><i style="width:3px"></i><i style="width:1px"></i><i style="width:2px"></i><i style="width:3px"></i><i style="width:1px"></i><i style="width:3px"></i><i style="width:1px"></i><i style="width:1px"></i><i style="width:1px"></i><i style="width:2px"></i><i style="width:2px"></i><i style="width:1px"></i><i style="width:1px"></i><i style="width:1px"></i><i style="width:3px"></i><i style="width:2px"></i><i style="width:1px"></i><i style="width:3px"></i><i style="width:1px"></i><i style="width:1px"></i><i style="width:4px"></i><i style="width:4px"></i><i style="width:3px"></i><i style="width:1px"></i><i style="width:3px"></i><i style="width:3px"></i><i style="width:2px"></i><i style="width:1px"></i></span></div>
     </div>
-  </aside>
+  </nav>
 
   <div class="year" id="year" aria-hidden="true"><i></i><span id="yearLabel">today</span><b id="yearNum">2026</b></div>
 
@@ -192,7 +204,7 @@
           <div class="people" id="people" role="img" aria-label="100 people, of whom only 20 are engaged at work"></div>
           <div>
             <div class="big-num"><span id="peopleNum">0</span><small> in 100</small></div>
-            <p class="big-cap">people worldwide are <strong>engaged at work.</strong> the other 80 show up, and switch off.<sup><a href="#src1"> 1</a></sup></p>
+            <p class="big-cap">people worldwide are <strong>engaged at work.</strong> the other 80 show up, and switch off.<button class="ref-star" type="button" data-ref="1" aria-label="source 1"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></button></p>
           </div>
         </div>
       </div>
@@ -203,46 +215,46 @@
         <div class="stat reveal" style="--c:#ff5f9e">
           <div class="k">stress</div>
           <div class="num"><span class="count" data-to="40">0</span>%</div>
-          <p><strong>of the world's workers felt stressed for much of yesterday.</strong><sup><a href="#src1"> 1</a></sup></p>
+          <p><strong>of the world's workers felt stressed for much of yesterday.</strong><button class="ref-star" type="button" data-ref="1" aria-label="source 1"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></button></p>
           <div class="meter" style="--w:40%"><i></i></div>
         </div>
         <div class="stat reveal" style="--d:.12s; --c:#ffc857">
           <div class="k">loneliness</div>
           <div class="num"><span class="count" data-to="22">0</span>%</div>
-          <p><strong>felt lonely for much of yesterday.</strong> at work. surrounded by people.<sup><a href="#src1"> 1</a></sup></p>
+          <p><strong>felt lonely for much of yesterday.</strong> at work. surrounded by people.<button class="ref-star" type="button" data-ref="1" aria-label="source 1"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></button></p>
           <div class="meter" style="--w:22%"><i></i></div>
         </div>
         <div class="stat reveal" style="--d:.24s; --c:#00f0c8">
           <div class="k">burnout</div>
           <div class="num"><span class="count" data-to="1">0</span> in 5</div>
-          <p><strong>employees show symptoms of burnout.</strong> across 30 countries.<sup><a href="#src2"> 2</a></sup></p>
+          <p><strong>employees show symptoms of burnout.</strong> across 30 countries.<button class="ref-star" type="button" data-ref="2" aria-label="source 2"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></button></p>
           <div class="meter" style="--w:22%"><i></i></div>
         </div>
         <div class="stat reveal" style="--c:#ff5f9e">
           <div class="k">focus</div>
           <div class="num"><span class="count" data-to="68">0</span>%</div>
-          <p><strong>don't get enough uninterrupted time to focus.</strong> no room left to create.<sup><a href="#src3"> 3</a></sup></p>
+          <p><strong>don't get enough uninterrupted time to focus.</strong> no room left to create.<button class="ref-star" type="button" data-ref="3" aria-label="source 3"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></button></p>
           <div class="meter" style="--w:68%"><i></i></div>
         </div>
         <div class="stat reveal" style="--d:.12s; --c:#ffc857">
           <div class="k">life</div>
           <div class="num"><span class="count" data-to="2">0</span> in 3</div>
-          <p><strong>workers are not thriving in life.</strong> only 34% are.<sup><a href="#src1"> 1</a></sup></p>
+          <p><strong>workers are not thriving in life.</strong> only 34% are.<button class="ref-star" type="button" data-ref="1" aria-label="source 1"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></button></p>
           <div class="meter" style="--w:66%"><i></i></div>
         </div>
         <div class="stat reveal" style="--d:.24s; --c:#00f0c8">
           <div class="k">meaning</div>
           <div class="num"><span class="count" data-to="89">0</span>%</div>
-          <p><strong>of Gen Z say purpose is key to job satisfaction.</strong> the hunger is there.<sup><a href="#src4"> 4</a></sup></p>
+          <p><strong>of Gen Z say purpose is key to job satisfaction.</strong> the hunger is there.<button class="ref-star" type="button" data-ref="4" aria-label="source 4"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></button></p>
           <div class="meter" style="--w:89%"><i></i></div>
         </div>
         <div class="stat wide reveal" style="--c:#ff5f9e">
           <div class="num">$<span class="count" data-to="10">0</span>T</div>
-          <p><strong style="color:#fff;font-weight:600">the price of switched-off work.</strong> $10 trillion lost to low engagement in a single year. 9% of the world's GDP.<sup><a href="#src1"> 1</a></sup></p>
+          <p><strong style="color:#fff;font-weight:600">the price of switched-off work.</strong> $10 trillion lost to low engagement in a single year. 9% of the world's GDP.<button class="ref-star" type="button" data-ref="1" aria-label="source 1"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></button></p>
         </div>
         <div class="stat wide reveal" style="--c:#ffc857">
           <div class="num"><span class="count" data-to="12">0</span>B</div>
-          <p><strong style="color:#fff;font-weight:600">the human cost.</strong> 12 billion workdays lost every year to depression and anxiety. nearly $1 trillion, gone.<sup><a href="#src7"> 7</a></sup></p>
+          <p><strong style="color:#fff;font-weight:600">the human cost.</strong> 12 billion workdays lost every year to depression and anxiety. nearly $1 trillion, gone.<button class="ref-star" type="button" data-ref="7" aria-label="source 7"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></button></p>
         </div>
       </div>
     </section>
@@ -269,7 +281,7 @@
               <div class="rift-label" id="riftLabel"><svg class="ij-mono rift-mono" width="40" height="40" viewBox="0 0 100 100" fill="none" aria-hidden="true"><rect x="21" y="2" width="18" height="18" rx="2.5" fill="#ffffff"/><rect x="61" y="2" width="18" height="18" rx="2.5" fill="#ff5f9e"/><path d="M30 32v38" stroke="#ffffff" stroke-width="16"/><path d="M70 32v33a17 17 0 0 1-17 17H47" stroke="#ff5f9e" stroke-width="16"/></svg><span class="wordmark">impossible <span>jobs</span></span><span class="t">born in the gap</span></div>
             </div>
           </div>
-          <p class="lede gap-out" id="gapOut">every job description ever written starts from a vacancy. almost none start from a human being. meanwhile, for the first time, workers worldwide rank work-life balance above pay.<sup><a href="#src5"> 5</a></sup></p>
+          <p class="lede gap-out" id="gapOut">every job description ever written starts from a vacancy. almost none start from a human being. meanwhile, for the first time, workers worldwide rank work-life balance above pay.<button class="ref-star" type="button" data-ref="5" aria-label="source 5"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></button></p>
         </div>
       </div>
     </section>
@@ -283,7 +295,7 @@
         <div>
           <p class="lede reveal" style="--d:.15s">for generations, work has been built around tasks, not people. we fit ourselves into roles designed for machines, factories and org charts, and we call the mismatch normal.</p>
           <p class="lede reveal" style="--d:.25s">but the future of work is still unwritten. for the first time in generations, we get to ask the question before the jobs exist: what would people actually love to do? impossible jobs was born to ask it, out loud, one job at a time.</p>
-          <p class="lede reveal" style="--d:.35s">by 2030, 170 million new jobs will be created, and nearly 40% of the skills work requires will change.<sup><a href="#src6"> 6</a></sup> the future is being hired for right now.</p>
+          <p class="lede reveal" style="--d:.35s">by 2030, 170 million new jobs will be created, and nearly 40% of the skills work requires will change.<button class="ref-star" type="button" data-ref="6" aria-label="source 6"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></button> the future is being hired for right now.</p>
         </div>
       </div>
     </section>
@@ -307,7 +319,7 @@
     <!-- 8. final -->
     <section class="final" id="final">
       <div class="wrap">
-        <span class="ij-flap final-figure reveal" data-size="112" data-mode="static" data-icon="astronaut" aria-hidden="true"></span>
+        <span class="ij-flap final-figure reveal" data-size="112" data-mode="static" data-icon="astrofront" aria-hidden="true"></span>
         <h2 class="reveal zoom">know someone who was <em>built for this?</em></h2>
         <p class="reveal" style="--d:.2s">we know you hate your job. you can keep it. or wait for the one you were actually made for. it's closer than you think.</p>
       </div>
@@ -318,19 +330,12 @@
     <p class="foot-mark"><svg class="ij-mono sm" width="28" height="28" viewBox="0 0 100 100" fill="none" aria-hidden="true"><rect x="20" y="0" width="20" height="20" rx="2.5" fill="#ffffff"/><rect x="60" y="0" width="20" height="20" rx="2.5" fill="#ff5f9e"/><path d="M30 32v38" stroke="#ffffff" stroke-width="18"/><path d="M70 32v33a17 17 0 0 1-17 17H47" stroke="#ff5f9e" stroke-width="18"/></svg></p>
     <p>the jobs of the future are <strong>fictional.</strong> <em>until they won't be.</em></p>
     <p><a href="#who" data-open-menu="0">who we are</a> · <a href="#what" data-open-menu="1">what we do</a> · <a href="#contact" data-open-menu="2">contact</a> · <a href="privacy.html">privacy</a> · <a href="mailto:hello@impossiblejobs.org">hello@impossiblejobs.org</a></p>
-    <ol>
-      <li id="src1">1. <a href="https://www.gallup.com/workplace/697904/state-of-the-global-workplace-2026.aspx" target="_blank" rel="noopener">Gallup, State of the Global Workplace 2026</a> (2025 data, global)</li>
-      <li id="src2">2. <a href="https://www.mckinsey.de/mhi/our-insights/reframing-employee-health-moving-beyond-burnout-to-holistic-health" target="_blank" rel="noopener">McKinsey Health Institute, global employee health survey</a> (2023, 30 countries)</li>
-      <li id="src3">3. <a href="https://www.microsoft.com/en-us/worklab/we-can-not-keep-up-with-work-but-ai-can-help" target="_blank" rel="noopener">Microsoft, Work Trend Index</a> (2023, 31 countries)</li>
-      <li id="src4">4. <a href="https://www.deloitte.com/global/en/about/press-room/deloitte-2025-gen-z-and-millennial-survey.html" target="_blank" rel="noopener">Deloitte, 2025 Gen Z and Millennial Survey</a> (44 countries)</li>
-      <li id="src5">5. <a href="https://www.randstad.com/press/2025/work-life-balance-tops-pay-randstads-workmonitor-reveals/" target="_blank" rel="noopener">Randstad, Workmonitor 2025</a> (35 markets)</li>
-      <li id="src6">6. <a href="https://www.weforum.org/press/2025/01/future-of-jobs-report-2025-78-million-new-job-opportunities-by-2030-but-urgent-upskilling-needed-to-prepare-workforces/" target="_blank" rel="noopener">World Economic Forum, Future of Jobs Report 2025</a> (global)</li>
-      <li id="src7">7. <a href="https://www.who.int/europe/news/item/28-09-2022-who-and-ilo-call-for-new-measures-to-tackle-mental-health-issues-at-work" target="_blank" rel="noopener">WHO and ILO, mental health at work</a> (2022, global)</li>
-    </ol>
+    <p class="foot-src">every <span class="ref-star"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0l1.4 4.6L12 6 7.4 7.4 6 12 4.6 7.4 0 6l4.6-1.4z"/></svg></span> on this page opens its source.</p>
     <p>© impossible jobs</p>
   </footer>
 
 <script src="flap.js"></script>
 <script src="site.js"></script>
+<script src="holo.js"></script>
 </body>
 </html>

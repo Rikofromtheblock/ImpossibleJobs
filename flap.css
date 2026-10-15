@@ -20,11 +20,11 @@
   background: #07030f; transform: translateY(-50%); box-shadow: inset 0 calc(var(--s)*.012) 0 rgba(216,204,240,.35); }
 .flap .seam::before { left: calc(var(--s)*-.03); }
 .flap .seam::after { right: calc(var(--s)*-.03); }
-.flap .leaf { position: absolute; left: 0; top: 0; width: 100%; height: 50%; transform-origin: 50% 100%; transform-style: preserve-3d; z-index: 3; display: block; }
+.flap .leaf { position: absolute; left: 0; top: 0; width: 100%; height: 50%; transform-origin: 50% 100%; transform-style: preserve-3d; z-index: 3; display: block; will-change: transform; }   /* own layer: the flip is composited, not repainted */
 .flap .leaf .face { position: absolute; inset: 0; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: block; }
 .flap .leaf .face.front { background: #06030d; border-radius: calc(var(--s)*.18) calc(var(--s)*.18) 0 0; }
 .flap .leaf .face.back { background: #08040f; transform: rotateX(180deg); border-radius: 0 0 calc(var(--s)*.18) calc(var(--s)*.18); }
-.flap .leaf.go { animation: ijflip var(--dur, .42s) linear forwards; }
+.flap .leaf.go.css { animation: ijflip var(--dur, .42s) linear forwards; }   /* fallback for browsers without element.animate */
 @keyframes ijflip { from { transform: rotateX(0); } to { transform: rotateX(-180deg); } }
 .flap .leaf .face::after { content: ""; position: absolute; inset: 0; background: linear-gradient(#000, transparent); opacity: 0; }
 .flap .leaf.go .face.front::after { animation: ijshade var(--dur, .42s) linear forwards; }
@@ -56,6 +56,27 @@
 .flap .solo img, .flap .solo svg { top: 0; }
 
 /* hero hand-off: the LED rocket goes dark while the real one ignites on the tile */
-.flap.launch img, .flap.launch svg { opacity: 0; transition: opacity .25s; }
+.flap.launch img, .flap.launch svg { opacity: 0; }   /* instant: the flying rocket appears in exactly the same spot in the same frame */
 
-@media (prefers-reduced-motion: reduce) { .flap .leaf.go { animation: none; } }
+/* ---------- the crew: three LED figures per menu panel ----------
+   each figure sits in a box padded by 8 units (= 6 LED dots) so its glow isn't cut; the dot screen covers figure and glow,
+   and a soft fade keeps the box edge invisible. --u = px per unit; all figures share one baseline. */
+.ij-crew { --u: 2.5px; display: flex; align-items: flex-end; margin: calc(var(--u) * -8) 0 calc(var(--u) * -2) calc(var(--u) * -8); }
+@media (max-width: 700px) { .ij-crew { --u: 2px; } }
+.crew-fig { --s: calc(var(--u) * 32); position: relative; flex: none; display: block;
+  width: calc(var(--u) * 48); height: calc(var(--u) * (var(--h) + 16)); margin-right: calc(var(--u) * -10);
+  -webkit-mask-image: radial-gradient(circle at center, #000 0 42%, rgba(0,0,0,.6) 54% 100%), radial-gradient(closest-side, #000 62%, transparent 100%);
+          mask-image: radial-gradient(circle at center, #000 0 42%, rgba(0,0,0,.6) 54% 100%), radial-gradient(closest-side, #000 62%, transparent 100%);
+  -webkit-mask-size: calc(var(--s) / 24) calc(var(--s) / 24), 100% 100%; mask-size: calc(var(--s) / 24) calc(var(--s) / 24), 100% 100%;
+  -webkit-mask-repeat: repeat, no-repeat; mask-repeat: repeat, no-repeat;
+  -webkit-mask-composite: source-in; mask-composite: intersect;
+  animation: crewbob var(--bt, 3s) ease-in-out var(--bd, 0s) infinite alternate; }
+.crew-fig img { position: absolute; left: calc(var(--u) * 8); top: calc(var(--u) * 8); width: calc(var(--u) * 32); height: calc(var(--u) * var(--h));
+  display: block; max-width: none; image-rendering: pixelated; image-rendering: crisp-edges;
+  filter: brightness(1.9) saturate(1.6) contrast(1.1)
+    drop-shadow(0 0 calc(var(--s)*.01) #fff) drop-shadow(0 0 calc(var(--s)*.02) #fff)
+    drop-shadow(0 0 calc(var(--s)*.05) #ff5f9e) drop-shadow(0 0 calc(var(--s)*.11) rgba(255,95,158,.9))
+    drop-shadow(0 0 calc(var(--s)*.22) rgba(255,95,158,.6)) drop-shadow(0 0 calc(var(--s)*.4) rgba(0,240,200,.45)); }
+@keyframes crewbob { from { transform: translateY(0); } to { transform: translateY(calc(var(--bob, 2px) * -1)); } }
+
+@media (prefers-reduced-motion: reduce) { .flap .leaf.go { animation: none; } .crew-fig { animation: none; } }
