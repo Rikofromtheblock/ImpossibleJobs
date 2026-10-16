@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>impossible jobs · drift</title>
+<meta name="description" content="measure the angle between what you were made for and how your days actually go. five minutes. nothing is stored.">
+<meta name="theme-color" content="#07030f">
+<meta property="og:type" content="website">
+<meta property="og:title" content="impossible jobs · drift">
+<meta property="og:description" content="measure the angle between what you were made for and how your days actually go.">
+<meta property="og:image" content="https://impossiblejobs.org/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://impossiblejobs.org/drift.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07030f; --deep:#04020a; --panel:rgba(20,12,40,.72); --line:#2a2340; --white:#fff; --lav:#d8ccf0; --muted:#a99cc6;
+  --pink:#ff5f9e; --cyan:#00f0c8; --amber:#ffc857; --violet:#6b2bd9; --ticket:#ece8f5; --ink:#07030f; --magenta:#c2185b;
+  --sans:'Poppins','Avenir Next','Segoe UI',system-ui,sans-serif; --mono:'DM Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:dark; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+/* the brand is a night sky in both modes */
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){ --bg:#07030f; --panel:rgba(20,12,40,.72); } }
+:root[data-theme="dark"]{ --bg:#07030f; }
+html{ scroll-padding-top:env(safe-area-inset-top,0px); }
+*{ box-sizing:border-box; }
+body{ margin:0; min-height:100vh; background:var(--bg); color:var(--white); font-family:var(--sans); -webkit-font-smoothing:antialiased; overflow-x:clip; }
+button{ font-family:inherit; color:inherit; }
+a{ color:var(--cyan); }
+body::before{ content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:rgba(7,3,15,.88); }
+
+/* sky */
+.sky{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.sky .g1{ position:absolute; width:70vmax; height:70vmax; left:-25vmax; top:-30vmax; border-radius:50%; background:radial-gradient(closest-side,rgba(107,43,217,.45),transparent); }
+.sky .g2{ position:absolute; width:60vmax; height:60vmax; right:-25vmax; bottom:-30vmax; border-radius:50%; background:radial-gradient(closest-side,rgba(255,95,158,.22),transparent); transition:opacity 1.2s; }
+.sky .stars{ position:absolute; inset:0; background-image:radial-gradient(1px 1px at 20px 30px,#fff 50%,transparent 51%),radial-gradient(1px 1px at 140px 90px,#d8ccf0 50%,transparent 51%),radial-gradient(1.5px 1.5px at 90px 170px,#fff 50%,transparent 51%),radial-gradient(1px 1px at 230px 220px,#00f0c8 50%,transparent 51%); background-size:300px 260px; opacity:.35; animation:drift 120s linear infinite; }
+@keyframes drift{ to{ background-position:300px 260px; } }
+
+/* bar */
+.bar{ position:sticky; top:env(safe-area-inset-top,0px); z-index:5; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; background:rgba(7,3,15,.82); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid rgba(42,35,64,.7); }
+.mark{ color:var(--white); text-decoration:none; font-weight:700; font-size:16px; letter-spacing:-.02em; white-space:nowrap; }
+.mark span{ color:var(--pink); }
+.acts{ display:flex; gap:6px; flex:1; max-width:260px; }
+.acts i{ flex:1; height:4px; border-radius:2px; background:var(--line); position:relative; overflow:hidden; }
+.acts i b{ position:absolute; inset:0; width:0; background:linear-gradient(90deg,var(--cyan),var(--pink)); transition:width .6s cubic-bezier(.2,.9,.2,1); }
+.snd{ border:1px solid var(--line); background:none; border-radius:999px; height:32px; padding:0 12px; font:500 11px/1 var(--mono); color:var(--muted); cursor:pointer; letter-spacing:.06em; }
+.snd[aria-pressed="true"]{ color:var(--cyan); border-color:rgba(0,240,200,.4); }
+
+main{ position:relative; z-index:1; max-width:620px; margin:0 auto; padding:20px 18px 60px; }
+.screen{ display:none; }
+.screen.on{ display:block; animation:enter .5s cubic-bezier(.2,.9,.2,1) both; }
+@keyframes enter{ from{ opacity:0; transform:translateY(14px); filter:blur(4px);} to{ opacity:1; transform:none; filter:none;} }
+
+.sys{ font:500 12px/1.6 var(--mono); color:var(--muted); letter-spacing:.04em; margin:0 0 10px; }
+.sys .c{ color:var(--cyan); } .sys .p{ color:var(--pink); }
+h1{ font-size:clamp(34px,9vw,54px); line-height:1.02; letter-spacing:-.035em; font-weight:800; margin:6px 0 18px; }
+h2{ font-size:clamp(26px,6.6vw,36px); line-height:1.08; letter-spacing:-.03em; font-weight:700; margin:4px 0 12px; }
+h1 em, h2 em{ font-style:normal; color:var(--pink); }
+.lead{ color:var(--lav); font-size:17px; line-height:1.55; margin:0 0 22px; font-weight:300; }
+.small{ font-size:14px; color:var(--muted); line-height:1.5; }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:54px; padding:0 26px; border-radius:999px; border:0; background:var(--pink); color:var(--ink); font:700 16px/1 var(--sans); cursor:pointer; text-decoration:none; transition:transform .2s, opacity .2s, box-shadow .3s; box-shadow:0 0 0 rgba(255,95,158,0); }
+.btn:not(:disabled):hover{ box-shadow:0 0 28px rgba(255,95,158,.45); }
+.btn:active{ transform:scale(.97); }
+.btn:disabled{ opacity:.28; cursor:not-allowed; }
+.btn.ghost{ background:transparent; color:var(--lav); border:1px solid var(--line); }
+.btn.cyan{ background:transparent; color:var(--cyan); border:1px solid rgba(0,240,200,.5); }
+.btn.wide{ width:100%; }
+.row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:22px; align-items:center; }
+.link{ background:none; border:0; color:var(--muted); font:500 13px/1 var(--mono); text-decoration:underline; text-underline-offset:4px; cursor:pointer; padding:8px 4px; }
+:focus-visible{ outline:2px solid var(--cyan); outline-offset:3px; }
+
+/* intro instrument */
+.intro-inst{ display:block; width:100%; max-width:340px; margin:4px auto 10px; }
+.legend3{ display:grid; gap:10px; margin:0 0 24px; }
+.legend3 div{ display:grid; grid-template-columns:96px 1fr; gap:12px; align-items:baseline; font-size:15px; color:var(--lav); line-height:1.45; }
+.legend3 b{ font:500 12px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; }
+
+/* textarea + starters */
+textarea, input[type=text]{ width:100%; border:1px solid var(--line); border-radius:18px; background:var(--panel); color:var(--white); padding:18px; font:400 17px/1.5 var(--sans); resize:none; transition:border-color .3s, box-shadow .3s; }
+textarea{ min-height:150px; }
+textarea:focus, input[type=text]:focus{ outline:none; border-color:var(--cyan); box-shadow:0 0 0 4px rgba(0,240,200,.12); }
+textarea::placeholder, input::placeholder{ color:#6b6585; }
+.starters{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 12px; }
+.starter{ border:1px dashed var(--line); background:none; border-radius:999px; padding:9px 14px; font:400 14px/1 var(--sans); color:var(--muted); cursor:pointer; }
+.starter:hover{ color:var(--white); border-color:var(--muted); }
+.meter{ display:flex; justify-content:space-between; align-items:center; margin-top:10px; font:500 12px/1 var(--mono); color:var(--muted); }
+.meter .bar2{ flex:1; height:3px; background:var(--line); margin:0 12px; border-radius:2px; overflow:hidden; }
+.meter .bar2 i{ display:block; height:100%; width:0; background:var(--cyan); transition:width .2s; }
+.meter .ok{ color:var(--cyan); }
+
+/* cards */
+.cards{ display:grid; gap:10px; }
+.cards.two{ grid-template-columns:1fr 1fr; }
+@media (max-width:420px){ .cards.two{ grid-template-columns:1fr 1fr; } }
+.card{ position:relative; text-align:left; display:flex; flex-direction:column; gap:6px; padding:16px; min-height:96px; border-radius:18px; border:1px solid var(--line); background:var(--panel); cursor:pointer; transition:transform .25s cubic-bezier(.2,.9,.2,1), border-color .25s, background .25s, box-shadow .25s; }
+.card .ic{ font-size:26px; line-height:1; }
+.card .l{ font-weight:600; font-size:15px; line-height:1.25; }
+.card .d{ font-size:12.5px; color:var(--muted); line-height:1.4; }
+.card:hover{ border-color:#4a4066; }
+.card.pick{ border-color:var(--cyan); background:rgba(0,240,200,.09); transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,240,200,.12); }
+.card.pick.pk{ border-color:var(--pink); background:rgba(255,95,158,.1); box-shadow:0 10px 30px rgba(255,95,158,.14); }
+.card .ord{ position:absolute; right:12px; top:12px; width:24px; height:24px; border-radius:50%; display:grid; place-items:center; font:500 12px/1 var(--mono); background:var(--cyan); color:var(--ink); transform:scale(0); transition:transform .3s cubic-bezier(.2,1.4,.4,1); }
+.card.pick .ord{ transform:scale(1); }
+.cards.wide .card{ flex-direction:row; align-items:center; gap:14px; min-height:74px; }
+.cards.wide .card .ic{ font-size:28px; }
+.hint{ font:500 12px/1.6 var(--mono); color:var(--muted); margin:12px 0 0; }
+
+/* heading interstitial */
+.center{ text-align:center; }
+.compass{ display:block; width:min(300px,80vw); margin:10px auto 6px; }
+.lock{ font:500 13px/1.6 var(--mono); color:var(--cyan); letter-spacing:.1em; text-transform:uppercase; }
+
+/* status chips */
+.chips{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px; }
+.chip{ border:1px solid var(--line); background:none; border-radius:999px; padding:10px 15px; font:500 14px/1 var(--sans); color:var(--lav); cursor:pointer; transition:all .2s; }
+.chip.on{ border-color:var(--pink); color:var(--white); background:rgba(255,95,158,.12); }
+
+/* paint the day */
+.brushes{ display:flex; flex-wrap:wrap; gap:7px; margin:0 0 14px; }
+.brush{ flex:none; display:flex; align-items:center; gap:7px; border:1.5px solid var(--line); background:var(--panel); border-radius:12px; padding:9px 11px; font:500 13px/1.2 var(--sans); color:var(--lav); cursor:pointer; white-space:nowrap; transition:all .2s; }
+.brush i{ width:12px; height:12px; border-radius:4px; flex:none; }
+.brush.on{ color:var(--white); border-color:var(--c); background:color-mix(in srgb,var(--c) 18%,transparent); transform:translateY(-1px); }
+.day{ touch-action:none; user-select:none; -webkit-user-select:none; display:grid; gap:5px; margin-top:4px; }
+.slot{ display:grid; grid-template-columns:54px 1fr; align-items:stretch; gap:10px; cursor:pointer; }
+.slot .t{ font:500 12px/1 var(--mono); color:var(--muted); align-self:center; text-align:right; }
+.slot .f{ min-height:44px; border-radius:12px; border:1.5px dashed var(--line); display:flex; align-items:center; gap:10px; padding:0 14px; font-size:14px; color:var(--muted); transition:background .25s, border-color .25s, color .25s, transform .15s; }
+.slot.filled .f{ border-style:solid; border-color:transparent; background:var(--c); color:var(--ink); font-weight:600; }
+.slot.filled .f.dark{ color:var(--white); }
+.slot.pop .f{ transform:scale(1.03); }
+.extend{ display:flex; justify-content:space-between; margin:10px 0 0 64px; }
+.extend button{ background:none; border:0; color:var(--muted); font:500 12px/1 var(--mono); cursor:pointer; padding:8px 0; }
+.painted{ font:500 12px/1 var(--mono); color:var(--muted); margin-top:14px; text-align:center; }
+.painted b{ color:var(--cyan); font-weight:500; }
+
+/* solve cards */
+.deck{ position:relative; min-height:420px; }
+.qcard{ border:1px solid var(--line); border-radius:24px; background:var(--panel); padding:22px 20px; animation:deal .45s cubic-bezier(.2,.9,.2,1) both; }
+@keyframes deal{ from{ opacity:0; transform:translateX(40px) rotate(2deg);} to{ opacity:1; transform:none; } }
+.qcard.out{ animation:fly .35s ease-in both; }
+@keyframes fly{ to{ opacity:0; transform:translateX(-60px) rotate(-3deg);} }
+.qhead{ display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+.qhead .sw{ width:44px; height:44px; border-radius:14px; display:grid; place-items:center; font-size:22px; background:var(--c); }
+.qhead .n{ font-weight:700; font-size:18px; line-height:1.2; }
+.qhead .h{ font:500 12px/1.4 var(--mono); color:var(--muted); }
+.q{ font-weight:600; font-size:16px; margin:14px 0 10px; }
+.opts{ display:flex; flex-wrap:wrap; gap:8px; }
+.opt{ border:1px solid var(--line); background:rgba(7,3,15,.5); border-radius:999px; padding:11px 15px; font:500 14px/1.2 var(--sans); color:var(--lav); cursor:pointer; transition:all .2s; text-align:left; }
+.opt.on{ border-color:var(--cyan); background:rgba(0,240,200,.12); color:var(--white); }
+.opts.pres .opt.on{ border-color:var(--pink); background:rgba(255,95,158,.14); }
+.deckfoot{ display:flex; justify-content:space-between; align-items:center; margin-top:14px; font:500 12px/1 var(--mono); color:var(--muted); }
+
+/* scanning */
+.scanbox{ min-height:62vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; }
+.radar{ width:150px; height:150px; border-radius:50%; border:1px solid var(--line); position:relative; overflow:hidden; background:radial-gradient(circle,rgba(0,240,200,.08),transparent 70%); }
+.radar::before{ content:""; position:absolute; inset:0; background:conic-gradient(from 0deg,rgba(0,240,200,.55),transparent 30%); animation:spin 1.6s linear infinite; }
+.radar::after{ content:""; position:absolute; inset:30%; border-radius:50%; border:1px solid var(--line); }
+@keyframes spin{ to{ transform:rotate(360deg);} }
+.scanlines{ font:500 13px/1.9 var(--mono); color:var(--muted); min-height:120px; }
+.scanlines span{ display:block; animation:enter .4s both; }
+.scanlines span:last-child{ color:var(--cyan); }
+
+/* drift */
+.inst-wrap{ position:relative; margin:4px -6px 0; }
+.inst{ display:block; width:100%; max-width:420px; margin:0 auto; }
+.blip{ transform-box:fill-box; transform-origin:center; animation:pulse 1.8s ease-out infinite; }
+@keyframes pulse{ 0%{ opacity:.9; transform:scale(1);} 100%{ opacity:0; transform:scale(3.2);} }
+.deg{ text-align:center; margin-top:-8px; }
+.deg .num{ font-weight:800; font-size:clamp(72px,22vw,112px); line-height:.95; letter-spacing:-.05em; background:linear-gradient(180deg,#fff,#d8ccf0); -webkit-background-clip:text; background-clip:text; color:transparent; font-variant-numeric:tabular-nums; }
+.deg .lab{ font:500 12px/1.6 var(--mono); color:var(--muted); letter-spacing:.16em; text-transform:uppercase; }
+.verdict{ text-align:center; font-size:19px; line-height:1.45; color:var(--lav); max-width:460px; margin:14px auto 0; font-weight:300; }
+.verdict b{ color:var(--white); font-weight:600; }
+.analog{ margin:28px auto 0; max-width:480px; border-radius:22px; padding:22px; background:var(--ticket); color:var(--ink); text-align:center; opacity:0; transform:translateY(10px) scale(.98); transition:opacity .6s, transform .6s cubic-bezier(.2,.9,.2,1); }
+.analog.on{ opacity:1; transform:none; }
+.analog .k{ margin:0 0 10px; font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--magenta); }
+.analog .set{ margin:0; font-size:18px; line-height:1.4; font-weight:600; }
+.analog .out{ margin:6px 0 0; font-size:clamp(22px,6vw,28px); line-height:1.15; font-weight:800; letter-spacing:-.02em; color:var(--magenta); }
+.corrnote .an{ display:block; margin-top:8px; color:var(--white); }
+.sect{ margin-top:46px; }
+.sect > .sys{ margin-bottom:14px; }
+.words{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+@media (max-width:460px){ .words{ grid-template-columns:1fr; } }
+.word{ border-radius:20px; padding:18px; position:relative; }
+.word.h{ background:var(--ticket); color:var(--ink); }
+.word.c{ background:var(--panel); border:1px solid var(--line); }
+.word .k{ font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px; }
+.word.h .k{ color:var(--magenta); } .word.c .k{ color:var(--muted); }
+.word p{ margin:0; font-size:16px; line-height:1.5; }
+.word.h p{ font-weight:600; }
+.word.c p{ color:var(--lav); }
+.tell{ margin:14px 2px 0; font-size:15px; line-height:1.55; color:var(--cyan); }
+.gaps{ display:grid; gap:10px; }
+.gap{ display:grid; grid-template-columns:36px 1fr; gap:12px; padding:16px; border-radius:18px; border:1px solid var(--line); background:var(--panel); animation:enter .5s both; }
+.gap .gi{ font-size:24px; line-height:1.2; }
+.gap p{ margin:0; font-size:15.5px; line-height:1.5; color:var(--lav); }
+.gap p b{ color:var(--white); font-weight:600; }
+.gap p em{ font-style:normal; color:var(--pink); font-weight:600; }
+.strip{ display:flex; height:54px; border-radius:14px; overflow:hidden; gap:2px; }
+.strip i{ display:block; height:100%; transition:opacity .4s; position:relative; }
+.strip i.absent{ opacity:.18; }
+.strip i.half{ opacity:.55; }
+.striplab{ display:flex; justify-content:space-between; font:500 11px/1 var(--mono); color:var(--muted); margin-top:8px; }
+.alive{ font-size:17px; line-height:1.5; color:var(--lav); margin:14px 0 0; }
+.alive b{ color:var(--white); }
+.landing{ border-radius:22px; border:1px solid var(--line); background:var(--panel); padding:20px; }
+.sl{ margin:4px 0 16px; }
+.sl label{ display:flex; justify-content:space-between; font:500 12px/1 var(--mono); color:var(--muted); margin-bottom:10px; }
+.sl label b{ color:var(--white); font-weight:500; }
+input[type=range]{ width:100%; accent-color:var(--pink); height:28px; }
+.big{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px; }
+.big div{ border-radius:16px; padding:14px; background:rgba(7,3,15,.5); }
+.big b{ display:block; font-weight:800; font-size:clamp(26px,7vw,34px); letter-spacing:-.03em; line-height:1.05; font-variant-numeric:tabular-nums; }
+.big span{ font:500 11px/1.5 var(--mono); color:var(--muted); }
+.big .pk b{ color:var(--pink); }
+.fixes{ display:grid; gap:10px; }
+.fixbtn{ text-align:left; display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:16px 18px; border-radius:18px; border:1px solid var(--line); background:var(--panel); cursor:pointer; transition:all .25s; }
+.fixbtn .ft{ font-weight:600; font-size:15.5px; line-height:1.35; }
+.fixbtn .fd{ font-size:13px; color:var(--muted); margin-top:4px; line-height:1.4; }
+.fixbtn .fa{ font:700 26px/1 var(--sans); letter-spacing:-.03em; color:var(--cyan); white-space:nowrap; }
+.fixbtn .fk{ font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.fixes{ position:relative; }
+.fixbtn.on{ border-color:var(--cyan); background:rgba(0,240,200,.09); }
+.corrnote{ font-size:16px; line-height:1.55; color:var(--lav); margin:14px 0 0; min-height:48px; }
+.corrnote b{ color:var(--cyan); }
+
+/* posting */
+.ticket{ position:relative; background:var(--ticket); color:var(--ink); border-radius:24px; padding:26px 22px 22px; margin-top:6px;
+  -webkit-mask-image:radial-gradient(circle 12px at 0 62%,transparent 96%,#000 100%),radial-gradient(circle 12px at 100% 62%,transparent 96%,#000 100%); -webkit-mask-composite:source-in;
+  mask-image:radial-gradient(circle 12px at 0 62%,transparent 96%,#000 100%),radial-gradient(circle 12px at 100% 62%,transparent 96%,#000 100%); mask-composite:intersect;
+  box-shadow:0 0 60px rgba(255,95,158,.18); animation:print .9s cubic-bezier(.2,.9,.2,1) both; }
+@keyframes print{ from{ clip-path:inset(0 0 100% 0); } to{ clip-path:inset(0 0 0 0); } }
+.ticket .top{ display:flex; justify-content:space-between; gap:10px; font:500 11px/1.4 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--violet); }
+.ticket .top .st{ color:var(--magenta); display:flex; align-items:center; gap:7px; }
+.ticket .top .st::before{ content:""; width:8px; height:8px; border-radius:2px; background:#00b896; animation:blink 1.6s steps(2) infinite; }
+@keyframes blink{ 50%{ opacity:.25; } }
+.ticket h3{ font-size:clamp(28px,7.6vw,40px); line-height:1.02; letter-spacing:-.035em; font-weight:800; margin:16px 0 8px; }
+.ticket .co{ font:500 12.5px/1.6 var(--mono); color:#6b6585; }
+.ticket .co b{ color:var(--ink); font-weight:500; }
+.ticket .blk{ margin-top:18px; }
+.ticket .blk .k{ font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:#6b6585; margin-bottom:7px; }
+.ticket .blk p{ margin:0; font-size:15.5px; line-height:1.5; }
+.ticket .blk p.q{ font-weight:600; font-size:16px; }
+.ticket .tear{ border-top:2px dashed rgba(7,3,15,.25); margin:22px -22px 0; }
+.ticket .catch{ margin-top:16px; }
+.ticket .catch .k{ color:var(--magenta); }
+.ticket ul{ margin:0; padding:0; list-style:none; display:grid; gap:8px; }
+.ticket li{ font-size:15px; line-height:1.45; padding-left:20px; position:relative; }
+.ticket li::before{ content:""; position:absolute; left:0; top:8px; width:9px; height:9px; border-radius:2px; border:1.5px solid var(--magenta); }
+.ticket .arch{ display:flex; gap:14px; align-items:center; margin-top:20px; padding:14px; border-radius:16px; background:rgba(7,3,15,.06); }
+.ticket .arch .gl{ font-size:34px; }
+.ticket .arch b{ display:block; font-size:18px; letter-spacing:-.02em; }
+.ticket .arch span{ font-size:13.5px; color:#4a4560; }
+.ticket .fine{ margin-top:18px; display:flex; justify-content:space-between; align-items:flex-end; gap:12px; font:500 10.5px/1.6 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:#6b6585; }
+.code{ display:flex; gap:2px; height:34px; align-items:stretch; flex:none; }
+.code i{ display:block; background:var(--ink); }
+.boardm{ display:grid; gap:10px; }
+.bm{ display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; padding:16px 18px; border-radius:18px; border:1px solid var(--line); background:var(--panel); text-decoration:none; color:var(--white); transition:border-color .2s; }
+.bm:hover{ border-color:var(--cyan); }
+.bm .n{ font:500 11px/1 var(--mono); color:var(--muted); letter-spacing:.1em; }
+.bm .t{ font-weight:600; font-size:16px; margin:5px 0 3px; }
+.bm .c{ font-size:13px; color:var(--muted); }
+.bm .go{ font:500 12px/1 var(--mono); color:var(--cyan); }
+.sharebox{ display:none; margin-top:12px; }
+.sharebox.on{ display:block; }
+.sharebox textarea{ min-height:150px; font-size:14px; }
+.foot{ text-align:center; font:500 11px/1.8 var(--mono); color:var(--muted); letter-spacing:.06em; margin-top:40px; }
+.toast{ position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0px)); transform:translate(-50%,20px); background:var(--white); color:var(--ink); padding:12px 18px; border-radius:999px; font:600 14px/1 var(--sans); opacity:0; transition:all .3s; z-index:20; pointer-events:none; }
+.toast.on{ opacity:1; transform:translate(-50%,0); }
+
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true"><div class="g1"></div><div class="g2" id="g2"></div><div class="stars"></div></div>
+
+<header class="bar">
+  <a class="mark" href="index.html" aria-label="impossible jobs home">impossible <span>jobs</span></a>
+  <div class="acts" aria-hidden="true"><i><b id="a1"></b></i><i><b id="a2"></b></i><i><b id="a3"></b></i><i><b id="a4"></b></i></div>
+  <button class="snd" id="snd" aria-pressed="true" type="button">sound on</button>
+</header>
+
+<main>
+
+<!-- intro -->
+<section class="screen on" id="s-intro">
+  <p class="sys">// drift · a navigation instrument for your working life</p>
+  <h1>every ship has a heading <em>and a course.</em></h1>
+  <svg class="intro-inst" viewBox="0 0 340 190" aria-hidden="true">
+    <defs><linearGradient id="hg" gradientUnits="userSpaceOnUse" x1="170" y1="170" x2="170" y2="30"><stop offset="0" stop-color="#ff5f9e" stop-opacity=".2"/><stop offset="1" stop-color="#ff5f9e"/></linearGradient></defs>
+    <path d="M60 170 A110 110 0 0 1 280 170" fill="none" stroke="#2a2340" stroke-width="1"/>
+    <g id="iarc"></g>
+    <line x1="170" y1="170" x2="170" y2="30" stroke="url(#hg)" stroke-width="3" stroke-linecap="round"/>
+    <g id="icourse" style="transform-origin:170px 170px; transition:transform 2.4s cubic-bezier(.4,0,.2,1)"><line x1="170" y1="170" x2="170" y2="40" stroke="#a99cc6" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/></g>
+    <circle cx="170" cy="170" r="6" fill="#00f0c8"/>
+    <text x="170" y="20" text-anchor="middle" font-family="DM Mono" font-size="11" fill="#ff5f9e" letter-spacing="1.5">HEADING</text>
+    <text id="itxt" x="236" y="58" text-anchor="middle" font-family="DM Mono" font-size="11" fill="#a99cc6" letter-spacing="1.5" opacity="0" style="transition:opacity 1s 1.4s">COURSE</text>
+  </svg>
+  <div class="legend3">
+    <div><b style="color:var(--pink)">heading</b><span>where you're pointed. the moments you come alive.</span></div>
+    <div><b style="color:var(--muted)">course</b><span>where you're actually going. how your working days really go.</span></div>
+    <div><b style="color:var(--cyan)">drift</b><span>the angle between them. invisible on a tuesday. decisive over a career.</span></div>
+  </div>
+  <p class="small">about five minutes. no account, no email. nothing leaves your phone.</p>
+  <div class="row"><button class="btn wide" id="go" type="button">measure my drift</button></div>
+  <div class="row" style="justify-content:center;margin-top:10px"><button class="link" id="demo" type="button">just show me a sample result</button></div>
+</section>
+
+<!-- pre-flight -->
+<section class="screen" id="s-pre">
+  <p class="sys">pre-flight · one easy one</p>
+  <h2>first, a free day. <em>what do you reach for?</em></h2>
+  <p class="lead">no wrong answers. it helps the ship explain your reading later in a language you already speak.</p>
+  <div class="cards two" id="tastes"></div>
+</section>
+
+<!-- act 1.1 the moment -->
+<section class="screen" id="s-moment">
+  <p class="sys">act 1 · <span class="p">your heading</span> · 1 of 4</p>
+  <h2>tell us about a time you <em>lost track of time.</em></h2>
+  <p class="lead">not a job. a moment. you looked up and three hours had gone. what were you doing?</p>
+  <div class="starters" id="starters"></div>
+  <textarea id="moment" placeholder="be specific. the ship reads between the lines." aria-label="your moment"></textarea>
+  <div class="meter"><span id="mc">0</span><span class="bar2"><i id="mbar"></i></span><span id="mok">a few more words</span></div>
+  <div class="row"><button class="btn wide" id="n-moment" type="button" disabled>set this as my heading</button></div>
+</section>
+
+<!-- act 1.2 worlds -->
+<section class="screen" id="s-worlds">
+  <p class="sys">act 1 · <span class="p">your heading</span> · 2 of 4</p>
+  <h2>which worlds <em>pull you in?</em></h2>
+  <p class="lead">up to three, in order. the ones you'd read about at 1am, not the ones that look good on a form.</p>
+  <div class="cards two" id="worlds"></div>
+  <p class="hint" id="whint">tap in order of pull · 0 of 3</p>
+  <div class="row"><button class="btn wide" id="n-worlds" type="button" disabled>next</button></div>
+</section>
+
+<!-- act 1.3 fuel -->
+<section class="screen" id="s-fuel">
+  <p class="sys">act 1 · <span class="p">your heading</span> · 3 of 4</p>
+  <h2>how do you <em>come alive?</em></h2>
+  <p class="lead">not what you like. how you're wired. pick one.</p>
+  <div class="cards wide" id="fuels"></div>
+</section>
+
+<!-- act 1.4 fix -->
+<section class="screen" id="s-fix">
+  <p class="sys">act 1 · <span class="p">your heading</span> · 4 of 4</p>
+  <h2>what would you fix if <em>nobody could stop you?</em></h2>
+  <p class="lead">the thing that makes you angry usually points at the thing you're for.</p>
+  <div class="cards two" id="fixes"></div>
+</section>
+
+<!-- heading locked -->
+<section class="screen" id="s-locked">
+  <div class="center">
+    <p class="sys">act 1 complete</p>
+    <svg class="compass" id="compass" viewBox="0 0 300 300" aria-hidden="true"></svg>
+    <p class="lock" id="lockline">heading locked</p>
+    <h2 style="margin-top:14px">that's where you're <em>pointed.</em></h2>
+    <p class="lead">now the honest part: where you're actually going. we're not going to ask you to rate your job. we're going to rebuild your day.</p>
+    <div class="row" style="justify-content:center"><button class="btn wide" id="n-locked" type="button">rebuild my day</button></div>
+  </div>
+</section>
+
+<!-- act 2.1 the tuesday line -->
+<section class="screen" id="s-tline">
+  <p class="sys">act 2 · <span class="c">your course</span> · 1 of 4</p>
+  <h2 id="tl-h">right now, most of your days are…</h2>
+  <div class="chips" id="status"></div>
+  <p class="lead" id="tl-lead">think of last tuesday. describe it in one sentence, the way you'd tell a friend.</p>
+  <input type="text" id="tline" maxlength="160" placeholder="e.g. four calls, a deck nobody read, and an inbox." aria-label="last tuesday in one sentence">
+  <div class="row"><button class="btn wide" id="n-tline" type="button" disabled>next</button></div>
+</section>
+
+<!-- act 2.2 paint -->
+<section class="screen" id="s-paint">
+  <p class="sys">act 2 · <span class="c">your course</span> · 2 of 4</p>
+  <h2>paint <em id="paint-day">last tuesday.</em></h2>
+  <p class="small" style="margin:0 0 12px">pick a brush, then tap or drag down the hours. roughly is fine.</p>
+  <div class="brushes" id="brushes"></div>
+  <div class="day" id="day"></div>
+  <div class="extend"><button type="button" id="earlier">+ started earlier</button><button type="button" id="later">+ finished later</button></div>
+  <p class="painted" id="painted"></p>
+  <div class="row"><button class="btn wide" id="n-paint" type="button" disabled>next</button></div>
+</section>
+
+<!-- act 2.3 course worlds -->
+<section class="screen" id="s-cworlds">
+  <p class="sys">act 2 · <span class="c">your course</span> · 3 of 4</p>
+  <h2>and where did <em id="cw-day">last tuesday</em> actually live?</h2>
+  <p class="lead">same six worlds as your heading. this time, not where you'd like to be. where the hours went. up to three, in order.</p>
+  <div class="cards two" id="cworlds"></div>
+  <p class="hint" id="cwhint">tap in order · 0 of 3</p>
+  <div class="row"><button class="btn wide" id="n-cworlds" type="button" disabled>next</button></div>
+</section>
+
+<!-- act 2.4 solve -->
+<section class="screen" id="s-solve">
+  <p class="sys">act 2 · <span class="c">your course</span> · 4 of 4</p>
+  <h2>two taps per block. <em>be honest.</em></h2>
+  <div class="deck" id="deck"></div>
+</section>
+
+<!-- scanning -->
+<section class="screen" id="s-scan">
+  <div class="scanbox"><div class="radar"></div><div class="scanlines" id="scanlines"></div></div>
+</section>
+
+<!-- act 3 drift -->
+<section class="screen" id="s-drift">
+  <p class="sys center">act 3 · <span class="p">your drift</span></p>
+  <div class="inst-wrap"><svg class="inst" id="inst" viewBox="-40 -8 440 376" aria-hidden="true"></svg></div>
+  <div class="deg"><div class="num" id="degnum">0°</div><div class="lab">your drift</div></div>
+  <p class="verdict" id="verdict"></p>
+  <div class="analog" id="analog"><p class="k">in other words</p><p class="set" id="an-set"></p><p class="out" id="an-out"></p></div>
+
+  <div class="sect">
+    <p class="sys">// in your own words</p>
+    <div class="words">
+      <div class="word h"><div class="k">heading · made for</div><p id="w-h"></p></div>
+      <div class="word c"><div class="k" id="w-ck">course · last tuesday</div><p id="w-c"></p></div>
+    </div>
+    <p class="tell" id="tell"></p>
+  </div>
+
+  <div class="sect">
+    <p class="sys">// where the degrees come from</p>
+    <div class="gaps" id="gaps"></div>
+  </div>
+
+  <div class="sect">
+    <p class="sys" id="strip-h">// your tuesday, as it felt</p>
+    <div class="strip" id="strip"></div>
+    <div class="striplab"><span id="s-from"></span><span id="s-to"></span></div><p class="hint" style="margin-top:6px">bright: you were there. faded: you weren't.</p>
+    <p class="alive" id="alive"></p>
+  </div>
+
+  <div class="sect">
+    <p class="sys">// where this course lands</p>
+    <div class="landing">
+      <div class="sl"><label>working hours a week <b id="hv">40</b></label><input type="range" id="hrs" min="10" max="70" step="1" value="40"></div>
+      <div class="sl"><label>working years ahead <b id="yv">25</b></label><input type="range" id="yrs" min="1" max="45" step="1" value="25"></div>
+      <div class="big">
+        <div><b id="tot">0</b><span>working hours ahead</span></div>
+        <div class="pk"><b id="you">0</b><span>with you actually in them</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect">
+    <p class="sys">// course corrections</p>
+    <h2 style="font-size:clamp(24px,6vw,32px)">you don't need to <em>turn around.</em></h2>
+    <p class="lead" style="margin-bottom:16px">navigators correct a few degrees at a time, then hold the burn. here's your course at three horizons. tap each one and watch the line come home.</p>
+    <div class="fixes" id="corr"></div>
+    <p class="corrnote" id="corrnote"></p>
+  </div>
+
+  <div class="row" style="margin-top:34px"><button class="btn wide" id="n-drift" type="button">see the job you were made for</button></div>
+</section>
+
+<!-- act 4 posting -->
+<section class="screen" id="s-post">
+  <p class="sys">act 4 · <span class="p">the posting</span></p>
+  <h2>the job you were made for <em>hasn't been posted yet.</em></h2>
+  <p class="lead" style="margin-bottom:10px">so we posted it.</p>
+  <div id="ticket"></div>
+
+  <div class="sect">
+    <p class="sys">// on the board, flying your heading</p>
+    <div class="boardm" id="boardm"></div>
+  </div>
+
+  <div class="row" style="margin-top:28px">
+    <button class="btn" id="share" type="button">share my heading</button>
+    <button class="btn ghost" id="again" type="button">fly again</button>
+  </div>
+  <div class="sharebox" id="sharebox"><p class="small">copied. if it didn't paste, copy it from here:</p><textarea id="sharetxt" readonly></textarea></div>
+  <p class="small" style="margin-top:14px">your share shows your heading, never your drift. that part stays on this screen.</p>
+  <p class="foot">all missions are fictional. until they won't be.<br>module 02 · nothing you typed has left this page</p>
+</section>
+
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ content ============ */
+const WORLDS=[
+ {id:'nature',ic:'🌿',l:'nature & systems',d:'ecosystems, patterns, how living things connect'},
+ {id:'people',ic:'🤝',l:'human connection',d:'relationships, communities, understanding people'},
+ {id:'building',ic:'⚙️',l:'building & making',d:'tangible things, engineering, craft'},
+ {id:'ideas',ic:'💡',l:'ideas & discovery',d:'research, curiosity, pushing what we know'},
+ {id:'order',ic:'📐',l:'order & structure',d:'systems, strategy, taming complexity'},
+ {id:'expression',ic:'✨',l:'expression & story',d:'art, narrative, culture, communication'}];
+const FUELS=[
+ {id:'flow',ic:'🌊',l:'deep flow',d:'long unbroken stretches where hours vanish'},
+ {id:'spark',ic:'⚡',l:'electric sparks',d:'new problems, new rooms, the thrill of starting'},
+ {id:'fire',ic:'🔥',l:'collective fire',d:'through other people: debate, momentum, shared noise'},
+ {id:'dawn',ic:'🌅',l:'quiet dawn',d:'slow, reflective, observing what others miss'}];
+const FIXES=[
+ {id:'inequality',ic:'⚖️',l:'inequality & injustice'},{id:'environment',ic:'🌍',l:'the environmental crisis'},
+ {id:'health',ic:'💊',l:'health & wellbeing'},{id:'education',ic:'📚',l:'education & access'},
+ {id:'technology',ic:'🤖',l:'technology & ethics'},{id:'connection',ic:'🫂',l:'human disconnection'}];
+const ACTS=[
+ {id:'meet',ic:'📞',l:'meetings & calls',c:'#8b7cf6',w:{people:.5,order:.5},m:{fire:.35,spark:.15},noise:.5},
+ {id:'mail',ic:'✉️',l:'email & chat',c:'#6b6585',w:{order:.6,people:.3},m:{},noise:1,dark:1},
+ {id:'focus',ic:'🎧',l:'deep work',c:'#00f0c8',w:{ideas:.5,order:.5},m:{flow:1,dawn:.3},noise:0},
+ {id:'field',ic:'🌿',l:'outdoors, in nature',c:'#7be0a0',w:{nature:1},m:{spark:.3,dawn:.3,fire:.15},noise:0},
+ {id:'make',ic:'🛠️',l:'making & fixing',c:'#ffc857',w:{building:1},m:{flow:.6,spark:.25},noise:0},
+ {id:'help',ic:'🤝',l:'helping someone',c:'#ff5f9e',w:{people:1},m:{fire:.6},noise:0},
+ {id:'create',ic:'✏️',l:'writing & creating',c:'#ff9ec4',w:{expression:1},m:{flow:.6,spark:.25},noise:0},
+ {id:'learn',ic:'🔍',l:'learning & research',c:'#7fd3ff',w:{ideas:1},m:{dawn:.6,flow:.3},noise:0},
+ {id:'admin',ic:'📊',l:'admin & reports',c:'#9aa0b5',w:{order:1},m:{},noise:.8},
+ {id:'travel',ic:'🚇',l:'commuting',c:'#4a4560',w:{},m:{},noise:1,dark:1},
+ {id:'break',ic:'🥪',l:'breaks',c:'#2a2340',w:{},m:{},noise:0,dark:1,skip:1}];
+const A=Object.fromEntries(ACTS.map(a=>[a.id,a]));
+const SOLVES=[{v:1,l:'a problem i actually care about'},{v:.6,l:"my team's problem"},{v:.6,l:"a customer's problem"},{v:.2,l:"someone's target or deadline"},{v:0,l:'honestly? not sure'},{v:-1,l:'worse'}];
+const PRES=[{v:1,l:'all there'},{v:.5,l:'half there'},{v:0,l:'somewhere else'}];
+const STATUS={work:{l:'working',day:'last tuesday',dayH:'last tuesday.',lead:'think of last tuesday at work. describe it in one sentence, the way you\'d tell a friend.'},
+ study:{l:'studying',day:'a typical study day',dayH:'a typical study day.',lead:'think of a typical study day. describe it in one sentence, the way you\'d tell a friend.'},
+ between:{l:'between jobs',day:'a typical day',dayH:'a typical day.',lead:'think of a typical day right now. describe it in one sentence, the way you\'d tell a friend.'},
+ caring:{l:'caring for someone',day:'a typical day',dayH:'a typical day.',lead:'think of a typical day right now. describe it in one sentence, the way you\'d tell a friend.'}};
+const TASTES=[
+ {id:'travel',ic:'🧳',l:'travelling',d:'new places, new streets'},{id:'food',ic:'🍜',l:'food',d:'cooking it, finding it, eating it'},
+ {id:'music',ic:'🎧',l:'music',d:'live, loud, on repeat'},{id:'film',ic:'🎬',l:'films & series',d:'a good story on a screen'},
+ {id:'books',ic:'📖',l:'books',d:'the one you can\'t put down'},{id:'sport',ic:'⚽',l:'sport',d:'playing it or watching it'}];
+/* six bands of contrast: <20°, <35°, <55°, <75°, <90°, 90°+ */
+const ANALOGY={
+ travel:['you booked two weeks in the maldives',['and woke up in the seychelles. different island, same sea.','and landed in bali in the rainy season. warm, at least.','and spent it in an airport hotel outside frankfurt.','and landed in reykjavík in january.','and landed in antarctica. in winter.','and the trip brought you back to your desk on monday morning.']],
+ food:['you ordered a double scoop of pistachio ice cream',['and got pistachio gelato. close enough to smile.','and got a frozen yoghurt. nice. not what you ordered.','and got a lukewarm rice pudding.','and got a bowl of plain porridge.','and got boiled rice. unsalted. cold.','and they charged you for the ice cream and delivered nothing.']],
+ music:['you bought front-row tickets to your favourite band',['and got their acoustic set. different. still them.','and got the support act. all night.','and got a tribute band in a hotel lobby.','and got the hold music from a customer service line.','and got two hours of a car alarm.','and they played your 6am alarm. on repeat.']],
+ film:["you queued for the film you'd waited all year to see",["and got the director's cut.",'and got the sequel nobody asked for.','and got forty minutes of trailers.','and got a fire safety training video.','and got ninety minutes of a screensaver.','and they screened your last performance review.']],
+ books:["you opened the novel you couldn't put down",['and found a different edition. same story.','and got the abridged version.','and got the manual for an office printer.','and got the minutes of a budget meeting.','and got the terms and conditions. all of them.','and found your own inbox, printed and bound.']],
+ sport:['you got tickets to the final',['and got seats behind the goal instead of the halfway line.','and got the semi-final, on a big screen.','and got a pub quiz about the final.','and got the groundskeeper mowing the pitch.',"and got a spreadsheet of last season's results.",'and they put you in goal. for the other team.']]};
+function band(d){ return d<20?0:d<35?1:d<55?2:d<75?3:d<90?4:5; }
+function analogy(d){ const [set,outs]=ANALOGY[S.taste||'travel']; return {set,out:outs[band(d)]}; }
+const FIX_WORSE={inequality:'deepening unfairness',environment:'harming the planet',health:"harming people's wellbeing",education:'making learning harder',technology:'making technology less humane',connection:'making people lonelier'};
+const STARTERS=['it was a saturday and','i was a kid and','on holiday, i','late one night i'];
+
+/* archetypes: fuel × primary world (carried over from the original passion archetype) */
+const ARCH={
+ flow:{nature:['🏞️','the slow river','you understand things by staying with them longer than anyone else will.'],people:['🫧','the deep listener',"people tell you things they haven't told themselves yet."],building:['🔩','the patient forge','you make things that outlast the people who asked for them.'],ideas:['🔭','the long thought','you follow a question past the point where everyone else got bored.'],order:['🧱','the quiet architect','you build the structure, then disappear, and it keeps working.'],expression:['🕯️','the night writer','your best work arrives when the world has gone to bed.']},
+ spark:{nature:['🗺️','the wild cartographer',"you map places that aren't on anyone's map yet."],people:['🎇','the spark carrier','you walk into a room and the room changes its mind.'],building:['🧪','the garage prophet','you build the prototype before the meeting that would have said no.'],ideas:['⚡','the question storm','you have nine ideas before breakfast and two of them are dangerous.'],order:['🧩','the fast map','you see the whole system in the first ten minutes.'],expression:['📣','the loud idea','you say the thing out loud that everyone was thinking quietly.']},
+ fire:{nature:['🌾','the field crew captain','you make a crowd of strangers into a crew by lunchtime.'],people:['🔥','the campfire','people gather around you and leave warmer than they came.'],building:['🏗️','the barn raiser','you build big things with many hands, and nobody feels small.'],ideas:['🧠','the open lab','your thinking is a party and everyone leaves smarter.'],order:['🧭','the war room','you turn chaos into a plan with the door open and the coffee on.'],expression:['🎤','the chorus',"you don't want a stage, you want everyone singing."]},
+ dawn:{nature:['🌄','the dawn watcher','you notice the thing everyone else walked past.'],people:['🕊️','the still point','in the storm, people look for you.'],building:['🪚','the careful hand',"you measure twice, cut once, and it's beautiful."],ideas:['🌙','the slow fuse',"your ideas take longer and then they don't go out."],order:['📐','the clear table',"where you've been, things make sense."],expression:['✒️','the margin note',"you say less, and it's the line people remember."]}};
+const JOBS={
+ nature:{inequality:'Commons Steward',environment:'Rewilding Director',health:'Forest Prescription Officer',education:'Head of Outdoor Classrooms',technology:'Biosphere Ethics Officer',connection:'Village Ecologist'},
+ people:{inequality:'Chief Fairness Officer',environment:'Climate Grief Counsellor',health:'Loneliness Epidemiologist',education:'Mentor Network Weaver',technology:'Human Liaison to the Machines',connection:'Head of Neighbours'},
+ building:{inequality:'Affordable Everything Engineer',environment:'Carbon Removal Foreman',health:'Hospital-in-a-Box Designer',education:'Classroom Hardware Inventor',technology:'Right-to-Repair Architect',connection:'Third Place Builder'},
+ ideas:{inequality:'Economist of Enough',environment:'Planetary Boundaries Researcher',health:'Longevity Fairness Scientist',education:'Curiosity Curriculum Lead',technology:'AI Conscience Researcher',connection:'Attention Economist'},
+ order:{inequality:'Wealth Flow Designer',environment:'Circular City Planner',health:'Care System Untangler',education:'Head of Learning Logistics',technology:'Algorithm Auditor General',connection:'Head of Belonging Infrastructure'},
+ expression:{inequality:'Justice Storyteller',environment:'Climate Myth Maker',health:'Hospital Poet in Residence',education:'Head of Stories That Teach',technology:'Chief Explainer of Machines',connection:'Dinner Table Designer'}};
+const WORLD_LINE={nature:"you're drawn to living systems: how things grow, connect and fall apart.",people:"you're drawn to people: what they mean, what they hide, what happens between them.",building:"you're drawn to making: real things, with edges, that didn't exist on monday and do on friday.",ideas:"you're drawn to the edge of what's known, and suspicious of any answer that arrived too easily.",order:"you're drawn to structure: the quiet pleasure of a mess becoming a system other people can use.",expression:"you're drawn to meaning: story, image, voice, the part of the work that makes someone feel something."};
+const FIX_LINE={inequality:'close the gap between who gets the chance and who deserved it.',environment:'look after the one home we have, while others pretend not to notice.',health:'bodies and minds that could be cared for better, and will be.',education:'who gets to know things, and how much better we could teach them.',technology:'a future built for humans, not just by them.',connection:'eight billion people, more connected than ever, and lonelier than ever. fix that.'};
+const FUEL_LINE={flow:'you work in long, unbroken stretches. meetings are scheduled around you, not the other way round.',spark:'you start things. a crew finishes them with you, and nobody calls that a weakness.',fire:'you work in the middle of people: argument, momentum, a room that gets louder when you walk in.',dawn:'you work early, slow and unobserved, and produce more in a quiet morning than most teams do in a week.'};
+const FIX_SHORT={inequality:'unfairness',environment:'the planet',health:"people's wellbeing",education:'how people learn',technology:'humane technology',connection:'loneliness'};
+const BOARD={'001':['Herd Liaison Officer','Kinfrost','2036'],'002':['Head of Free Time','Abundance Collective','2039'],'003':['Head of Machine Wellbeing','Kokoro Labs','2041'],'004':['Interior Designer, Subsea City','Lumen Deep','2040'],'005':['Senior Dream Archivist','Somnia Vault','2042'],'006':['Asteroid Fleet Manager','Deep Haul Logistics','2045'],'007':['Senior Whale Intelligence Officer','Bureau of Cetacean Intelligence','2043'],'008':['General Manager, The Aurelian','Aurelian Orbital','2041'],'009':['Senior Weather Broker','Nimbus Exchange','2046']};
+const WORLD_BOARD={nature:['001','007'],people:['002','008'],building:['004','006'],ideas:['003','005'],order:['006','009'],expression:['004','002']};
+const LEX={
+ nature:['garden','plant','tree','forest','sea','ocean','river','mountain','hike','animal','dog','horse','bird','weather','soil','grow','farm','outside','outdoors','trail','beach','nature','wild','camp','sky','stars','sail','surf','dive','fishing','flowers'],
+ people:['friend','friends','people','listening','talk','talking','conversation','helping','helped','teach','taught','kids','children','family','team','crowd','stranger','community','mentor','coach','students','host','party','together'],
+ building:['built','build','building','made','make','making','fix','fixed','repair','tools','hand','hands','wood','metal','engine','machine','workshop','garage','cook','cooking','baking','knit','sew','furniture','prototype','lego','craft','restore','bike','boat','sanding'],
+ ideas:['research','reading','read','learn','learning','understand','why','theory','experiment','puzzle','problem','solve','solving','maths','math','physics','history','question','curious','discover','figuring','wikipedia','study','science','data','code','coding','chess'],
+ order:['plan','planning','organise','organize','organised','organized','system','spreadsheet','schedule','sorted','sorting','process','strategy','map','budget','structure','checklist','logistics','tidy','simplify','optimise','optimize','framework'],
+ expression:['write','writing','wrote','draw','drawing','paint','painting','music','song','singing','guitar','piano','dance','dancing','photo','photography','film','story','stories','design','designing','poem','poetry','stage','podcast','sketch','editing','theatre','band']};
+const COND={alone:['alone','myself','on my own','by myself','nobody','no one','quiet','silence','solo'],together:[' we ','with my','with friends','everyone','together','crowd','group','people','team','kids','family'],
+ outdoors:['outdoors','garden','forest','beach','mountain','sea ','trail','field','hike','park','lake','river','on a walk'],indoors:['desk','screen','laptop','computer','room','kitchen','studio','office','garage','workshop'],
+ hands:['hands','by hand','built','made','fixing','fixed','cooking','painting','drawing','tools','knit','carving','soil','repair','sanding'],screen:['screen','laptop','computer','code','coding','spreadsheet','online','app','software','game']};
+
+/* ============ state ============ */
+const S={taste:'travel',cworlds:[],moment:'',worlds:[],fuel:null,fix:null,status:'work',tline:'',start:9,slots:Array(9).fill(null),brush:'meet',solve:{},corr:null};
+const $=id=>document.getElementById(id);
+let sound=true, ac=null;
+function blip(f=660,d=.07,type='sine',g=.05){ if(!sound) return; try{ ac=ac||new (window.AudioContext||window.webkitAudioContext)(); const o=ac.createOscillator(), v=ac.createGain(); o.type=type; o.frequency.value=f; v.gain.setValueAtTime(g,ac.currentTime); v.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d); o.connect(v).connect(ac.destination); o.start(); o.stop(ac.currentTime+d); }catch(e){} }
+function chord(base=440){ [1,1.25,1.5].forEach((m,i)=>setTimeout(()=>blip(base*m,.25,'triangle',.04),i*90)); }
+$('snd').onclick=()=>{ sound=!sound; $('snd').setAttribute('aria-pressed',sound); $('snd').textContent=sound?'sound on':'sound off'; if(sound) blip(880); };
+function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),2000); }
+const PROG={intro:[0,0,0,0],pre:[.05,0,0,0],moment:[.12,0,0,0],worlds:[.37,0,0,0],fuel:[.62,0,0,0],fix:[.85,0,0,0],locked:[1,0,0,0],tline:[1,.15,0,0],paint:[1,.4,0,0],cworlds:[1,.65,0,0],solve:[1,.8,0,0],scan:[1,1,.3,0],drift:[1,1,1,0],post:[1,1,1,1]};
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $('s-'+id).classList.add('on'); (PROG[id]||[0,0,0,0]).forEach((v,i)=>$('a'+(i+1)).style.width=(v*100)+'%'); window.scrollTo({top:0,behavior:'smooth'}); }
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ============ intro ============ */
+setTimeout(()=>{ $('icourse').style.transform='rotate(28deg)'; $('itxt').setAttribute('opacity','1'); },500);
+$('go').onclick=()=>{ blip(520); show('pre'); };
+TASTES.forEach(t=>{ const b=mkCard(t); b.onclick=()=>{ S.taste=t.id; document.querySelectorAll('#tastes .card').forEach(c=>c.classList.remove('pick')); b.classList.add('pick'); blip(760); setTimeout(()=>{ show('moment'); setTimeout(()=>$('moment').focus({preventScroll:true}),400); },380); }; $('tastes').appendChild(b); });
+$('demo').onclick=demo;
+
+/* ============ act 1 ============ */
+STARTERS.forEach(t=>{ const b=document.createElement('button'); b.className='starter'; b.type='button'; b.textContent=t+'…'; b.onclick=()=>{ const ta=$('moment'); ta.value=(ta.value?ta.value.trim()+' ':'')+t+' '; ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); onMoment(); blip(700,.05); }; $('starters').appendChild(b); });
+function onMoment(){ S.moment=$('moment').value.trim(); const n=S.moment.length, need=60, p=Math.min(1,n/need);
+  $('mc').textContent=n+' characters'; $('mbar').style.width=(p*100)+'%';
+  const ok=n>=need; $('n-moment').disabled=!ok; $('mok').textContent=ok?'signal clear':'a few more words'; $('mok').className=ok?'ok':''; }
+$('moment').addEventListener('input',onMoment);
+$('n-moment').onclick=()=>{ blip(620); show('worlds'); };
+
+function mkCard(x,cls=''){ const b=document.createElement('button'); b.type='button'; b.className='card '+cls; b.innerHTML=`<span class="ic">${x.ic}</span><span><span class="l">${x.l}</span>${x.d?`<br><span class="d">${x.d}</span>`:''}</span><span class="ord"></span>`; return b; }
+WORLDS.forEach(w=>{ const b=mkCard(w); b.dataset.id=w.id; b.onclick=()=>{
+  const i=S.worlds.indexOf(w.id); if(i>=0) S.worlds.splice(i,1); else if(S.worlds.length<3) S.worlds.push(w.id); else { blip(200,.08,'square',.03); return; }
+  blip(500+S.worlds.length*120); document.querySelectorAll('#worlds .card').forEach(c=>{ const k=S.worlds.indexOf(c.dataset.id); c.classList.toggle('pick',k>=0); c.querySelector('.ord').textContent=k>=0?k+1:''; });
+  $('whint').textContent='tap in order of pull · '+S.worlds.length+' of 3'; $('n-worlds').disabled=!S.worlds.length; }; $('worlds').appendChild(b); });
+$('n-worlds').onclick=()=>{ blip(620); show('fuel'); };
+FUELS.forEach(f=>{ const b=mkCard(f); b.onclick=()=>{ S.fuel=f.id; document.querySelectorAll('#fuels .card').forEach(c=>c.classList.remove('pick')); b.classList.add('pick'); blip(760); setTimeout(()=>show('fix'),380); }; $('fuels').appendChild(b); });
+FIXES.forEach(f=>{ const b=mkCard(f,'pk'); b.onclick=()=>{ S.fix=f.id; document.querySelectorAll('#fixes .card').forEach(c=>c.classList.remove('pick')); b.classList.add('pick'); blip(820); setTimeout(lockHeading,420); }; $('fixes').appendChild(b); });
+
+function hash(s){ let h=7; for(const ch of s) h=(h*31+ch.charCodeAt(0))>>>0; return h; }
+function headingBearing(){ return (hash(S.moment+S.worlds.join()+S.fuel+S.fix)%300)+30; }
+function lockHeading(){
+  show('locked'); const b=headingBearing(); const svg=$('compass');
+  let ticks=''; for(let i=0;i<72;i++){ const a=i*5*Math.PI/180, r1=i%6?132:124; ticks+=`<line x1="${150+Math.sin(a)*r1}" y1="${150-Math.cos(a)*r1}" x2="${150+Math.sin(a)*138}" y2="${150-Math.cos(a)*138}" stroke="${i%18?'#2a2340':'#a99cc6'}" stroke-width="${i%6?1:1.5}"/>`; }
+  const lab=[['N',150,30],['E',272,154],['S',150,280],['W',28,154]].map(([t,x,y])=>`<text x="${x}" y="${y}" text-anchor="middle" font-family="DM Mono" font-size="12" fill="#6b6585">${t}</text>`).join('');
+  svg.innerHTML=`<circle cx="150" cy="150" r="140" fill="rgba(20,12,40,.6)" stroke="#2a2340"/>${ticks}${lab}
+   <g id="needle" style="transform-origin:150px 150px; transform:rotate(-200deg); transition:transform 2.2s cubic-bezier(.3,1.6,.4,1)"><path d="M150 40 L160 150 L150 166 L140 150 Z" fill="#ff5f9e"/><path d="M150 166 L160 150 L150 250 L140 150 Z" fill="#2a2340"/></g>
+   <circle cx="150" cy="150" r="8" fill="#07030f" stroke="#00f0c8" stroke-width="2"/>`;
+  $('lockline').textContent='locating heading…'; blip(300,.4,'sine',.04);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ $('needle').style.transform=`rotate(${b}deg)`; }));
+  setTimeout(()=>{ $('lockline').textContent='heading locked · '+String(b).padStart(3,'0')+'°'; chord(523); },2100);
+}
+$('n-locked').onclick=()=>{ blip(620); show('tline'); setupStatus(); };
+
+/* ============ act 2 ============ */
+function setupStatus(){ const box=$('status'); if(box.children.length) return;
+  Object.entries(STATUS).forEach(([k,v])=>{ const b=document.createElement('button'); b.type='button'; b.className='chip'+(k===S.status?' on':''); b.textContent=v.l; b.onclick=()=>{ S.status=k; [...box.children].forEach(c=>c.classList.toggle('on',c===b)); $('tl-lead').textContent=v.lead; blip(700,.05); }; box.appendChild(b); }); }
+$('tline').addEventListener('input',()=>{ S.tline=$('tline').value.trim(); $('n-tline').disabled=S.tline.length<8; });
+$('n-tline').onclick=()=>{ blip(620); $('paint-day').textContent=STATUS[S.status].dayH; show('paint'); buildPaint(); };
+
+function buildPaint(){
+  const br=$('brushes'); if(!br.children.length){ ACTS.forEach(a=>{ const b=document.createElement('button'); b.type='button'; b.className='brush'+(a.id===S.brush?' on':''); b.style.setProperty('--c',a.c); b.innerHTML=`${a.ic} ${a.l}`; b.onclick=()=>{ S.brush=a.id; [...br.children].forEach(c=>c.classList.toggle('on',c===b)); blip(600+ACTS.indexOf(a)*40,.05); }; br.appendChild(b); }); }
+  renderDay();
+}
+function hh(n){ return String(n).padStart(2,'0')+':00'; }
+function renderDay(){
+  const d=$('day'); d.innerHTML='';
+  S.slots.forEach((v,i)=>{ const r=document.createElement('div'); r.className='slot'+(v?' filled':''); r.dataset.i=i; const a=v&&A[v];
+    if(a) r.style.setProperty('--c',a.c);
+    r.innerHTML=`<span class="t">${hh(S.start+i)}</span><span class="f${a&&a.dark?' dark':''}">${a?a.ic+' '+a.l:'tap or drag to paint'}</span>`; d.appendChild(r); });
+  updPainted();
+}
+function updPainted(){ const n=S.slots.filter(Boolean).length; $('painted').innerHTML=`<b>${n}</b> of ${S.slots.length} hours painted`; $('n-paint').disabled=n<S.slots.length; }
+let painting=false, lastI=-1;
+function paintAt(x,y){ const el=document.elementFromPoint(x,y); const row=el&&el.closest('.slot'); if(!row) return; const i=+row.dataset.i; if(i===lastI) return; lastI=i;
+  S.slots[i]=S.brush; const a=A[S.brush]; row.classList.add('filled','pop'); row.style.setProperty('--c',a.c); const f=row.querySelector('.f'); f.className='f'+(a.dark?' dark':''); f.textContent=a.ic+' '+a.l;
+  setTimeout(()=>row.classList.remove('pop'),150); blip(380+i*45,.05,'triangle',.035); updPainted(); }
+$('day').addEventListener('pointerdown',e=>{ painting=true; lastI=-1; paintAt(e.clientX,e.clientY); });
+window.addEventListener('pointermove',e=>{ if(painting) paintAt(e.clientX,e.clientY); },{passive:true});
+window.addEventListener('pointerup',()=>{ painting=false; }); window.addEventListener('pointercancel',()=>{ painting=false; });
+$('earlier').onclick=()=>{ if(S.start<=6) return; S.start--; S.slots.unshift(null); renderDay(); blip(500,.05); };
+$('later').onclick=()=>{ if(S.start+S.slots.length>=22) return; S.slots.push(null); renderDay(); blip(500,.05); };
+$('n-paint').onclick=()=>{ blip(620); $('cw-day').textContent=STATUS[S.status].day; show('cworlds'); };
+WORLDS.forEach(w=>{ const b=mkCard(w); b.dataset.id=w.id; b.onclick=()=>{
+  const i=S.cworlds.indexOf(w.id); if(i>=0) S.cworlds.splice(i,1); else if(S.cworlds.length<3) S.cworlds.push(w.id); else { blip(200,.08,'square',.03); return; }
+  blip(500+S.cworlds.length*120); document.querySelectorAll('#cworlds .card').forEach(c=>{ const k=S.cworlds.indexOf(c.dataset.id); c.classList.toggle('pick',k>=0); c.querySelector('.ord').textContent=k>=0?k+1:''; });
+  $('cwhint').textContent='tap in order · '+S.cworlds.length+' of 3'; $('n-cworlds').disabled=!S.cworlds.length; }; $('cworlds').appendChild(b); });
+$('n-cworlds').onclick=()=>{ blip(620); show('solve'); S.solve={}; dealIdx=0; deal(); };
+
+function usedActs(){ const h={}; S.slots.forEach(v=>{ if(v&&!A[v].skip) h[v]=(h[v]||0)+1; }); return Object.entries(h).sort((a,b)=>b[1]-a[1]); }
+let dealIdx=0;
+function deal(){
+  const used=usedActs(); const deck=$('deck');
+  if(!used.length){ S.solve={}; return compute(); }
+  if(dealIdx>=used.length) return compute();
+  const [id,h]=used[dealIdx], a=A[id]; const st=S.solve[id]||(S.solve[id]={s:null,p:null});
+  deck.innerHTML=`<div class="qcard" id="qc"><div class="qhead"><span class="sw" style="--c:${a.c}">${a.ic}</span><div><div class="n">${a.l}</div><div class="h">${h} hour${h>1?'s':''} of ${STATUS[S.status].day}</div></div></div>
+    <div class="q">what were these hours solving?</div><div class="opts" id="os">${SOLVES.map((o,i)=>`<button type="button" class="opt" data-i="${i}">${o.v<0?'honestly? '+FIX_WORSE[S.fix]:o.l}</button>`).join('')}</div>
+    <div class="q">were you there?</div><div class="opts pres" id="op">${PRES.map((o,i)=>`<button type="button" class="opt" data-i="${i}">${o.l}</button>`).join('')}</div></div>
+    <div class="deckfoot"><button type="button" class="link" id="qback">${dealIdx?'back':''}</button><span>block ${dealIdx+1} of ${used.length}</span></div>`;
+  const next=()=>{ if(st.s!==null&&st.p!==null){ setTimeout(()=>{ $('qc').classList.add('out'); setTimeout(()=>{ dealIdx++; deal(); },300); },260); } };
+  [...$('os').children].forEach(b=>b.onclick=()=>{ st.s=SOLVES[+b.dataset.i].v; st.sl=+b.dataset.i; [...$('os').children].forEach(c=>c.classList.toggle('on',c===b)); blip(640,.05); next(); });
+  [...$('op').children].forEach(b=>b.onclick=()=>{ st.p=PRES[+b.dataset.i].v; [...$('op').children].forEach(c=>c.classList.toggle('on',c===b)); blip(760,.05); next(); });
+  $('qback').onclick=()=>{ if(dealIdx){ dealIdx--; deal(); } };
+}
+
+/* ============ the model ============ */
+const DIMS=['nature','people','building','ideas','order','expression','flow','spark','fire','dawn','purpose','noise'];
+const W6=DIMS.slice(0,6), M4=['flow','spark','fire','dawn'];
+function readMoment(t){ const low=' '+t.toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ')+' ';
+  const ws={}; for(const w in LEX){ ws[w]=0; for(const k of LEX[w]) if(low.includes(' '+k+' ')||low.includes(' '+k+'s ')||low.includes(' '+k+'ing ')) ws[w]++; }
+  const cs={}; for(const c in COND){ cs[c]=0; for(const k of COND[c]) if(low.includes(k)) cs[c]++; }
+  const pick=(a,b)=>cs[a]>cs[b]?a:cs[b]>cs[a]?b:null;
+  return {ws,alone:pick('alone','together'),out:pick('outdoors','indoors'),hands:pick('hands','screen')}; }
+function norm(v){ return Math.sqrt(v.reduce((s,x)=>s+x*x,0)); }
+function scaleTo(obj,keys,len){ const v=keys.map(k=>obj[k]||0); const n=norm(v); keys.forEach((k,i)=>obj[k]=n?v[i]/n*len:0); }
+function headingVec(){ const v={}; DIMS.forEach(d=>v[d]=0); const r=readMoment(S.moment);
+  S.worlds.forEach((w,i)=>v[w]+=[1,.7,.5][i]); W6.forEach(w=>v[w]+=Math.min(.5,r.ws[w]*.15)); scaleTo(v,W6,1);
+  v[S.fuel]=1; scaleTo(v,M4,1); v.purpose=1; v.noise=0; return v; }
+function courseFrom(slots,solve,cw=S.cworlds){ const v={}; DIMS.forEach(d=>v[d]=0); let T=0,pur=0,noise=0,absent=0;
+  slots.forEach(id=>{ if(!id) return; const a=A[id]; if(a.skip) return; T++; const st=solve[id]||{s:.5,p:.5};
+    for(const k in a.w) v[k]+=a.w[k]; for(const k in a.m) v[k]+=a.m[k]; pur+=st.s??.5; noise+=a.noise; absent+=1-(st.p??.5); });
+  if(!T) return {v,T:0};
+  scaleTo(v,W6,1); if(cw&&cw.length){ const sw={}; cw.forEach((w,i)=>sw[w]=[1,.7,.5][i]); scaleTo(sw,W6,1); W6.forEach(k=>v[k]=v[k]*.5+(sw[k]||0)*.5); scaleTo(v,W6,1); }
+  M4.forEach(k=>v[k]/=T); { const mn=norm(M4.map(k=>v[k])); if(mn>0){ const to=Math.min(1,mn*1.5); M4.forEach(k=>v[k]=v[k]/mn*to); } }
+  v.purpose=pur/T; v.noise=Math.min(1,(noise/T)*.5+(absent/T)*.5); return {v,T}; }
+function angle(h,c){ let dot=0; DIMS.forEach(d=>dot+=h[d]*c[d]); const n=norm(DIMS.map(d=>h[d]))*norm(DIMS.map(d=>c[d])); if(!n) return 90; return Math.acos(Math.max(-1,Math.min(1,dot/n)))*180/Math.PI; }
+function aliveShare(slots,solve){ let T=0,al=0; slots.forEach(id=>{ if(!id||A[id].skip) return; T++; al+=(solve[id]?solve[id].p:.5)??.5; }); return T?al/T:0; }
+function hoursWhere(test){ return S.slots.filter(id=>id&&!A[id].skip&&test(A[id])).length; }
+function bestAct(h){ let best=null,bs=-1; ACTS.forEach(a=>{ if(a.skip||a.noise>=.5) return; const v={}; DIMS.forEach(d=>v[d]=0); for(const k in a.w) v[k]=a.w[k]; for(const k in a.m) v[k]=a.m[k]; v.purpose=1; const s=Math.cos(angle(h,v)*Math.PI/180); if(s>bs){ bs=s; best=a; } }); return best; }
+
+/* ============ compute + scan ============ */
+let R=null;
+function compute(){
+  show('scan'); const lines=['reading your heading…','replaying '+STATUS[S.status].day+'…','measuring the angle…','plotting where this course lands…','drift found.']; $('scanlines').innerHTML='';
+  lines.forEach((t,i)=>setTimeout(()=>{ const s=document.createElement('span'); s.textContent=t; $('scanlines').appendChild(s); blip(420+i*90,.08,'triangle',.04); },i*620));
+  const h=headingVec(), c=courseFrom(S.slots,S.solve); const d=angle(h,c.v);
+  R={h,c:c.v,T:c.T,drift:Math.round(d),alive:aliveShare(S.slots,S.solve)};
+  setTimeout(()=>{ renderDrift(); show('drift'); setTimeout(animateDrift,350); },lines.length*620+300);
+}
+
+/* ============ act 3 ============ */
+const INST={ox:180,oy:180,L:150};
+function pt(deg,len){ const a=(deg-90)*Math.PI/180; return [INST.ox+Math.cos(a)*len, INST.oy+Math.sin(a)*len]; }
+function arcPath(deg,r){ const [x1,y1]=pt(0,r),[x2,y2]=pt(deg,r); return `M${x1} ${y1} A${r} ${r} 0 ${deg>180?1:0} 1 ${x2} ${y2}`; }
+function initInst(){ const {ox,oy,L}=INST; let g='';
+  for(let i=0;i<72;i++){ const big=i%9===0, [a,b]=pt(i*5,L), [c2,d2]=pt(i*5,L-(big?12:i%2?4:7)); g+=`<line x1="${a}" y1="${b}" x2="${c2}" y2="${d2}" stroke="${big?'#4a4066':'#2a2340'}" stroke-width="1"/>`; }
+  [['090',90],['180',180],['270',270]].forEach(([t,d])=>{ const [x,y]=pt(d,L+16); g+=`<text x="${x}" y="${y+4}" text-anchor="middle" font-family="DM Mono" font-size="10" fill="#4a4066" letter-spacing="1">${t}</text>`; });
+  $('inst').innerHTML=`<defs>
+    <radialGradient id="scope"><stop offset="0" stop-color="#0d2a2a" stop-opacity=".55"/><stop offset=".7" stop-color="#120a26" stop-opacity=".7"/><stop offset="1" stop-color="#07030f" stop-opacity=".9"/></radialGradient>
+    <linearGradient id="sw" gradientUnits="userSpaceOnUse" x1="${ox}" y1="${oy}" x2="${ox+L}" y2="${oy}"><stop offset="0" stop-color="#00f0c8" stop-opacity="0"/><stop offset="1" stop-color="#00f0c8" stop-opacity=".22"/></linearGradient>
+    <radialGradient id="wedge" gradientUnits="userSpaceOnUse" cx="${ox}" cy="${oy}" r="${L}"><stop offset="0" stop-color="#ff5f9e" stop-opacity="0"/><stop offset="1" stop-color="#ff5f9e" stop-opacity=".28"/></radialGradient></defs>
+    <circle cx="${ox}" cy="${oy}" r="${L}" fill="url(#scope)" stroke="#2a2340" stroke-width="1.5"/>
+    ${[L*.33,L*.66].map(r=>`<circle cx="${ox}" cy="${oy}" r="${r}" fill="none" stroke="#1f1836" stroke-width="1"/>`).join('')}
+    <line x1="${ox-L}" y1="${oy}" x2="${ox+L}" y2="${oy}" stroke="#1f1836"/><line x1="${ox}" y1="${oy-L}" x2="${ox}" y2="${oy+L}" stroke="#1f1836"/>
+    ${g}
+    <g><animateTransform attributeName="transform" type="rotate" from="0 ${ox} ${oy}" to="360 ${ox} ${oy}" dur="4.5s" repeatCount="indefinite"/><path d="M${ox} ${oy} L${pt(60,L).join(' ')} A${L} ${L} 0 0 1 ${pt(90,L).join(' ')} Z" fill="url(#sw)" transform="rotate(-90 ${ox} ${oy})"/><line x1="${ox}" y1="${oy}" x2="${ox+L}" y2="${oy}" stroke="#00f0c8" stroke-opacity=".35" stroke-width="1"/></g>
+    <g id="dyn"></g>`; }
+function drawInst(cur,ghost){
+  const {ox,oy,L}=INST; const r=L*.86; const [hx,hy]=pt(0,r), [cx,cy]=pt(cur,r);
+  let gh=''; if(ghost!=null){ const [gx,gy]=pt(ghost,r); gh=`<path d="${arcPath(ghost,46)}" fill="none" stroke="#00f0c8" stroke-width="2"/><line x1="${ox}" y1="${oy}" x2="${gx}" y2="${gy}" stroke="#00f0c8" stroke-width="2.5" stroke-linecap="round"/><circle class="blip" cx="${gx}" cy="${gy}" r="5" fill="#00f0c8"/><circle cx="${gx}" cy="${gy}" r="5" fill="#00f0c8"/>`; }
+  const [lx,ly]=pt(cur,L+28); const anc=cur>15&&cur<165?'start':cur>195&&cur<345?'end':'middle';
+  $('dyn').innerHTML=`${cur>.5?`<path d="M${ox} ${oy} L${hx} ${hy} A${r} ${r} 0 ${cur>180?1:0} 1 ${cx} ${cy} Z" fill="url(#wedge)"/><path d="${arcPath(cur,66)}" fill="none" stroke="#ff5f9e" stroke-width="2"/>`:''}
+    <line x1="${ox}" y1="${oy}" x2="${hx}" y2="${hy}" stroke="#ff5f9e" stroke-width="3" stroke-linecap="round"/>
+    <circle class="blip" cx="${hx}" cy="${hy}" r="6" fill="#ff5f9e"/><circle cx="${hx}" cy="${hy}" r="6" fill="#ff5f9e"/>
+    <text x="${ox}" y="${oy-L-24}" text-anchor="middle" font-family="DM Mono" font-size="11" fill="#ff5f9e" letter-spacing="1.5">HEADING</text>
+    <line x1="${ox}" y1="${oy}" x2="${cx}" y2="${cy}" stroke="#d8ccf0" stroke-width="2.2" stroke-dasharray="6 6" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="5" fill="#d8ccf0"/>
+    ${cur>6?`<text x="${lx}" y="${ly+4}" text-anchor="${anc}" font-family="DM Mono" font-size="11" fill="#a99cc6" letter-spacing="1.5">COURSE</text>`:''}
+    ${gh}<circle cx="${ox}" cy="${oy}" r="6" fill="#07030f" stroke="#00f0c8" stroke-width="2"/>`;
+}
+function animateDrift(){ const target=R.drift, t0=performance.now(), dur=2400; let lastTick=0;
+  (function f(t){ const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3), cur=target*e; drawInst(cur); $('degnum').textContent=Math.round(cur)+'°';
+    if(Math.round(cur)!==lastTick&&Math.round(cur)%3===0){ lastTick=Math.round(cur); blip(300+cur*6,.03,'sine',.025); }
+    if(p<1) requestAnimationFrame(f); else { chord(target>45?330:440); $('g2').style.opacity=Math.min(1,.4+target/120); setTimeout(()=>$('analog').classList.add('on'),500); } })(t0); }
+function verdict(d){ if(d>=90) return "<b>past 90°, your days aren't just drifting from your heading. they're pulling against it.</b> by your own answers. it's the hardest reading, and the one where small corrections count most.";
+  if(d<20) return "you're <b>close to your heading.</b> most people aren't. protect whatever is making that possible.";
+  if(d<35) return '<b>a few degrees off.</b> invisible on a tuesday. decisive over a career.';
+  if(d<55) return "<b>far enough to feel,</b> even if you've never had a name for it. now you have a number.";
+  if(d<75) return '<b>your days are travelling somewhere you never chose.</b> not a verdict. a reading.';
+  return '<b>your heading and your course barely know each other.</b> that can change faster than you think.'; }
+function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+function renderDrift(){
+  initInst(); drawInst(0); $('degnum').textContent='0°'; $('verdict').innerHTML=verdict(R.drift);
+  { const an=analogy(R.drift); $('an-set').textContent=an.set; $('an-out').textContent=an.out; $('analog').classList.remove('on'); }
+  const st=STATUS[S.status];
+  $('w-h').textContent='“'+S.moment+'”'; $('w-c').textContent='“'+S.tline+'”'; $('w-ck').textContent='course · '+st.day;
+  /* the tell: the moment versus the day, in conditions */
+  const m=readMoment(S.moment); const T=R.T||1;
+  const screenH=hoursWhere(a=>['mail','admin','focus','meet','create'].includes(a.id)), peopleH=hoursWhere(a=>['meet','help'].includes(a.id)), fieldH=hoursWhere(a=>a.id==='field'), handsH=hoursWhere(a=>a.id==='make');
+  const dayBits=[]; const momBits=[];
+  if(m.out){ momBits.push(m.out); dayBits.push(fieldH/T>.3?'outdoors':'indoors'); }
+  if(m.alone){ momBits.push(m.alone==='alone'?'alone':'with people'); dayBits.push(peopleH/T>.4?'with people':(peopleH/T<.2?'mostly alone':'half with people')); }
+  if(m.hands){ momBits.push(m.hands==='hands'?'with your hands':'on a screen'); dayBits.push(handsH/T>.3?'with your hands':(screenH/T>.5?'on a screen':'between things')); }
+  $('tell').textContent=momBits.length?`your moment happened ${momBits.join(', ')}. ${st.day} happened ${dayBits.join(', ')}. the ship noticed.`:'';
+  /* gaps */
+  const gaps=[]; const fuelName=FUELS.find(f=>f.id===S.fuel).l;
+  const flowH=hoursWhere(a=>(a.m.flow||0)>=.6), sparkH=hoursWhere(a=>(a.m.spark||0)>=.25), fireH=hoursWhere(a=>(a.m.fire||0)>=.35), dawnH=hoursWhere(a=>(a.m.dawn||0)>=.5||a.id==='focus');
+  const fuelH={flow:flowH,spark:sparkH,fire:fireH,dawn:dawnH}[S.fuel];
+  const fuelTxt={flow:`you come alive in <b>deep flow</b>. ${st.day} gave you <em>${fuelH} hour${fuelH===1?'':'s'}</em> of it.`,spark:`you run on <b>new sparks</b>. ${st.day} had <em>${fuelH} hour${fuelH===1?'':'s'}</em> of anything new.`,fire:`you come alive <b>through other people</b>. ${st.day} gave you <em>${fuelH} hour${fuelH===1?'':'s'}</em> with them${hoursWhere(a=>a.id==='meet')?', mostly in meetings':''}.`,dawn:`you think best <b>slowly and quietly</b>. ${st.day} had <em>${fuelH} quiet hour${fuelH===1?'':'s'}</em>.`}[S.fuel];
+  gaps.push([FUELS.find(f=>f.id===S.fuel).ic,fuelTxt,Math.max(0,1-fuelH/T)]);
+  const w0=S.worlds[0], wObj=WORLDS.find(w=>w.id===w0); const wH=hoursWhere(a=>(a.w[w0]||0)>=.5);
+  const cw0=S.cworlds[0]&&WORLDS.find(w=>w.id===S.cworlds[0]);
+  if(S.cworlds.includes(w0)) gaps.push([wObj.ic,`your first world is <b>${wObj.l}</b>, and ${st.day} lived there too${S.cworlds[0]===w0?'. that part of your course is on heading':', just not first'}.`,S.cworlds[0]===w0?0:.3]);
+  else gaps.push([wObj.ic,`your first world is <b>${wObj.l}</b>. by your own account, ${st.day} lived in <em>${cw0?cw0.l:'other worlds'}</em>.`,.9]);
+  const worseH=Object.entries(S.solve).filter(([,v])=>v.s<0).reduce((s,[id])=>s+S.slots.filter(x=>x===id).length,0);
+  if(worseH) gaps.push(['🧭',`by your own account, <em>${worseH} hour${worseH>1?'s':''}</em> went into <b>${FIX_WORSE[S.fix]}</b>. that's the part of your course that points the other way.`,2]);
+  const careH=Object.entries(S.solve).filter(([,v])=>v.s===1).reduce((s,[id])=>s+S.slots.filter(x=>x===id).length,0);
+  const fixObj=FIXES.find(f=>f.id===S.fix);
+  gaps.push([fixObj.ic,`you'd fix <b>${fixObj.l}</b>. <em>${careH} of ${T} hours</em> went on a problem you actually care about.`,Math.max(0,1-careH/T)]);
+  const noisy=usedActs().filter(([id])=>A[id].noise>=.5).sort((a,b)=>b[1]-a[1])[0];
+  if(noisy){ const a=A[noisy[0]]; gaps.push([a.ic,`<b>${a.l}</b> took <em>${noisy[1]} hour${noisy[1]>1?'s':''}</em>. it isn't anywhere in your heading.`,noisy[1]/T]); }
+  gaps.sort((a,b)=>b[2]-a[2]);
+  $('gaps').innerHTML=gaps.map((g,i)=>`<div class="gap" style="animation-delay:${i*.08}s"><span class="gi">${g[0]}</span><p>${g[1]}</p></div>`).join('');
+  /* strip */
+  $('strip-h').textContent='// '+st.day+', as it felt';
+  $('strip').innerHTML=S.slots.map(id=>{ const a=A[id]; const p=a.skip?.5:(S.solve[id]?S.solve[id].p:.5); return `<i style="flex:1;background:${a.c}" class="${p===0?'absent':p===.5?'half':''}" title="${a.l}"></i>`; }).join('');
+  $('s-from').textContent=hh(S.start); $('s-to').textContent=hh(S.start+S.slots.length);
+  const thereH=Math.round(R.alive*T*2)/2;
+  $('alive').innerHTML=`you were there for <b>${thereH} of ${T} hours.</b>`;
+  updLanding();
+  /* corrections */
+  buildCorrections();
+  $('n-drift').onclick=()=>{ blip(620); renderPosting(); show('post'); chord(523); };
+}
+function updLanding(alive){ const h=+$('hrs').value, y=+$('yrs').value; $('hv').textContent=h; $('yv').textContent=y; const tot=h*46*y; $('tot').textContent=fmt(tot); $('you').textContent=fmt(tot*(alive??(S.corr?S.corr.alive:R.alive))); }
+$('hrs').oninput=()=>updLanding(); $('yrs').oninput=()=>updLanding();
+
+let CORR=[];
+function rankActs(h){ return ACTS.filter(a=>!a.skip&&a.noise<.5).map(a=>{ const v={}; DIMS.forEach(d=>v[d]=0); for(const k in a.w) v[k]=a.w[k]; for(const k in a.m) v[k]=a.m[k]; v.purpose=1; return [a,angle(h,v)]; }).sort((x,y)=>x[1]-y[1]).map(x=>x[0]); }
+function buildCorrections(){
+  const h=R.h, ranked=rankActs(h), best=ranked[0], second=ranked[1]||ranked[0]; const used=usedActs(); CORR=[];
+  const real=S.slots.map((id,i)=>[id,i]).filter(([id])=>id&&!A[id].skip);
+  const sv=id=>(S.solve[id]&&S.solve[id].s!=null)?S.solve[id].s:.5;
+  const worst=[...real].sort((a,b)=>(A[b[0]].noise-A[a[0]].noise)||(sv(a[0])-sv(b[0])));   // noisiest, least-meaningful hours first
+  const noisy=used.filter(([id])=>A[id].noise>=.5).sort((a,b)=>b[1]-a[1])[0];
+  const aimTag=id=>{ const t=id+'*'; A[t]=A[t]||{...A[id],id:t}; return t; };
+  // this week: two small corrections
+  { const slots=[...S.slots], solve=JSON.parse(JSON.stringify(S.solve)); const moved=worst.slice(0,2);
+    moved.forEach(([,i])=>slots[i]=best.id); solve[best.id]={s:1,p:1};
+    const keep=real.find(([,i])=>!moved.some(m=>m[1]===i)&&A[S.slots[i]].noise<1); if(keep){ const t=aimTag(keep[0]); slots[keep[1]]=t; solve[t]={s:1,p:1}; }
+    CORR.push({k:'this week',t:`move 2 hours to ${best.l}, and aim one more at ${FIX_SHORT[S.fix]}`,d:'small enough to start on monday. same job, same desk.',slots,solve,cw:S.cworlds,
+      note:'small. but it is the only correction that starts on monday.'}); }
+  // this year: reshape the role
+  { const slots=[...S.slots], solve=JSON.parse(JSON.stringify(S.solve)); const n=Math.ceil(real.length/2);
+    worst.slice(0,n).forEach(([,i],j)=>slots[i]=j%3===2?second.id:best.id); solve[best.id]={s:1,p:1}; solve[second.id]={s:1,p:1};
+    real.forEach(([id,i])=>{ if(slots[i]===id&&A[id].noise<1&&solve[id]) solve[id]={s:Math.max(sv(id),.6),p:Math.max(solve[id].p??.5,.5)}; });
+    const cw=[S.worlds[0],...S.cworlds.filter(w=>w!==S.worlds[0])].slice(0,3);
+    CORR.push({k:'this year',t:'reshape the role',d:`half your day becomes ${best.l} and ${second.l}, in your first world, pointed at ${FIX_SHORT[S.fix]}.${noisy?' '+A[noisy[0]].l+' shrinks to what it really needs.':''}`,slots,solve,cw,
+      note:'a year of held corrections. same person, a role reshaped around them. people do this every day; they just rarely measure it.'}); }
+  // the destination: a day built around the heading
+  { const slots=S.slots.map(id=>id&&A[id].skip?id:null); const solve={}; let j=0;
+    slots.forEach((id,i)=>{ if(id) return; slots[i]=[best.id,best.id,second.id,best.id,second.id,best.id][j%6]; j++; });
+    slots.forEach(id=>{ if(id&&!A[id].skip) solve[id]={s:1,p:1}; });
+    CORR.push({k:'the destination',t:'a day built around your heading',d:"it exists. it just hasn't been posted yet. the next screen is the job description.",slots,solve,cw:S.worlds,
+      note:'your heading, held. no ship travels at exactly 0°: under 20° is what a life on heading looks like. not a fantasy, a working day with your fuel, your world and your problem in it.'}); }
+  CORR.forEach(c=>{ const cv=courseFrom(c.slots,c.solve,c.cw); c.drift=Math.round(angle(R.h,cv.v)); c.alive=aliveShare(c.slots,c.solve); });
+  for(let i=1;i<CORR.length;i++) if(CORR[i].drift>CORR[i-1].drift) CORR[i].drift=CORR[i-1].drift;   // horizons never move backwards
+  $('corr').innerHTML=CORR.map((c,i)=>`<button type="button" class="fixbtn" data-i="${i}"><span><div class="fk">${esc(c.k)}</div><div class="ft">${esc(c.t)}</div><div class="fd">${esc(c.d)}</div></span><span class="fa">${c.drift}°</span></button>`).join('');
+  [...$('corr').children].forEach(b=>b.onclick=()=>{ const c=CORR[+b.dataset.i]; S.corr=c; [...$('corr').children].forEach(x=>x.classList.toggle('on',x===b));
+    animateGhost(c.drift); updLanding(c.alive);
+    const tot=+$('hrs').value*46*+$('yrs').value; const gain=tot*(c.alive-R.alive);
+    const an=analogy(c.drift);
+    $('corrnote').innerHTML=`<b>${R.drift}° → ${c.drift}°.</b> ${esc(c.note)}${gain>0?` <b>${fmt(gain)} more hours</b> with you in them.`:''}<span class="an">${esc(an.set)} ${esc(an.out)}</span>`;
+    chord([523,587,659][+b.dataset.i]||587); });
+  $('corrnote').textContent='';
+}
+let ghostNow=null;
+function animateGhost(to){ const from=ghostNow??R.drift, t0=performance.now();
+  (function f(t){ const p=Math.min(1,(t-t0)/900), e=1-Math.pow(1-p,3), g=from+(to-from)*e; ghostNow=g; drawInst(R.drift,g); if(p<1) requestAnimationFrame(f); })(t0);
+  document.querySelector('.inst-wrap').scrollIntoView({behavior:'smooth',block:'center'}); }
+
+/* ============ act 4 ============ */
+function renderPosting(){
+  const w0=S.worlds[0]; const [gl,name,tag]=ARCH[S.fuel][w0]; const title=JOBS[w0][S.fix];
+  const d=R.drift; const year=new Date().getFullYear()+Math.max(1,Math.round(d/7));
+  const best=bestAct(R.h); const used=usedActs(); const noisy=used.filter(([id])=>A[id].noise>=.5).sort((a,b)=>b[1]-a[1])[0];
+  const catches=[];
+  if(best) catches.push(`a working day with two protected hours of ${best.l}. it doesn't exist in your calendar yet.`);
+  catches.push(`one hour a day aimed at ${FIX_SHORT[S.fix]}. no employer has offered it yet. nobody has asked.`);
+  if(noisy) catches.push(`${A[noisy[0]].l} under ${Math.max(1,noisy[1]-2)} hour${noisy[1]-2>1?'s':''} a day. the technology exists. the habit doesn't.`);
+  const q=S.moment.split(/\s+/); const quote=q.length>26?q.slice(0,26).join(' ')+'…':S.moment;
+  const bars=[2,4,1,3,1,5,2,1,3,2,4,1,2,3].map(h=>`<i style="width:${h}px"></i>`).join('');
+  $('ticket').innerHTML=`<article class="ticket">
+    <div class="top"><span class="st">now boarding</span><span>private</span></div>
+    <h3>${esc(title)}</h3>
+    <div class="co">company: <b>not founded yet. possibly by you.</b><br>launch window: <b>${year}</b> · drift at posting: <b>${d}°</b></div>
+    <div class="blk"><div class="k">the mission</div><p>${esc(FIX_LINE[S.fix])} ${esc(WORLD_LINE[w0])}</p></div>
+    <div class="blk"><div class="k">how you'll work</div><p>${esc(FUEL_LINE[S.fuel])}</p></div>
+    <div class="blk"><div class="k">you'll know you're right for this because</div><p class="q">“${esc(quote)}”</p></div>
+    <div class="arch"><span class="gl">${gl}</span><div><b>${esc(name)}</b><span>${esc(tag)}</span></div></div>
+    <div class="tear"></div>
+    <div class="blk catch"><div class="k">the catch</div><ul>${catches.map(c=>`<li>${esc(c)}</li>`).join('')}</ul></div>
+    <div class="fine"><span>experience required: none.<br>nobody has any. yet.</span><span class="code">${bars}</span></div>
+  </article>`;
+  const picks=[...new Set(S.worlds.flatMap(w=>WORLD_BOARD[w]))].slice(0,2);
+  $('boardm').innerHTML=picks.map(n=>{ const [t,c,y]=BOARD[n]; return `<a class="bm" href="jobs.html#mission-${n}"><div><div class="n">mission ${n} · ${y}</div><div class="t">${esc(t)}</div><div class="c">${esc(c)}</div></div><span class="go">open</span></a>`; }).join('');
+  const txt=`linkedin says i'm a [your job title].\nmy heading says i'm ${name} ${gl}\n"${tag}"\n\nthe job i was made for hasn't been posted yet. so impossible jobs posted it: ${title}.\n\nfind your heading: impossiblejobs.org/drift.html`;
+  $('sharetxt').value=txt; $('sharebox').classList.remove('on');
+  $('share').onclick=async()=>{ try{ await navigator.clipboard.writeText(txt); toast('copied. paste it anywhere.'); }catch(e){} $('sharebox').classList.add('on'); blip(880); };
+}
+$('again').onclick=()=>{ Object.assign(S,{taste:'travel',cworlds:[],moment:'',worlds:[],fuel:null,fix:null,tline:'',start:9,slots:Array(9).fill(null),solve:{},corr:null}); ghostNow=null;
+  $('moment').value=''; onMoment(); $('tline').value=''; $('n-tline').disabled=true; document.querySelectorAll('.card').forEach(c=>c.classList.remove('pick')); $('n-worlds').disabled=true; $('n-cworlds').disabled=true; $('cwhint').textContent='tap in order · 0 of 3'; $('whint').textContent='tap in order of pull · 0 of 3'; show('intro'); };
+
+/* ============ sample ============ */
+function demo(){
+  S.moment="it was a saturday and i spent the whole day in the garage with my kids building a wooden boat. we sanded it by hand until the light went and nobody looked at a phone.";
+  S.taste='food'; S.worlds=['building','people','nature']; S.fuel='flow'; S.fix='connection'; S.status='work'; S.cworlds=['order','people'];
+  S.tline='four calls, a deck nobody read, and an inbox that refilled faster than i emptied it.';
+  S.start=9; S.slots=['mail','meet','meet','admin','break','meet','mail','admin','mail'];
+  S.solve={mail:{s:.2,p:0},meet:{s:.6,p:.5},admin:{s:.2,p:0}}; S.corr=null; ghostNow=null;
+  $('moment').value=S.moment; onMoment(); $('tline').value=S.tline;
+  compute();
+}
+</script>
+</body>
+</html>
