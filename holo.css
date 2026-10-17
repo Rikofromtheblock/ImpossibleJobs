@@ -98,7 +98,8 @@ html.ix-open { overflow: hidden; }
 /* ---------- 3. the module rail ----------
    a glass tab on the left edge (breathing glow, LED status lights) that slides out into a tall panel
    holding the three original module cards, with their pointer tilt, light and boot sequence (site.js) */
-.mrail { --tuck: 0px; --rt: 80px; --rb: 16px; --stubw: 60px; --notch: 10px; --ticket: #ece8f5; position: fixed; left: 0; top: 0; bottom: 0; z-index: 42; pointer-events: none; }
+.mrail { overflow: hidden;   /* full-screen, see-through layer: clips the stub to the screen, lets every other tap through */
+  --tuck: 0px; --rt: 80px; --rb: 16px; --stubw: 60px; --notch: 10px; --ticket: #ece8f5; position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 42; pointer-events: none; }
 /* where content runs close to the edge, the stub rests tucked in (a pale sliver shows) and slides fully out when it peeks */
 @media (max-width: 1279px) { .mrail { --tuck: -38px; } }
 @media (max-width: 700px) { .mrail { --tuck: -30px; --rt: 72px; --rb: 12px; --stubw: 46px; --notch: 8px; } }
@@ -227,19 +228,25 @@ html[data-heat="3"] .mrail-leds i.wait { animation-duration: 1.1s; }
    (phones keep hover stuck after a tap), and the one-time nudge is just the bubble. one tap swings it upright onto
    the left edge and the rest of the ticket unrolls; a tap on the stub, outside, or × rolls it back. */
 @media (max-width: 700px) {
-  .mrail { --stubh: 240px; --rest: 198px; --tilt: 12deg; --stubw: 64px; }
+  html { background: #07030f; }   /* any area Safari shows around the page is the page's own colour */
+  .mrail { --stubh: 186px; --rest: 186px; --tilt: 12deg; --stubw: 64px; --restw: 128px; }
   .mrail-tab { top: calc(100% - var(--stubh)); bottom: 0; transform-origin: 0 100%; width: var(--stubw);
     justify-content: flex-start; gap: 12px; padding: 16px 0 12px; border-radius: 12px 12px 0 0;
-    transform: rotate(var(--tilt)) translateY(100%);
+    transform: rotate(var(--tilt)) translateY(calc(var(--stubh) - var(--rest) + 24px));
     /* going back to the corner waits for the ticket to roll back up first */
-    transition: opacity .7s, top .6s cubic-bezier(.2,.9,.2,1) .55s, bottom .6s cubic-bezier(.2,.9,.2,1) .55s,
+    transition: opacity .7s, top .6s cubic-bezier(.2,.9,.2,1) .55s, bottom .6s cubic-bezier(.2,.9,.2,1) .55s, width .5s cubic-bezier(.2,.9,.2,1) .55s,
       transform .6s cubic-bezier(.2,.9,.2,1) .55s, border-radius .3s .55s, background .3s; }
-  /* at rest: the stub's face, in ticket order */
-  .mrail:not(.open) .mrail-lbl, .mrail:not(.open) .stub-dest, .mrail:not(.open) .mrail-chev { display: none; }
-  .mrail:not(.open) .stub-os { order: 1; font-size: 10.5px; }
-  .mrail:not(.open) .mrail-leds { order: 2; }
-  .mrail:not(.open) .stub-board { order: 3; font-size: 17px; }
-  .mrail:not(.open) .stub-code { order: 4; width: 38px; }   /* the barcode tucks away below the screen edge */
+  /* at rest: twice as wide, read across like a real ticket stub */
+  .mrail:not(.open) .mrail-tab { width: var(--restw); align-items: flex-start; text-align: left; gap: 7px; padding: 14px 18px 12px 14px; }
+  .mrail:not(.open) .mrail-chev { display: none; }
+  .mrail:not(.open) .stub-os { order: 1; font-size: 10px; letter-spacing: .14em; }
+  .mrail:not(.open) .stub-os { white-space: nowrap; }
+  .mrail:not(.open) .stub-os::after { content: ' · pass'; color: #6b6585; }
+  .mrail:not(.open) .mrail-leds { order: 2; margin: 2px 0; }
+  .mrail:not(.open) .stub-board { order: 3; writing-mode: horizontal-tb; transform: none; white-space: normal; width: 6ch; font-size: 19px; line-height: .98; letter-spacing: -.035em; }   /* now / boarding */
+  .mrail:not(.open) .mrail-lbl { order: 4; writing-mode: horizontal-tb; transform: none; white-space: nowrap; font-size: 9px; letter-spacing: .12em; }
+  .mrail:not(.open) .stub-dest { order: 5; writing-mode: horizontal-tb; transform: none; white-space: nowrap; font-size: 9px; }
+  .mrail:not(.open) .stub-code { order: 6; width: 30px; transform: rotate(90deg); transform-origin: 15px 15px; margin: 2px 0 0; }   /* bars stand upright, like a printed barcode */
   .mrail-leds i { width: 7px; height: 7px; }
   /* still: no peek animation, no hover/focus shift */
   html.mrail-on .mrail-tab, .mrail.nudge:not(.open) .mrail-tab,
@@ -258,7 +265,7 @@ html[data-heat="3"] .mrail-leds i.wait { animation-duration: 1.1s; }
   .mrail.open .mod[data-i="1"] { transition-delay: .85s, .85s, 0s, 0s; }
   .mrail.open .mod[data-i="2"] { transition-delay: .97s, .97s, 0s, 0s; }
   /* the one-time nudge: just the bubble, beside the stub's head (the stub stays put) */
-  .mrail-nudge { top: auto; bottom: 150px; left: 92px; translate: none; }
+  .mrail-nudge { top: auto; bottom: 168px; left: 150px; translate: none; }
   /* the menu no longer needs to clear the left edge, only the corner */
-  html.menu-open .menu-inner { padding-left: 24px; padding-bottom: 170px; }
+  html.menu-open .menu-inner { padding-left: 24px; padding-bottom: 200px; }
 }

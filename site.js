@@ -88,8 +88,8 @@ window.IJAudio = (function () {
       if (drums && !BOARD && (s16 === 4 || s16 === 12) && full) hiss(t, 1700, 0.12, 0.05, true);                    // clap
       if (drums && !BOARD && s16 % 4 === 2) hiss(t, 8000, 0.09, 0.03);                                             // open hat
       if (drums && !BOARD && s16 % 2 === 1) hiss(t, 9000, 0.03, 0.012 + Math.random() * 0.008);                   // closed hat
-      if (bar >= 1 && Math.random() < 0.85) voice('square', mtof(chord[ARP[s16] % 4] + 24), t, S16 * 0.9, 0.012 + (s16 % 4 === 0 ? 0.006 : 0), delay);
-      if (bar >= 1 && s16 % 2 === 0) voice('triangle', mtof(chord[ARP[s16] % 4] + 24), t, S16 * 1.6, 0.018, musicBus);
+      if (Math.random() < 0.85) voice('square', mtof(chord[ARP[s16] % 4] + 24), t, S16 * 0.9, 0.012 + (s16 % 4 === 0 ? 0.006 : 0), delay);
+      if (s16 % 2 === 0) voice('triangle', mtof(chord[ARP[s16] % 4] + 24), t, S16 * 1.6, 0.018, musicBus);
       if (phrase === 14 && s16 === 0) riser(t, S16 * 32);                         // build into the next phrase
       if (drums && s16 === 14 && Math.random() < 0.22) zap(t);                    // the odd laser
       nextT += S16; step++;
@@ -251,7 +251,11 @@ window.IJAudio = (function () {
 
   function fadeTo(v, secs) { if (!master) return; var t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(Math.max(0.0001, master.gain.value), t); master.gain.exponentialRampToValueAtTime(Math.max(0.0001, v), t + secs); }
   function begin() {
-    if (!started) { started = true; startMusic(); if (BOARD) { startAmbient(); startAirport(); } }
+    if (!started) {
+      started = true; startMusic(); if (BOARD) { startAmbient(); startAirport(); }
+      // a short bright "power on" the instant sound starts: audible on any phone speaker, so a tap is answered right away
+      [880, 1320, 1760].forEach(function (f, i) { voice('triangle', f, ctx.currentTime + 0.05 + i * 0.07, 0.22, 0.05, fxBus); });
+    }
     var arriving = ss.get('ij-warp') && Date.now() - +ss.get('ij-warp') < 8000;
     if (arriving) {                                                    // land softly after a page warp
       ss.set('ij-warp', '');
@@ -259,7 +263,7 @@ window.IJAudio = (function () {
       musicFilter.frequency.setValueAtTime(from, t); musicFilter.frequency.exponentialRampToValueAtTime(to, t + 1.6);
       whoosh(true);
     }
-    fadeTo(1, arriving ? 1.2 : 2.5); notify(); setTimeout(notify, 250);
+    fadeTo(1, arriving ? 1.2 : 1.2); notify(); setTimeout(notify, 250);
   }
   function start() {
     if (!enabled) return;
