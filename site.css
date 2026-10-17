@@ -15,7 +15,7 @@
 
   /* ---------- fixed backdrop ---------- */
   .sky { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-  .glow { position: absolute; border-radius: 50%; filter: blur(90px); will-change: transform; }
+  .glow { position: absolute; border-radius: 50%; will-change: transform; }   /* soft radial gradients already: the old 90px blur cost more than anything else on the page and was barely visible */
   .glow.a { width: 60vmax; height: 60vmax; left: -18vmax; top: -22vmax; background: radial-gradient(circle, #6b2bd9 0%, transparent 65%); opacity: .55; }
   .glow.b { width: 55vmax; height: 55vmax; right: -20vmax; bottom: -24vmax; background: radial-gradient(circle, #ff5f9e 0%, transparent 62%); opacity: .38; }
   .stars { position: absolute; left: 0; right: 0; top: -100%; height: 300%; will-change: transform;
@@ -29,8 +29,11 @@
   .stars.far { background-size: 180px 170px; opacity: .25; }
   /* faint perspective grid: the "horizon" of the future */
   .horizon { position: absolute; left: -50%; right: -50%; bottom: -10%; height: 55%; transform-origin: 50% 100%; transform: perspective(500px) rotateX(62deg);
+    overflow: hidden; mask-image: linear-gradient(to top, #000 0%, transparent 80%); -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 80%); opacity: 0; will-change: opacity; }
+  /* the grid slides inside the horizon (a cheap GPU move) instead of repainting its background on every scroll frame */
+  .horizon-grid { position: absolute; left: 0; right: 0; top: -64px; bottom: 0; will-change: transform;
     background-image: linear-gradient(rgba(0,240,200,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,200,.12) 1px, transparent 1px);
-    background-size: 64px 64px; mask-image: linear-gradient(to top, #000 0%, transparent 80%); -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 80%); opacity: 0; will-change: opacity, background-position; }
+    background-size: 64px 64px; }
 
   .progress { position: fixed; top: 0; left: 0; height: 3px; width: 100%; z-index: 50; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--cyan), var(--pink)); }
 
@@ -715,18 +718,17 @@ html.warping body { transition: transform .7s cubic-bezier(.6,0,.4,1), filter .7
   .gap-sec .side.l { transform-origin: 100% 50%; } .gap-sec .side.r { transform-origin: 0 50%; }
   .gap-sec .side.l, .gap-sec .side.r { border-color: transparent; }         /* the fracture replaces the old centre lines */
   .gap-sec .rift { z-index: 2; }
-  .gap-tear { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 0; overflow: visible; pointer-events: none;
-    -webkit-mask-image: linear-gradient(transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(transparent, #000 7%, #000 93%, transparent); }
+  .gap-tear { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 0; overflow: visible; pointer-events: none; }   /* no mask: the strokes fade themselves */
   .gap-sec .stick > .wrap { position: relative; z-index: 1; }
-  .gap-void { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
-    -webkit-mask-image: linear-gradient(transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(transparent, #000 7%, #000 93%, transparent); }
-  .gap-tear.h { -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+  .gap-void { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }   /* fades its own ends */
   .gap-tear .void { display: none; fill: url(#gapVoid); opacity: min(1, calc(var(--open) * 6)); }   /* the canvas paints the void; this is the still fallback */
   @media (prefers-reduced-motion: reduce) { .gap-tear .void { display: block; } }
   .gap-tear .rain { display: none; }   /* replaced by the animated void (canvas) */
   .gap-tear .edge { fill: none; stroke-width: 2.4; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--crack)); }
-  .gap-tear .edge.a { stroke: #e9fffb; filter: drop-shadow(0 0 4px #00f0c8) drop-shadow(0 0 14px #00f0c8) drop-shadow(0 0 30px rgba(0,240,200,.6)); }
-  .gap-tear .edge.b { stroke: #fff0f6; filter: drop-shadow(0 0 4px #ff5f9e) drop-shadow(0 0 14px #ff5f9e) drop-shadow(0 0 30px rgba(255,95,158,.6)); }
+  .gap-tear .edge.a { stroke: url(#eAw); } .gap-tear .edge.b { stroke: url(#eBw); }
+  /* the glow: stacked strokes instead of drop-shadow filters (those were redrawn on every scroll frame) */
+  .gap-tear .edge.g2 { stroke-width: 8; opacity: .5; } .gap-tear .edge.g3 { stroke-width: 26; opacity: .2; }
+  .gap-tear .edge.a.g2, .gap-tear .edge.a.g3 { stroke: url(#eA); } .gap-tear .edge.b.g2, .gap-tear .edge.b.g3 { stroke: url(#eB); }
   .gap-intro { position: relative; }
   .h2-half { position: absolute; left: 0; right: 0; margin: 0 auto !important; opacity: 0; will-change: transform; pointer-events: none; }
   .h2-half.l { color: #d8ccf0; }   /* the halves split between words (see assignSides in site.js) */
@@ -740,3 +742,8 @@ html.warping body { transition: transform .7s cubic-bezier(.6,0,.4,1), filter .7
   .gap-sec .gap-out { position: relative; max-width: min(60ch, max(320px, calc(var(--gapw, 600px) - 72px)));   /* the closing line sits inside the gap */
     padding: 16px 22px; border-radius: 16px; background: rgba(7,3,15,.82); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
   @media (max-width: 700px) { .gap-sec .gap-out { max-width: 60ch; } }
+
+  /* phones: lighter glows on the moving LED rocket (6 layers -> 3, near-identical at this size, far cheaper to redraw) */
+  @media (max-width: 700px) {
+    .flyer-rocket .fr-img { filter: brightness(1.9) saturate(1.6) drop-shadow(0 0 calc(var(--s)*.02) #fff) drop-shadow(0 0 calc(var(--s)*.09) #ff5f9e) drop-shadow(0 0 calc(var(--s)*.3) rgba(0,240,200,.4)); }
+  }

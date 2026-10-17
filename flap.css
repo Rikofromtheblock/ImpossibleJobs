@@ -80,3 +80,10 @@
 @keyframes crewbob { from { transform: translateY(0); } to { transform: translateY(calc(var(--bob, 2px) * -1)); } }
 
 @media (prefers-reduced-motion: reduce) { .flap .leaf.go { animation: none; } .crew-fig { animation: none; } }
+
+
+/* phones: the same lit look with half the glow layers (cheaper every time a tile flips) */
+@media (max-width: 700px) {
+  .flap img { filter: brightness(1.9) saturate(1.6) contrast(1.1) drop-shadow(0 0 calc(var(--s)*.02) #fff) drop-shadow(0 0 calc(var(--s)*.09) #ff5f9e) drop-shadow(0 0 calc(var(--s)*.3) rgba(0,240,200,.4)); }
+  .crew-fig img { filter: brightness(1.9) saturate(1.6) contrast(1.1) drop-shadow(0 0 calc(var(--s)*.02) #fff) drop-shadow(0 0 calc(var(--s)*.09) #ff5f9e) drop-shadow(0 0 calc(var(--s)*.3) rgba(0,240,200,.4)); }
+}

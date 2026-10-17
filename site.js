@@ -288,14 +288,48 @@ window.IJAudio = (function () {
   }
   function setEnabled(v) {
     enabled = v; try { localStorage.setItem('ij-sound', v ? '1' : '0'); } catch (e) {}
-    if (v) start(); else if (ctx) { fadeTo(0.0001, 0.6); setTimeout(function () { if (!enabled) ctx.suspend(); }, 700); }
+    if (v) unlock(); else if (ctx) { fadeTo(0.0001, 0.6); setTimeout(function () { if (!enabled) { ctx.suspend(); if (silentEl) silentEl.pause(); } }, 700); }
     notify();
   }
-  function firstGesture() { window.__ijFirst = performance.now(); start(); ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) { removeEventListener(ev, firstGesture, true); }); }
-  ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) { addEventListener(ev, firstGesture, true); });
+  /* phones (iPhone and iPad above all) only let a page start sound inside a real tap: a finger lifting (touchend / click),
+     a key, or a mouse press. A finger merely touching down does not count, and the ringer's silent switch mutes web audio
+     unless the page says it is media playback. unlock() does all of that, and is retried on every tap until sound runs. */
+  var silentEl = null;
+  function silentWav() {                                            // 0.1 s of silence, made on the spot (no file to load)
+    var n = 4410, b = new ArrayBuffer(44 + n * 2), v = new DataView(b), w = function (o, str) { for (var i = 0; i < str.length; i++) v.setUint8(o + i, str.charCodeAt(i)); };
+    w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, 44100, true); v.setUint32(28, 88200, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+    return URL.createObjectURL(new Blob([b], { type: 'audio/wav' }));
+  }
+  function unlock() {
+    if (!enabled) return;
+    if (!ctx && !build()) return;
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}   // Safari 16.4+: play even with the silent switch on
+    try {                                                              // older iPhones: a playing media element switches the page to playback
+      if (!silentEl) { silentEl = new Audio(silentWav()); silentEl.loop = true; silentEl.setAttribute('playsinline', ''); }
+      var pp = silentEl.play(); if (pp && pp.catch) pp.catch(function () {});
+    } catch (e) {}
+    try { var one = ctx.createBuffer(1, 1, 22050), src = ctx.createBufferSource(); src.buffer = one; src.connect(ctx.destination); src.start(0); } catch (e) {}
+    start();
+  }
+  var GESTURES = ['pointerdown', 'touchend', 'click', 'keydown'];
+  function gesture(e) {
+    if (e.type === 'pointerdown' && e.pointerType && e.pointerType !== 'mouse') return;     // a touch-down is not permission; its tap is
+    window.__ijFirst = performance.now();
+    unlock();
+    setTimeout(function () { if (ctx && ctx.state === 'running') GESTURES.forEach(function (ev) { removeEventListener(ev, gesture, true); }); }, 500);
+  }
+  // what was the sound doing when this tap began? (registered first, so it runs before the tap itself may start it before the button hears about it)
+  addEventListener('pointerdown', function () { window.__ijWasPlaying = !!(enabled && started && ctx && ctx.state === 'running'); }, true);
+  GESTURES.forEach(function (ev) { addEventListener(ev, gesture, true); });
   // arriving from the other page: many browsers let the sound continue straight away; if not, it waits for a tap
   if (enabled && ss.get('ij-warp')) start();
-  document.addEventListener('visibilitychange', function () { if (!ctx || !enabled || !started) return; if (document.hidden) ctx.suspend(); else ctx.resume(); });
+  // back from another tab, a locked screen or a phone call ('interrupted' on iPhone): pick the sound up again
+  document.addEventListener('visibilitychange', function () {
+    if (!ctx || !enabled || !started) return;
+    if (document.hidden) { ctx.suspend(); if (silentEl) silentEl.pause(); }
+    else { var r = ctx.resume(); if (r && r.then) r.then(notify); if (silentEl) { var q = silentEl.play(); if (q && q.catch) q.catch(function () {}); } }
+  });
   // page-to-page links between home and the mission board get the warp transition
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('a[href]'); if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || a.target === '_blank') return;
@@ -308,7 +342,7 @@ window.IJAudio = (function () {
   return {
     get enabled() { return enabled; }, get playing() { return enabled && started && ctx && ctx.state === 'running'; },
     get ctx() { return ctx; }, get fx() { return fxBus; }, get echo() { return delay; },
-    setEnabled: setEnabled, duck: duck, onChange: function (f) { listeners.push(f); }
+    setEnabled: setEnabled, unlock: unlock, duck: duck, onChange: function (f) { listeners.push(f); }
   };
 })();
 
@@ -325,8 +359,8 @@ window.IJAudio = (function () {
   document.querySelectorAll('[data-sound-toggle]').forEach(function (b) {
     b.addEventListener('click', function (e) {
       var A = window.IJAudio;
-      // the first click on the page both unlocks audio and lands here: treat it as "start", not "switch off"
-      if (performance.now() - (window.__ijFirst || 0) < 600) { setTimeout(paint, 120); return; }
+      // "tap for sound": sound is meant to be on but isn't running yet, so this tap starts it (never switches it off)
+      if (A.enabled && (!A.playing || !window.__ijWasPlaying)) { A.unlock(); setTimeout(paint, 150); setTimeout(paint, 600); return; }
       A.setEnabled(!A.enabled);
     });
   });
@@ -634,8 +668,13 @@ window.IJAudio = (function () {
       var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'gap-tear'); svg.setAttribute('aria-hidden', 'true');
       svg.innerHTML = '<defs><pattern id="gapRain" width="18" height="60" patternUnits="userSpaceOnUse"><path d="M3 0v14M12 26v9M8 44v6" stroke="rgba(0,240,200,.55)" stroke-width="1.2"/>' +
         '<animateTransform attributeName="patternTransform" type="translate" from="0 0" to="0 60" dur="1.1s" repeatCount="indefinite"/></pattern>' +
+        ['eA:#00f0c8', 'eAw:#e9fffb', 'eB:#ff5f9e', 'eBw:#fff0f6'].map(function (g) { var q = g.split(':');   // edge strokes that fade at both ends (no mask needed)
+          return '<linearGradient id="' + q[0] + '" class="efade" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="' + q[1] + '" stop-opacity="0"/><stop offset=".08" stop-color="' + q[1] + '"/><stop offset=".92" stop-color="' + q[1] + '"/><stop offset="1" stop-color="' + q[1] + '" stop-opacity="0"/></linearGradient>'; }).join('') +
         '<linearGradient id="gapVoid" x1="0" x2="1"><stop offset="0" stop-color="#00f0c8" stop-opacity=".22"/><stop offset=".18" stop-color="#020107"/><stop offset=".82" stop-color="#020107"/><stop offset="1" stop-color="#ff5f9e" stop-opacity=".22"/></linearGradient></defs>' +
-        '<path class="void"/><path class="rain"/><path class="edge a" pathLength="1"/><path class="edge b" pathLength="1"/>';
+        '<path class="void"/><path class="rain"/>' +
+        // each torn edge is three stacked lines (wide faint, medium, bright core): a glow without any blur filter, cheap to redraw
+        '<path class="edge a g3" pathLength="1"/><path class="edge a g2" pathLength="1"/><path class="edge a" pathLength="1"/>' +
+        '<path class="edge b g3" pathLength="1"/><path class="edge b g2" pathLength="1"/><path class="edge b" pathLength="1"/>';
       stick.insertBefore(svg, stick.firstChild);   // the fracture runs through the whole screen, headline included
       // the headline breaks too: two clipped copies (decorative) that pull apart; the real one stays for screen readers
       var h2 = els.gapSec.querySelector('.gap-intro .h2'), intro = h2.parentNode;
@@ -646,7 +685,7 @@ window.IJAudio = (function () {
       var cv = document.createElement('canvas'); cv.className = 'gap-void'; cv.setAttribute('aria-hidden', 'true'); svg.parentNode.insertBefore(cv, svg);   // under the svg: the glowing edges stay on top
       var flash = document.createElement('div'); flash.className = 'gap-flash'; flash.setAttribute('aria-hidden', 'true'); stick.appendChild(flash);
       gapR = { svg: svg, cv: cv, raf: 0, jag: jag, N: N, h2: h2, hl: hl, hr: hr, flash: flash, stick: stick,
-        voidP: svg.querySelector('.void'), rain: svg.querySelector('.rain'), a: svg.querySelector('.edge.a'), b: svg.querySelector('.edge.b') };
+        voidP: svg.querySelector('.void'), rain: svg.querySelector('.rain'), a: svg.querySelectorAll('.edge.a'), b: svg.querySelectorAll('.edge.b') };
     }
     var R = gapR, W = stick.clientWidth, H = stick.clientHeight, sr = stick.getBoundingClientRect(), pr = split.getBoundingClientRect();
     R.svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
@@ -679,7 +718,8 @@ window.IJAudio = (function () {
     var A = edge(-1), B = edge(1);
     function line(p) { return 'M' + p.map(function (q) { return q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join('L'); }
     var poly = line(A) + 'L' + B.slice().reverse().map(function (q) { return q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join('L') + 'Z';
-    R.a.setAttribute('d', line(A)); R.b.setAttribute('d', line(B));
+    var dA = line(A), dB = line(B);
+    R.a.forEach(function (el) { el.setAttribute('d', dA); }); R.b.forEach(function (el) { el.setAttribute('d', dB); });
     R.pts = A.concat(B.slice().reverse()); R.open = oe;
     R.vp = mobile ? [W / 2, rc] : [cx, H * 0.5];
     R.bounds = mobile ? [0, rc - dist, W, rc + dist] : [cx - dist, 0, cx + dist, H];
@@ -692,6 +732,10 @@ window.IJAudio = (function () {
     R.svg.style.setProperty('--crack', crack.toFixed(3));
     R.svg.style.setProperty('--open', oe.toFixed(3));
     R.svg.classList.toggle('h', !!mobile);
+    if (R.fadeDir !== (mobile ? 'h' : 'v') + W + 'x' + H) {        // point the edge fades along the tear
+      R.fadeDir = (mobile ? 'h' : 'v') + W + 'x' + H;
+      R.svg.querySelectorAll('.efade').forEach(function (gr) { gr.setAttribute('x1', 0); gr.setAttribute('y1', 0); gr.setAttribute('x2', mobile ? W : 0); gr.setAttribute('y2', mobile ? 0 : H); });
+    }
     // the columns and the headline are pushed apart (and turn away from each other)
     if (mobile) {
       els.sideL.style.transform = 'translate3d(0,' + (-oe * 16) + 'px,0)';
@@ -754,7 +798,7 @@ window.IJAudio = (function () {
       var dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt;
       var sec = els.gapSec.getBoundingClientRect();
       if (!(sec.bottom > 0 && sec.top < innerHeight) || !R.pts || R.open < 0.01) { R.raf = 0; ctx.clearRect(0, 0, cv.width, cv.height); return; }
-      var dpr = Math.min(2, window.devicePixelRatio || 1), W = R.stick.clientWidth, H = R.stick.clientHeight;
+      var small = innerWidth < 700, dpr = small ? 1 : Math.min(2, window.devicePixelRatio || 1), W = R.stick.clientWidth, H = R.stick.clientHeight;   // phones: standard resolution
       if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
       // clip to the torn shape
@@ -770,14 +814,16 @@ window.IJAudio = (function () {
       ctx.globalCompositeOperation = 'lighter';
       // radial grid converging on the vanishing point
       ctx.lineWidth = 1;
-      for (i = 0; i < 24; i++) {
-        var ang = i / 24 * Math.PI * 2 + t * 0.03;
+      var NR = small ? 12 : 24;
+      for (i = 0; i < NR; i++) {
+        var ang = i / NR * Math.PI * 2 + t * 0.03;
         ctx.strokeStyle = 'rgba(0,240,200,' + (0.035 * o) + ')';
         ctx.beginPath(); ctx.moveTo(vx, vy); ctx.lineTo(vx + Math.cos(ang) * M * 1.4, vy + Math.sin(ang) * M * 1.4); ctx.stroke();
       }
       // the tunnel: frames born at the vanishing point, accelerating toward you
-      for (i = 0; i < 16; i++) {
-        var z = (i / 16 + t * 0.16) % 1, sc = Math.pow(z, 2.6), hw = sc * M, hh = sc * M * 0.62;
+      var NF = small ? 9 : 16;
+      for (i = 0; i < NF; i++) {
+        var z = (i / NF + t * 0.16) % 1, sc = Math.pow(z, 2.6), hw = sc * M, hh = sc * M * 0.62;
         var al = Math.min(1, z * 2.2) * (1 - z) * 1.4 * o;
         ctx.strokeStyle = (i % 3 === 0 ? 'rgba(255,95,158,' : 'rgba(0,240,200,') + (0.34 * al) + ')';
         ctx.lineWidth = 0.6 + z * 1.6;
@@ -786,7 +832,7 @@ window.IJAudio = (function () {
         if (z > 0.55) { ctx.fillStyle = 'rgba(255,255,255,' + (0.3 * al) + ')'; [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (q) { ctx.fillRect(vx + q[0] * hw - 2, vy + q[1] * hh - 2, 4, 4); }); }
       }
       // warp streaks
-      for (i = 0; i < parts.length; i++) {
+      for (i = 0; i < (small ? 55 : parts.length); i++) {
         var p = parts[i]; p.z += p.v * dt * 0.55;
         if (p.z > 1) { p.z = 0.02; p.a = Math.random() * Math.PI * 2; }
         var r1 = Math.pow(p.z, 2.2) * M * 1.3, r0 = Math.pow(Math.max(0, p.z - 0.04 - p.v * 0.03), 2.2) * M * 1.3;
@@ -830,6 +876,10 @@ window.IJAudio = (function () {
         ctx.fillText(shown, gl.x + 8, gl.y);
       }
       ctx.restore();
+      ctx.globalCompositeOperation = 'destination-out';              // fade the ends (cheaper than a CSS mask)
+      var fd = small ? ctx.createLinearGradient(0, 0, W, 0) : ctx.createLinearGradient(0, 0, 0, H);
+      fd.addColorStop(0, 'rgba(0,0,0,1)'); fd.addColorStop(small ? 0.1 : 0.07, 'rgba(0,0,0,0)'); fd.addColorStop(small ? 0.9 : 0.93, 'rgba(0,0,0,0)'); fd.addColorStop(1, 'rgba(0,0,0,1)');
+      ctx.fillStyle = fd; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over';
       R.raf = requestAnimationFrame(draw);
     }
     R.raf = requestAnimationFrame(draw);
@@ -883,7 +933,8 @@ window.IJAudio = (function () {
       var dy = $('dockYear'); if (dy) { dy.textContent = yr; dy.parentNode.classList.toggle('future', yr > 2026); }
       els.year.classList.toggle('future', yr > 2026);
       els.horizon.style.opacity = fixedYear ? 0.6 : (0.15 + fut * 0.85) * clamp((y - innerHeight) / innerHeight, 0, 1);
-      els.horizon.style.backgroundPosition = '0 ' + (y * 0.6) + 'px';
+      if (!els.hgrid) { els.hgrid = document.createElement('div'); els.hgrid.className = 'horizon-grid'; els.horizon.appendChild(els.hgrid); }
+      els.hgrid.style.transform = 'translate3d(0,' + ((y * 0.6) % 64).toFixed(1) + 'px,0)';   // wraps every grid cell: looks endless, costs nothing
     }
 
     if (els.hero && els.rocket) {
@@ -969,7 +1020,7 @@ window.IJAudio = (function () {
     loadSprites(); if (window.IJFlap && IJFlap.ready) IJFlap.ready.then(loadSprites);
     // LED flame in steps: the tile's own small flame first, then longer burns, flickering
     function pickFrame(now, thrust) {
-      if (now - frameAt < 70 && frameKey) return;
+      if (now - frameAt < (innerWidth < 700 ? 140 : 70) && frameKey) return;   // phones: the flame flickers half as often (each swap redraws the glow)
       frameAt = now;
       var k = !thrust || flame < 0.9 ? 'rk1' : flame < 1.5 ? (Math.random() < 0.55 ? 'rk2' : 'rk1') : (Math.random() < 0.65 ? 'rk3' : 'rk2');
       if (k !== frameKey && SRC[k]) { rkImg.src = SRC[k]; frameKey = k; }
