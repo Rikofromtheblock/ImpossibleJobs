@@ -43,8 +43,11 @@ body::before{ content:""; position:fixed; inset:0 0 auto; height:env(safe-area-i
 
 /* bar */
 .bar{ position:sticky; top:env(safe-area-inset-top,0px); z-index:5; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; background:rgba(7,3,15,.82); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid rgba(42,35,64,.7); }
-.mark{ color:var(--white); text-decoration:none; font-weight:700; font-size:16px; letter-spacing:-.02em; white-space:nowrap; }
-.mark span{ color:var(--pink); }
+/* the logo matches the home page and the mission board: same tile, same wordmark size (site.css .mini) */
+.mark{ display:flex; align-items:center; gap:10px; flex:none; color:var(--white); text-decoration:none; font-weight:700; font-size:20px; letter-spacing:-.03em; white-space:nowrap; }
+.mark .ij-flap{ margin-right:2px; }
+.mark > span:last-child > span{ color:var(--pink); }
+@media (max-width:420px){ .mark{ font-size:16px; gap:7px; } }
 .acts{ display:flex; gap:6px; flex:1; max-width:260px; }
 .acts i{ flex:1; height:4px; border-radius:2px; background:var(--line); position:relative; overflow:hidden; }
 .acts i b{ position:absolute; inset:0; width:0; background:linear-gradient(90deg,var(--cyan),var(--pink)); transition:width .6s cubic-bezier(.2,.9,.2,1); }
@@ -274,12 +277,13 @@ input[type=range]{ width:100%; accent-color:var(--pink); height:28px; }
 
 @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
 </style>
+<link rel="stylesheet" href="flap.css">
 </head>
 <body>
 <div class="sky" aria-hidden="true"><div class="g1"></div><div class="g2" id="g2"></div><div class="stars"></div></div>
 
 <header class="bar">
-  <a class="mark" href="index.html" aria-label="impossible jobs home">impossible <span>jobs</span></a>
+  <a class="mark" href="index.html" aria-label="impossible jobs, home"><span class="ij-flap" data-size="22" data-mode="spin" data-spin="1800" data-hold="7000" data-delay="2500" aria-hidden="true"></span><span>impossible <span>jobs</span></span></a>
   <div class="acts" aria-hidden="true"><i><b id="a1"></b></i><i><b id="a2"></b></i><i><b id="a3"></b></i><i><b id="a4"></b></i></div>
   <button class="snd" id="snd" aria-pressed="true" type="button">sound on</button>
 </header>
@@ -882,5 +886,6 @@ function demo(){
   compute();
 }
 </script>
+<script src="flap.js"></script>
 </body>
 </html>
