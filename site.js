@@ -341,7 +341,7 @@ window.IJAudio = (function () {
   var ring = document.createElement('div'), dot = document.createElement('div');
   ring.className = 'cur-ring'; dot.className = 'cur-dot';
   ring.setAttribute('aria-hidden', 'true'); dot.setAttribute('aria-hidden', 'true');
-  ring.innerHTML = '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14"/><path class="tick" d="M20 1v5M20 34v5M1 20h5M34 20h5"/></svg>';
+  ring.innerHTML = '<i></i><i></i><i></i><i></i>';   // the square reticle (chosen 17 Oct): four corner brackets, locked to the pointer
   function mount() { document.body.appendChild(ring); document.body.appendChild(dot); root.classList.add('has-cursor'); }
   if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);
   var x = -100, y = -100, rx = -100, ry = -100, moving = false;
@@ -350,16 +350,9 @@ window.IJAudio = (function () {
   addEventListener('pointermove', function (e) {
     if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
     x = e.clientX; y = e.clientY; root.classList.add('cursor-in');
-    dot.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+    dot.style.transform = ring.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';   // no easing: it sits exactly where the mouse is
     root.classList.toggle('cursor-hot', !!(e.target.closest && e.target.closest(HOT)));
-    if (!moving) { moving = true; requestAnimationFrame(follow); }
   }, { passive: true });
-  function follow() {
-    var k = still ? 1 : 0.22;
-    rx += (x - rx) * k; ry += (y - ry) * k;
-    ring.style.transform = 'translate3d(' + rx.toFixed(1) + 'px,' + ry.toFixed(1) + 'px,0)';
-    if (Math.abs(x - rx) > 0.2 || Math.abs(y - ry) > 0.2) requestAnimationFrame(follow); else moving = false;
-  }
   document.addEventListener('mouseleave', function () { root.classList.remove('cursor-in'); });
   addEventListener('blur', function () { root.classList.remove('cursor-in'); });
   addEventListener('pointerdown', function () { root.classList.add('cursor-down'); });
@@ -629,6 +622,239 @@ window.IJAudio = (function () {
   var fixedYear = document.body.getAttribute('data-year');
   var ticking = false;
 
+  /* ---------- the gap rig ----------
+     one jagged fracture line (the same random zigzag every frame), drawn as two edges that start together
+     (the crack) and pull apart (the tear); the void between them is dark, with data raining inside it */
+  var gapBroke = false, gapR = null;
+  function gapRig(crack, oe, mobile) {
+    var split = els.gapSec.querySelector('.split'), stick = els.gapSec.querySelector('.stick');
+    if (!gapR) {
+      var NS = 'http://www.w3.org/2000/svg', N = 16, jag = [];
+      for (var i = 0; i <= N; i++) jag.push(i === 0 || i === N ? 0 : (Math.random() * 2 - 1) * (i % 2 ? 1 : 0.55));
+      var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'gap-tear'); svg.setAttribute('aria-hidden', 'true');
+      svg.innerHTML = '<defs><pattern id="gapRain" width="18" height="60" patternUnits="userSpaceOnUse"><path d="M3 0v14M12 26v9M8 44v6" stroke="rgba(0,240,200,.55)" stroke-width="1.2"/>' +
+        '<animateTransform attributeName="patternTransform" type="translate" from="0 0" to="0 60" dur="1.1s" repeatCount="indefinite"/></pattern>' +
+        '<linearGradient id="gapVoid" x1="0" x2="1"><stop offset="0" stop-color="#00f0c8" stop-opacity=".22"/><stop offset=".18" stop-color="#020107"/><stop offset=".82" stop-color="#020107"/><stop offset="1" stop-color="#ff5f9e" stop-opacity=".22"/></linearGradient></defs>' +
+        '<path class="void"/><path class="rain"/><path class="edge a" pathLength="1"/><path class="edge b" pathLength="1"/>';
+      stick.insertBefore(svg, stick.firstChild);   // the fracture runs through the whole screen, headline included
+      // the headline breaks too: two clipped copies (decorative) that pull apart; the real one stays for screen readers
+      var h2 = els.gapSec.querySelector('.gap-intro .h2'), intro = h2.parentNode;
+      var hl = h2.cloneNode(true), hr = h2.cloneNode(true);
+      hl.className += ' h2-half l'; hr.className += ' h2-half r'; hl.setAttribute('aria-hidden', 'true'); hr.setAttribute('aria-hidden', 'true');
+      [hl, hr].forEach(wordSpans);
+      intro.appendChild(hl); intro.appendChild(hr);
+      var cv = document.createElement('canvas'); cv.className = 'gap-void'; cv.setAttribute('aria-hidden', 'true'); svg.parentNode.insertBefore(cv, svg);   // under the svg: the glowing edges stay on top
+      var flash = document.createElement('div'); flash.className = 'gap-flash'; flash.setAttribute('aria-hidden', 'true'); stick.appendChild(flash);
+      gapR = { svg: svg, cv: cv, raf: 0, jag: jag, N: N, h2: h2, hl: hl, hr: hr, flash: flash, stick: stick,
+        voidP: svg.querySelector('.void'), rain: svg.querySelector('.rain'), a: svg.querySelector('.edge.a'), b: svg.querySelector('.edge.b') };
+    }
+    var R = gapR, W = stick.clientWidth, H = stick.clientHeight, sr = stick.getBoundingClientRect(), pr = split.getBoundingClientRect();
+    R.svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    var cx = pr.left - sr.left + pr.width / 2;                 // the split's centre line
+    // half-width of the void. on desktop it never pushes the left column's text closer than 84px to the edge (where the
+    // boarding stub lives): worked out from the layout at rest (text width measured while untouched), not from moving text
+    if (!mobile && (R.w !== innerWidth || R.tw == null) && oe < 0.01) {
+      var rg = document.createRange(); rg.selectNodeContents(els.sideL.querySelector('ul'));
+      R.tw = rg.getBoundingClientRect().width; R.w = innerWidth;
+    }
+    var cap = Math.min(300, innerWidth * 0.22);
+    if (!mobile && R.tw != null) {
+      var restLeft = pr.left + pr.width / 2 - parseFloat(getComputedStyle(els.sideL).paddingRight) - R.tw;
+      cap = Math.max(40, Math.min(cap, restLeft - 84));
+    }
+    var dist = mobile ? oe * 52 : oe * cap;
+    els.gapSec.style.setProperty('--gapw', (dist * 2) + 'px');
+    var amp = mobile ? 7 : 14;
+    var rr = els.gapSec.querySelector('.rift').getBoundingClientRect(), rc = rr.top - sr.top + rr.height / 2;   // phones: the tear runs across the middle band
+    // the two edges, along the same zigzag
+    function edge(side) {
+      var pts = [];
+      for (var i = 0; i <= R.N; i++) {
+        var t = i / R.N, j = R.jag[i] * amp;
+        if (mobile) pts.push([t * W, rc + side * dist + j]);
+        else pts.push([cx + side * dist + j, t * H]);
+      }
+      return pts;
+    }
+    var A = edge(-1), B = edge(1);
+    function line(p) { return 'M' + p.map(function (q) { return q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join('L'); }
+    var poly = line(A) + 'L' + B.slice().reverse().map(function (q) { return q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join('L') + 'Z';
+    R.a.setAttribute('d', line(A)); R.b.setAttribute('d', line(B));
+    R.pts = A.concat(B.slice().reverse()); R.open = oe;
+    R.vp = mobile ? [W / 2, rc] : [cx, H * 0.5];
+    R.bounds = mobile ? [0, rc - dist, W, rc + dist] : [cx - dist, 0, cx + dist, H];
+    R.read = [els.riftLabel, els.gapOut].map(function (el) {      // the text in the middle, as halos (centre x, centre y, radius x, radius y)
+      var q = el.getBoundingClientRect(); if (!q.width) return null;
+      return [q.left - sr.left + q.width / 2, q.top - sr.top + q.height / 2, q.width * 0.62 + 40, q.height * 0.75 + 36];
+    }).filter(Boolean);
+    if (oe > 0.01 && !reduce) gapVoidLoop();
+    R.voidP.setAttribute('d', poly); R.rain.setAttribute('d', poly);
+    R.svg.style.setProperty('--crack', crack.toFixed(3));
+    R.svg.style.setProperty('--open', oe.toFixed(3));
+    R.svg.classList.toggle('h', !!mobile);
+    // the columns and the headline are pushed apart (and turn away from each other)
+    if (mobile) {
+      els.sideL.style.transform = 'translate3d(0,' + (-oe * 16) + 'px,0)';
+      els.sideR.style.transform = 'translate3d(0,' + (oe * 16) + 'px,0)';
+    } else {
+      // the outer edges recede: both columns are pulled back into the screen on either side of the chasm
+      els.sideL.style.transform = 'translate3d(' + (-dist) + 'px,0,0) rotateY(' + (-oe * 16) + 'deg)';
+      els.sideR.style.transform = 'translate3d(' + dist + 'px,0,0) rotateY(' + (oe * 16) + 'deg)';
+    }
+    var hd = mobile ? oe * 18 : dist;                          // the headline halves ride the torn edges
+    R.hl.style.top = R.hr.style.top = R.h2.offsetTop + 'px';
+    if (R.sideW !== innerWidth || !R.inset) { R.sideW = innerWidth; R.inset = assignSides(R.hl, R.hr); }
+    var pl = mobile ? 0 : R.inset[0] * oe, pr2 = mobile ? 0 : R.inset[1] * oe;   // desktop: each half clears its torn edge
+    R.hl.style.transform = 'translate3d(' + (-(hd + pl)) + 'px,' + (oe * 4) + 'px,0) rotate(' + (-oe * 2.5) + 'deg)';
+    R.hr.style.transform = 'translate3d(' + (hd + pr2) + 'px,' + (-oe * 4) + 'px,0) rotate(' + (oe * 2.5) + 'deg)';
+    R.hl.style.top = R.hr.style.top = R.h2.offsetTop + 'px';
+    var torn = oe > 0.001;
+    R.h2.style.opacity = torn ? 0 : 1; R.hl.style.opacity = R.hr.style.opacity = torn ? 1 : 0;
+  }
+  // wrap every word of a headline copy in its own span (keeps the <em> around "designed.")
+  function wordSpans(el) {
+    (function walk(n) {
+      Array.prototype.slice.call(n.childNodes).forEach(function (c) {
+        if (c.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          c.textContent.split(/(\s+)/).forEach(function (part) {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+            var sp = document.createElement('span'); sp.className = 'hw'; sp.textContent = part; frag.appendChild(sp);
+          });
+          n.replaceChild(frag, c);
+        } else if (c.nodeType === 1) walk(c);
+      });
+    })(el);
+  }
+  // each word goes to the side its centre falls on, so the split always lands between words;
+  // the highlighted word ("designed.") always rides with the right half
+  function assignSides(hl, hr) {
+    var box = hl.getBoundingClientRect(), mid = box.left + box.width / 2;
+    var wl = hl.querySelectorAll('.hw'), wr = hr.querySelectorAll('.hw');
+    var inL = 0, inR = 0;                                       // how far each half's innermost word reaches past the centre
+    for (var i = 0; i < wl.length; i++) {
+      var r = wl[i].getBoundingClientRect(), right = wl[i].closest('em') ? true : (r.left + r.width / 2) > mid;
+      wl[i].style.visibility = right ? 'hidden' : 'visible';
+      wr[i].style.visibility = right ? 'visible' : 'hidden';
+      if (right) inR = Math.max(inR, mid - r.left); else inL = Math.max(inL, r.right - mid);
+    }
+    return [Math.max(0, inL) + 22, Math.max(0, inR) + 22];      // extra push so no word ever touches a torn edge
+  }
+
+  /* the void's animation: looking down a shaft into the future. a perspective tunnel rushing toward you, a radial grid,
+     warp streaks, flickering data fragments and a scanning band, all clipped to the torn shape (edges stay on top) */
+  var GLYPHS = ['ROLE://2046', 'SIGNAL ACQUIRED', 'NEW ROLE · UNNAMED', '0x2046', 'MATCH 97.4%', 'CURIOSITY.EXE', 'VACANCY: NONE', 'HUMAN FIRST', 'SYNC', 'TITLE NOT FOUND', '>> FUTURE', 'POSTED: NOT YET'];
+  function gapVoidLoop() {
+    var R = gapR; if (!R || R.raf) return;
+    var cv = R.cv, ctx = cv.getContext('2d'), last = performance.now(), t = 0;
+    var parts = [], glyphs = [], i;
+    for (i = 0; i < 140; i++) parts.push({ a: Math.random() * Math.PI * 2, z: Math.random(), v: 0.25 + Math.random() * 0.9, c: Math.random() < 0.55 ? 0 : 1 });
+    function draw(now) {
+      var dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt;
+      var sec = els.gapSec.getBoundingClientRect();
+      if (!(sec.bottom > 0 && sec.top < innerHeight) || !R.pts || R.open < 0.01) { R.raf = 0; ctx.clearRect(0, 0, cv.width, cv.height); return; }
+      var dpr = Math.min(2, window.devicePixelRatio || 1), W = R.stick.clientWidth, H = R.stick.clientHeight;
+      if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      // clip to the torn shape
+      ctx.save(); ctx.beginPath();
+      R.pts.forEach(function (p, k) { if (k) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); });
+      ctx.closePath(); ctx.clip();
+      var vx = R.vp[0], vy = R.vp[1], M = Math.max(W, H) * 0.9, o = R.open;
+      // the void itself: near-black, faintly tinted toward each torn edge, darkest at the core
+      var bb0 = R.bounds, vg = ctx.createLinearGradient(bb0[0], 0, bb0[2], 0);
+      if (bb0[2] - bb0[0] < 2) vg = ctx.createLinearGradient(0, bb0[1], 0, bb0[3] + 1);
+      vg.addColorStop(0, 'rgba(0,60,52,.95)'); vg.addColorStop(0.2, '#020107'); vg.addColorStop(0.8, '#020107'); vg.addColorStop(1, 'rgba(70,10,36,.95)');
+      ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+      // radial grid converging on the vanishing point
+      ctx.lineWidth = 1;
+      for (i = 0; i < 24; i++) {
+        var ang = i / 24 * Math.PI * 2 + t * 0.03;
+        ctx.strokeStyle = 'rgba(0,240,200,' + (0.035 * o) + ')';
+        ctx.beginPath(); ctx.moveTo(vx, vy); ctx.lineTo(vx + Math.cos(ang) * M * 1.4, vy + Math.sin(ang) * M * 1.4); ctx.stroke();
+      }
+      // the tunnel: frames born at the vanishing point, accelerating toward you
+      for (i = 0; i < 16; i++) {
+        var z = (i / 16 + t * 0.16) % 1, sc = Math.pow(z, 2.6), hw = sc * M, hh = sc * M * 0.62;
+        var al = Math.min(1, z * 2.2) * (1 - z) * 1.4 * o;
+        ctx.strokeStyle = (i % 3 === 0 ? 'rgba(255,95,158,' : 'rgba(0,240,200,') + (0.34 * al) + ')';
+        ctx.lineWidth = 0.6 + z * 1.6;
+        ctx.strokeRect(vx - hw, vy - hh, hw * 2, hh * 2);
+        // corner ticks on the nearer frames
+        if (z > 0.55) { ctx.fillStyle = 'rgba(255,255,255,' + (0.3 * al) + ')'; [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (q) { ctx.fillRect(vx + q[0] * hw - 2, vy + q[1] * hh - 2, 4, 4); }); }
+      }
+      // warp streaks
+      for (i = 0; i < parts.length; i++) {
+        var p = parts[i]; p.z += p.v * dt * 0.55;
+        if (p.z > 1) { p.z = 0.02; p.a = Math.random() * Math.PI * 2; }
+        var r1 = Math.pow(p.z, 2.2) * M * 1.3, r0 = Math.pow(Math.max(0, p.z - 0.04 - p.v * 0.03), 2.2) * M * 1.3;
+        var ca = Math.cos(p.a), sa = Math.sin(p.a), a2 = Math.min(1, p.z * 3) * o;
+        ctx.strokeStyle = p.c ? 'rgba(255,95,158,' + (0.48 * a2) + ')' : 'rgba(150,255,240,' + (0.48 * a2) + ')';
+        ctx.lineWidth = 0.5 + p.z * 1.8;
+        ctx.beginPath(); ctx.moveTo(vx + ca * r0, vy + sa * r0 * 0.7); ctx.lineTo(vx + ca * r1, vy + sa * r1 * 0.7); ctx.stroke();
+      }
+      // the vanishing point itself: a slow, pulsing core
+      var pulse = 0.6 + 0.4 * Math.sin(t * 2.2), g = ctx.createRadialGradient(vx, vy, 0, vx, vy, 90 + pulse * 40);
+      g.addColorStop(0, 'rgba(220,255,250,' + (0.1 * o) + ')'); g.addColorStop(0.35, 'rgba(0,240,200,' + (0.05 * o) + ')'); g.addColorStop(1, 'rgba(0,240,200,0)');
+      ctx.fillStyle = g; ctx.fillRect(vx - 140, vy - 140, 280, 280);
+      // scanning band
+      var sy = ((t * 0.22) % 1.3 - 0.15) * H, band = ctx.createLinearGradient(0, sy - 70, 0, sy + 70);
+      band.addColorStop(0, 'rgba(0,240,200,0)'); band.addColorStop(0.5, 'rgba(0,240,200,' + (0.06 * o) + ')'); band.addColorStop(1, 'rgba(0,240,200,0)');
+      ctx.fillStyle = band; ctx.fillRect(0, sy - 70, W, 140);
+      ctx.globalCompositeOperation = 'source-over';
+      // readability: a soft dark halo behind the logo and the closing line, so the animation fades as it passes behind them
+      if (R.read) R.read.forEach(function (q) {
+        var hx = q[0], hy = q[1], rx = q[2], ry = q[3];
+        ctx.save(); ctx.translate(hx, hy); ctx.scale(1, ry / rx);
+        var dk = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
+        dk.addColorStop(0, 'rgba(2,1,7,.82)'); dk.addColorStop(0.55, 'rgba(2,1,7,.6)'); dk.addColorStop(1, 'rgba(2,1,7,0)');
+        ctx.fillStyle = dk; ctx.beginPath(); ctx.arc(0, 0, rx, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      });
+      // data fragments flickering in the dark
+      var bb = R.bounds;
+      if (glyphs.length < 6 && Math.random() < dt * 5) {
+        var vw2 = bb[2] - bb[0], side = Math.random() < 0.5, gx = side ? bb[0] + 14 + Math.random() * Math.max(4, vw2 * 0.3 - 110) : bb[2] - vw2 * 0.3 + Math.random() * Math.max(4, vw2 * 0.3 - 120);
+        var gy = 40 + Math.random() * (H - 80), clash = R.read && R.read.some(function (q) { return Math.abs(gx + 50 - q[0]) < q[2] * 0.9 && Math.abs(gy - q[1]) < q[3] * 0.9; });
+        if (!clash) glyphs.push({ s: GLYPHS[(Math.random() * GLYPHS.length) | 0], x: gx, y: gy, life: 0, max: 1.4 + Math.random() * 2, c: Math.random() < 0.7 });
+      }
+      ctx.font = '500 10.5px "DM Mono", ui-monospace, monospace'; ctx.textBaseline = 'middle';
+      for (i = glyphs.length - 1; i >= 0; i--) {
+        var gl = glyphs[i]; gl.life += dt;
+        if (gl.life > gl.max) { glyphs.splice(i, 1); continue; }
+        var fl = (gl.life < 0.25 ? (Math.random() < 0.5 ? 0.2 : 1) : gl.life > gl.max - 0.3 ? (gl.max - gl.life) / 0.3 : 1) * o;
+        var shown = gl.s.slice(0, Math.min(gl.s.length, Math.floor(gl.life * 28)));     // typed out
+        ctx.fillStyle = gl.c ? 'rgba(0,240,200,' + (0.6 * fl) + ')' : 'rgba(255,95,158,' + (0.6 * fl) + ')';
+        ctx.fillRect(gl.x, gl.y - 5, 3, 10);
+        ctx.fillText(shown, gl.x + 8, gl.y);
+      }
+      ctx.restore();
+      R.raf = requestAnimationFrame(draw);
+    }
+    R.raf = requestAnimationFrame(draw);
+  }
+
+  function gapBreak() {
+    if (!gapR || reduce) return;
+    var st = gapR.stick, fl = gapR.flash;
+    st.classList.remove('quake'); fl.classList.remove('go'); void st.offsetWidth;
+    st.classList.add('quake'); fl.classList.add('go');
+    setTimeout(function () { st.classList.remove('quake'); }, 560);
+    var A = window.IJAudio; if (!A || !A.playing || !A.ctx) return;
+    try {   // a crack (filtered noise) over a deep thud
+      var ctx = A.ctx, t = ctx.currentTime, len = Math.floor(ctx.sampleRate * 0.5), buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+      var n = ctx.createBufferSource(), f = ctx.createBiquadFilter(), gn = ctx.createGain();
+      n.buffer = buf; f.type = 'highpass'; f.frequency.value = 900; gn.gain.value = 0.16;
+      n.connect(f); f.connect(gn); gn.connect(A.fx); n.start(t);
+      var o = ctx.createOscillator(), og = ctx.createGain();
+      o.type = 'sine'; o.frequency.setValueAtTime(90, t); o.frequency.exponentialRampToValueAtTime(32, t + 0.6);
+      og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(0.32, t + 0.02); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.8);
+      o.connect(og); og.connect(A.fx); o.start(t); o.stop(t + 0.85);
+    } catch (e) {}
+  }
+
   function frame() {
     ticking = false;
     var y = scrollY, H = document.documentElement.scrollHeight - innerHeight, gp = H > 0 ? y / H : 0;
@@ -688,16 +914,20 @@ window.IJAudio = (function () {
     }
 
     if (els.gapSec) {
+      // the gap: a crack draws itself down the middle, the section jolts, then everything tears apart along it
       var g = clamp((prog(els.gapSec) - 0.08) / 0.6, 0, 1);
-      var ge = 1 - Math.pow(1 - g, 2);
-      var dist = mobile ? 0 : ge * Math.min(220, innerWidth * 0.16);
-      els.sideL.style.transform = 'translate3d(' + (-dist) + 'px,0,0)';
-      els.sideR.style.transform = 'translate3d(' + dist + 'px,0,0)';
+      var crack = clamp((g - 0.1) / 0.18, 0, 1);              // 1. the fracture draws itself
+      var open = clamp((g - 0.3) / 0.45, 0, 1);               // 3. the tear
+      var oe = 1 - Math.pow(1 - open, 3);
+      gapRig(crack, oe, mobile);
       els.sideL.classList.toggle('cross', g > 0.35);
-      els.riftLabel.style.opacity = clamp((g - 0.45) / 0.35, 0, 1);
-      els.riftLabel.style.transform = 'scale(' + (0.8 + 0.2 * clamp((g - 0.45) / 0.35, 0, 1)) + ')';
-      els.riftBeam.style.opacity = clamp((g - 0.3) / 0.4, 0, 1) * 0.9;
+      els.riftLabel.style.opacity = clamp((g - 0.5) / 0.3, 0, 1);
+      els.riftLabel.style.transform = 'scale(' + (0.8 + 0.2 * clamp((g - 0.5) / 0.3, 0, 1)) + ')';
+      els.riftBeam.style.opacity = 0;                           // the torn edges replace the old beam
       els.gapOut.classList.toggle('in', g > 0.85);
+      // 2. the break: a jolt, a flash and (with sound on) a crack, once each time the fracture completes
+      if (crack >= 1 && !gapBroke) { gapBroke = true; gapBreak(); }
+      if (crack < 0.6) gapBroke = false;
     }
 
     if (els.missions) {
