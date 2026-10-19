@@ -747,3 +747,39 @@ html.warping body { transition: transform .7s cubic-bezier(.6,0,.4,1), filter .7
   @media (max-width: 700px) {
     .flyer-rocket .fr-img { filter: brightness(1.9) saturate(1.6) drop-shadow(0 0 calc(var(--s)*.02) #fff) drop-shadow(0 0 calc(var(--s)*.09) #ff5f9e) drop-shadow(0 0 calc(var(--s)*.3) rgba(0,240,200,.4)); }
   }
+
+  /* ---------- the journey (18 Oct): one door, three modules in order, a pitch to companies ---------- */
+  .hero-cta { margin: 26px auto 0; display: flex; flex-direction: column; align-items: center; gap: 12px; position: relative; z-index: 2; }
+  .cta-main { display: inline-flex; align-items: center; gap: 10px; height: 56px; padding: 0 26px; border-radius: 999px; background: var(--pink); color: #07030f; text-decoration: none; font-weight: 700; font-size: 17px; box-shadow: 0 10px 34px rgba(255,95,158,.35); transition: transform .25s, box-shadow .25s; }
+  .cta-main:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(255,95,158,.5); }
+  .cta-main small { font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
+  .cta-alt { color: var(--lavender); text-decoration: none; font-size: 15px; border-bottom: 1px solid rgba(216,204,240,.35); }
+  .fiction { margin: 4px 0 0; font: 500 11px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+  .how { position: relative; z-index: 1; padding: clamp(60px, 10vh, 120px) 0; }
+  .how .h2 { margin: 10px 0 36px; }
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .steps li { position: relative; padding: 26px 24px 22px; border-radius: 20px; border: 1px solid var(--line); background: linear-gradient(165deg, rgba(107,43,217,.18), rgba(7,3,15,.7) 60%); }
+  .steps .n { font: 500 12px/1.4 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--cyan); }
+  .steps h3 { margin: 12px 0 8px; font-size: 24px; font-weight: 800; letter-spacing: -.02em; color: #fff; }
+  .steps p { margin: 0 0 18px; color: var(--lavender); font-weight: 300; line-height: 1.55; font-size: 15px; }
+  .steps a { color: var(--pink); text-decoration: none; font-weight: 700; }
+  .steps li.now { border-color: var(--pink); box-shadow: 0 0 40px rgba(255,95,158,.18); }
+  .steps li.now::before { content: "start here"; position: absolute; top: -11px; left: 20px; padding: 5px 9px; border-radius: 999px; background: var(--pink); color: #07030f; font: 600 10px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+  .cos { position: relative; z-index: 1; padding: clamp(70px, 12vh, 140px) 0; }
+  .cos-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: start; }
+  .cos .eyebrow { color: var(--cyan); }
+  .cos-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 26px; }
+  .cos-btn { height: 52px; font-size: 16px; }
+  .final .cta-main { margin-top: 26px; }
+  .final .share { margin-top: 34px; font: 500 12px/1.6 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .final .share a { color: var(--cyan); }
+  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } .cos-grid { grid-template-columns: 1fr; gap: 22px; } .cta-main { height: 52px; font-size: 16px; padding: 0 22px; } }
+
+  /* module 04, work in progress */
+  .steps { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 1100px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
+  .steps li.wip { border-style: dashed; opacity: .85; }
+  .steps li.wip h3 { color: var(--lavender); }
+  .soon-tag { display: inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--amber); color: var(--amber); font: 500 10px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
+  .mrail .mod[data-i="3"] { grid-column: 1 / -1; }

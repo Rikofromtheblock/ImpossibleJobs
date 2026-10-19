@@ -57,3 +57,10 @@ GitHub Settings → Pages → Custom domain: impossiblejobs.org. GoDaddy DNS: de
 
 ## Open items
 Fill in the data controller on privacy.html; Finish DNS + HTTPS; email forwarding; Instagram handle; mobile glitches list from user.
+
+## 18 Oct 2026 — the journey, companies, black & white, data
+- **Order of modules:** 01 the drift (drift.html) · 02 the jobs built for you (handed over at the end of the drift) · 03 the job board (jobs.html). Home: hero activation → "how it works" → boarding pass (reordered) → ending leads to the drift.
+- **Companies:** section on the home page, "companies" door in both menus, companies.html.
+- **Black & white:** mono.css (home + shared), mono-board.css, mono-drift.css are generated from the stylesheets by `mono/gen.py` + hand-tuned `manual.css` (kept in the project's `mono/` folder; regenerate after changing any stylesheet). theme.js builds the switch (bar on desktop, menu on phones, compact inside the drift's bar) and plays the tear (View Transitions). Choice in localStorage 'ij-theme', applied by a one-line script in each page's <head>.
+- **Boarding list (switched off):** seat.js/seat.css implement "claim your seat" forms (drift opening and ending, mission files). `IJ_LIST.enabled: false` hides them and keeps "apply now". To switch on: set enabled: true and the provider's endpoint/field names in seat.js, then update privacy.html.
+- **Data:** data/missions.json is the single source; `node tools/build-missions.js` writes missions.js, feed.xml, feed.json (see data/README.md).

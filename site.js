@@ -798,6 +798,11 @@ window.IJAudio = (function () {
     var cv = R.cv, ctx = cv.getContext('2d'), last = performance.now(), t = 0;
     var parts = [], glyphs = [], i;
     for (i = 0; i < 140; i++) parts.push({ a: Math.random() * Math.PI * 2, z: Math.random(), v: 0.25 + Math.random() * 0.9, c: Math.random() < 0.55 ? 0 : 1 });
+    // black & white: bright inks become black ink, the dark void and its reading halo become paper
+    function C(col) {
+      if (document.documentElement.getAttribute('data-theme') !== 'mono') return col;
+      return col.replace(/rgba\((\d+),\s*(\d+),\s*(\d+),/, function (m, r, g, b) { return (+r + +g + +b) < 60 ? 'rgba(255,255,255,' : 'rgba(0,0,0,'; }).replace(/#020107/g, '#ffffff');
+    }
     function draw(now) {
       var dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt;
       var sec = els.gapSec.getBoundingClientRect();
@@ -813,15 +818,16 @@ window.IJAudio = (function () {
       // the void itself: near-black, faintly tinted toward each torn edge, darkest at the core
       var bb0 = R.bounds, vg = ctx.createLinearGradient(bb0[0], 0, bb0[2], 0);
       if (bb0[2] - bb0[0] < 2) vg = ctx.createLinearGradient(0, bb0[1], 0, bb0[3] + 1);
-      vg.addColorStop(0, 'rgba(0,60,52,.95)'); vg.addColorStop(0.2, '#020107'); vg.addColorStop(0.8, '#020107'); vg.addColorStop(1, 'rgba(70,10,36,.95)');
+      vg.addColorStop(0, C('rgba(0,60,52,.95)')); vg.addColorStop(0.2, C('#020107')); vg.addColorStop(0.8, C('#020107')); vg.addColorStop(1, C('rgba(70,10,36,.95)'));
+      if (document.documentElement.getAttribute('data-theme') === 'mono') vg = '#f3f3f3';   // paper: the void is a pale grey hole in the page
       ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
-      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalCompositeOperation = document.documentElement.getAttribute('data-theme') === 'mono' ? 'source-over' : 'lighter';   // 'lighter' adds light: on paper it would vanish
       // radial grid converging on the vanishing point
       ctx.lineWidth = 1;
       var NR = small ? 12 : 24;
       for (i = 0; i < NR; i++) {
         var ang = i / NR * Math.PI * 2 + t * 0.03;
-        ctx.strokeStyle = 'rgba(0,240,200,' + (0.035 * o) + ')';
+        ctx.strokeStyle = C('rgba(0,240,200,' + (0.035 * o) + ')');
         ctx.beginPath(); ctx.moveTo(vx, vy); ctx.lineTo(vx + Math.cos(ang) * M * 1.4, vy + Math.sin(ang) * M * 1.4); ctx.stroke();
       }
       // the tunnel: frames born at the vanishing point, accelerating toward you
@@ -829,11 +835,11 @@ window.IJAudio = (function () {
       for (i = 0; i < NF; i++) {
         var z = (i / NF + t * 0.16) % 1, sc = Math.pow(z, 2.6), hw = sc * M, hh = sc * M * 0.62;
         var al = Math.min(1, z * 2.2) * (1 - z) * 1.4 * o;
-        ctx.strokeStyle = (i % 3 === 0 ? 'rgba(255,95,158,' : 'rgba(0,240,200,') + (0.34 * al) + ')';
+        ctx.strokeStyle = C((i % 3 === 0 ? 'rgba(255,95,158,' : 'rgba(0,240,200,') + (0.34 * al) + ')');
         ctx.lineWidth = 0.6 + z * 1.6;
         ctx.strokeRect(vx - hw, vy - hh, hw * 2, hh * 2);
         // corner ticks on the nearer frames
-        if (z > 0.55) { ctx.fillStyle = 'rgba(255,255,255,' + (0.3 * al) + ')'; [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (q) { ctx.fillRect(vx + q[0] * hw - 2, vy + q[1] * hh - 2, 4, 4); }); }
+        if (z > 0.55) { ctx.fillStyle = C('rgba(255,255,255,' + (0.3 * al) + ')'); [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (q) { ctx.fillRect(vx + q[0] * hw - 2, vy + q[1] * hh - 2, 4, 4); }); }
       }
       // warp streaks
       for (i = 0; i < (small ? 55 : parts.length); i++) {
@@ -841,17 +847,17 @@ window.IJAudio = (function () {
         if (p.z > 1) { p.z = 0.02; p.a = Math.random() * Math.PI * 2; }
         var r1 = Math.pow(p.z, 2.2) * M * 1.3, r0 = Math.pow(Math.max(0, p.z - 0.04 - p.v * 0.03), 2.2) * M * 1.3;
         var ca = Math.cos(p.a), sa = Math.sin(p.a), a2 = Math.min(1, p.z * 3) * o;
-        ctx.strokeStyle = p.c ? 'rgba(255,95,158,' + (0.48 * a2) + ')' : 'rgba(150,255,240,' + (0.48 * a2) + ')';
+        ctx.strokeStyle = C(p.c ? 'rgba(255,95,158,' + (0.48 * a2) + ')' : 'rgba(150,255,240,' + (0.48 * a2) + ')');
         ctx.lineWidth = 0.5 + p.z * 1.8;
         ctx.beginPath(); ctx.moveTo(vx + ca * r0, vy + sa * r0 * 0.7); ctx.lineTo(vx + ca * r1, vy + sa * r1 * 0.7); ctx.stroke();
       }
       // the vanishing point itself: a slow, pulsing core
       var pulse = 0.6 + 0.4 * Math.sin(t * 2.2), g = ctx.createRadialGradient(vx, vy, 0, vx, vy, 90 + pulse * 40);
-      g.addColorStop(0, 'rgba(220,255,250,' + (0.1 * o) + ')'); g.addColorStop(0.35, 'rgba(0,240,200,' + (0.05 * o) + ')'); g.addColorStop(1, 'rgba(0,240,200,0)');
+      g.addColorStop(0, C('rgba(220,255,250,' + (0.1 * o) + ')')); g.addColorStop(0.35, C('rgba(0,240,200,' + (0.05 * o) + ')')); g.addColorStop(1, C('rgba(0,240,200,0)'));
       ctx.fillStyle = g; ctx.fillRect(vx - 140, vy - 140, 280, 280);
       // scanning band
       var sy = ((t * 0.22) % 1.3 - 0.15) * H, band = ctx.createLinearGradient(0, sy - 70, 0, sy + 70);
-      band.addColorStop(0, 'rgba(0,240,200,0)'); band.addColorStop(0.5, 'rgba(0,240,200,' + (0.06 * o) + ')'); band.addColorStop(1, 'rgba(0,240,200,0)');
+      band.addColorStop(0, C('rgba(0,240,200,0)')); band.addColorStop(0.5, C('rgba(0,240,200,' + (0.06 * o) + ')')); band.addColorStop(1, C('rgba(0,240,200,0)'));
       ctx.fillStyle = band; ctx.fillRect(0, sy - 70, W, 140);
       ctx.globalCompositeOperation = 'source-over';
       // readability: a soft dark halo behind the logo and the closing line, so the animation fades as it passes behind them
@@ -859,7 +865,7 @@ window.IJAudio = (function () {
         var hx = q[0], hy = q[1], rx = q[2], ry = q[3];
         ctx.save(); ctx.translate(hx, hy); ctx.scale(1, ry / rx);
         var dk = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
-        dk.addColorStop(0, 'rgba(2,1,7,.82)'); dk.addColorStop(0.55, 'rgba(2,1,7,.6)'); dk.addColorStop(1, 'rgba(2,1,7,0)');
+        dk.addColorStop(0, C('rgba(2,1,7,.82)')); dk.addColorStop(0.55, C('rgba(2,1,7,.6)')); dk.addColorStop(1, C('rgba(2,1,7,0)'));
         ctx.fillStyle = dk; ctx.beginPath(); ctx.arc(0, 0, rx, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       });
       // data fragments flickering in the dark
@@ -875,14 +881,14 @@ window.IJAudio = (function () {
         if (gl.life > gl.max) { glyphs.splice(i, 1); continue; }
         var fl = (gl.life < 0.25 ? (Math.random() < 0.5 ? 0.2 : 1) : gl.life > gl.max - 0.3 ? (gl.max - gl.life) / 0.3 : 1) * o;
         var shown = gl.s.slice(0, Math.min(gl.s.length, Math.floor(gl.life * 28)));     // typed out
-        ctx.fillStyle = gl.c ? 'rgba(0,240,200,' + (0.6 * fl) + ')' : 'rgba(255,95,158,' + (0.6 * fl) + ')';
+        ctx.fillStyle = C(gl.c ? 'rgba(0,240,200,' + (0.6 * fl) + ')' : 'rgba(255,95,158,' + (0.6 * fl) + ')');
         ctx.fillRect(gl.x, gl.y - 5, 3, 10);
         ctx.fillText(shown, gl.x + 8, gl.y);
       }
       ctx.restore();
       ctx.globalCompositeOperation = 'destination-out';              // fade the ends (cheaper than a CSS mask)
       var fd = small ? ctx.createLinearGradient(0, 0, W, 0) : ctx.createLinearGradient(0, 0, 0, H);
-      fd.addColorStop(0, 'rgba(0,0,0,1)'); fd.addColorStop(small ? 0.1 : 0.07, 'rgba(0,0,0,0)'); fd.addColorStop(small ? 0.9 : 0.93, 'rgba(0,0,0,0)'); fd.addColorStop(1, 'rgba(0,0,0,1)');
+      fd.addColorStop(0, C('rgba(0,0,0,1)')); fd.addColorStop(small ? 0.1 : 0.07, C('rgba(0,0,0,0)')); fd.addColorStop(small ? 0.9 : 0.93, C('rgba(0,0,0,0)')); fd.addColorStop(1, C('rgba(0,0,0,1)'));
       ctx.fillStyle = fd; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over';
       R.raf = requestAnimationFrame(draw);
     }
@@ -1022,6 +1028,7 @@ window.IJAudio = (function () {
     var SRC = {}, frameKey = '', frameAt = 0;
     function loadSprites() { if (!window.IJFlap) return; ['rk1', 'rk2', 'rk3'].forEach(function (k) { SRC[k] = IJFlap.sprite(k); }); frameKey = ''; }
     loadSprites(); if (window.IJFlap && IJFlap.ready) IJFlap.ready.then(loadSprites);
+    document.addEventListener('ij:theme', loadSprites);   // black & white: the rocket switches to its black-ink frames
     // LED flame in steps: the tile's own small flame first, then longer burns, flickering
     function pickFrame(now, thrust) {
       if (now - frameAt < (innerWidth < 700 ? 140 : 70) && frameKey) return;   // phones: the flame flickers half as often (each swap redraws the glow)

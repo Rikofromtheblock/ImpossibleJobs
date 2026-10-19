@@ -208,12 +208,15 @@
             '<h3' + h() + '>our values</h3><ol class="hc-values hl" style="--k:' + (k++) + '">' + (m.values || []).map(function (v, j) { return '<li><b>0' + (j + 1) + '</b>' + esc(v) + '</li>'; }).join('') + '</ol>' +
           '</section>' +
         '</div>' +
-        '<div class="hc-cta hl" style="--k:' + (k++) + '"><div><p class="big">built for this? <em>apply now.</em></p><p class="small">' + esc(m.slide5_future_line) + ' or send this mission to someone who was.</p><p class="hc-privacy">apply now opens your own email app. we only see what you choose to send. <a href="privacy.html">privacy</a></p></div>' +
+        '<div class="hc-cta hl" style="--k:' + (k++) + '"><div><p class="big">built for this? <em>' + (window.IJ_LIST && IJ_LIST.enabled ? 'claim your seat.' : 'apply now.') + '</em></p><p class="small">' + esc(m.slide5_future_line) + ' or send this mission to someone who was.</p><p class="hc-privacy">' + (window.IJ_LIST && IJ_LIST.enabled ? 'claiming a seat adds your email to the boarding list with this mission\u2019s number, nothing else.' : 'apply now opens your own email app. we only see what you choose to send.') + ' <a href="privacy.html">privacy</a></p></div>' +
           '<div class="hc-actions">' +
-            '<a class="hc-apply" href="' + applyHref(m) + '">apply now <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>' +
+            (window.IJ_LIST && IJ_LIST.enabled ? '<button class="hc-apply" type="button" data-seat-open>claim your seat ' : '<a class="hc-apply" href="' + applyHref(m) + '">apply now ') + '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>' + (window.IJ_LIST && IJ_LIST.enabled ? '</button>' : '</a>') +
             '<a class="hc-wa" href="' + whatsappHref(m) + '" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2a8.2 8.2 0 01-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 01-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 00-.7.3 3 3 0 00-.9 2.2 5.2 5.2 0 001.1 2.7 11.8 11.8 0 004.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 001.8-1.3 2.2 2.2 0 00.1-1.3c0-.1-.2-.2-.5-.3z"/></svg>share on whatsapp</a>' +
             '<button class="hc-copy" type="button" data-share>copy link</button>' +
-          '</div></div>' +
+          '</div>' +
+          '<form class="seat hc-seat" id="seat-' + m.num + '" data-context="board" data-tag="mission-' + m.num + '" data-label="a seat on mission ' + m.num + '" data-button="claim my seat" data-fine="one email when this mission becomes real. no newsletter unless you ask. unsubscribe any time." hidden></form>' +
+          (window.IJ_LIST && IJ_LIST.enabled ? '<p class="hc-privacy">prefer to write? <a href="' + applyHref(m) + '">email us about this mission</a></p>' : '') +
+          '</div>' +
         '<div class="hc-foot hl" style="--k:' + (k++) + '"><span>this mission is fictional. until it won’t be.</span>' +
           '<div class="hc-nav"><button type="button" data-go="' + ((i - 1 + M.length) % M.length) + '">← ' + esc(prev.num) + '</button><button type="button" data-go="' + ((i + 1) % M.length) + '">' + esc(next.num) + ' →</button></div></div>' +
       '</div>';
@@ -268,6 +271,12 @@
     var go = e.target.closest('[data-go]');
     if (go) { var n = +go.getAttribute('data-go'); lastRow = rows[n]; render(M[n], n); current = n; card.scrollTop = 0; card.classList.remove('materialise'); void card.offsetWidth; card.classList.add('materialise'); try { history.replaceState(null, '', '#mission-' + M[n].num); } catch (er) {} return; }
     if (e.target.closest('[data-share]')) share(M[current]);
+    var so = e.target.closest('[data-seat-open]');
+    if (so) {   // claim your seat: the form unfolds in place (built by seat.js)
+      var f = so.closest('.hc-cta').querySelector('.hc-seat'); if (!f) return;
+      f.hidden = false; if (window.IJSeat) IJSeat.build(f); so.style.display = 'none';
+      var inp = f.querySelector('input[type=email]'); if (inp) setTimeout(function () { inp.focus(); }, 50);
+    }
   });
   document.addEventListener('keydown', function (e) {
     if (current < 0) return;

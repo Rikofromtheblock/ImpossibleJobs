@@ -1,0 +1,249 @@
+html[data-theme="mono"] body[data-page="board"] { background: #fff !important; }
+html[data-theme="mono"] .sys-bg { background: none !important; }
+html[data-theme="mono"] .sys-vignette { background: #fff !important; }
+html[data-theme="mono"] .sysbar { background: #fff !important; color: #444 !important; }
+html[data-theme="mono"] .sysbar .tag-os { color: #000 !important; }
+html[data-theme="mono"] .sys-mid b { color: #000 !important; }
+html[data-theme="mono"] .sys-mid .dot { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .sys-clock { color: #000 !important; }
+html[data-theme="mono"] .sysboot { background: #fff !important; }
+html[data-theme="mono"] .sysboot pre { color: #000 !important; }
+html[data-theme="mono"] .sysboot pre .ok { color: #000 !important; }
+html[data-theme="mono"] .sysboot pre .hl { color: #000 !important; }
+html[data-theme="mono"] .sysboot pre .cur { background: #000 !important; }
+html[data-theme="mono"] .intro-title em { color: #000 !important; }
+html[data-theme="mono"] .intro-sub { color: #444 !important; }
+html[data-theme="mono"] .mboard { background: #fff !important; border: 1px solid #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .mboard::before, html[data-theme="mono"] .mboard::after { background: #fff !important; box-shadow: none !important; }
+html[data-theme="mono"] .mb-top { border-bottom: 1px solid #000 !important; color: #444 !important; }
+html[data-theme="mono"] .mb-top .ttl { color: #000 !important; }
+html[data-theme="mono"] .mb-top .ttl i { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .mb-cols { color: #444 !important; }
+html[data-theme="mono"] .mrow { border-top: 1px solid #000 !important; }
+html[data-theme="mono"] .mrow:first-child { border-top-color: transparent !important; }
+html[data-theme="mono"] .mrow::before { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .mrow:hover, html[data-theme="mono"] .mrow:focus-visible { background: transparent !important; }
+html[data-theme="mono"] .mrow:focus-visible { outline: 1px solid #000 !important; }
+html[data-theme="mono"] .mrow .open-hint { color: #000 !important; }
+html[data-theme="mono"] .fc { box-shadow: none !important; }
+html[data-theme="mono"] .fc::after { background: #fff !important; }
+html[data-theme="mono"] .fc.f1::before, html[data-theme="mono"] .fc.f2::before { background: transparent !important; }
+html[data-theme="mono"] .fl-sm .fc { color: #444 !important; }
+html[data-theme="mono"] .fc.sp { background: transparent !important; }
+html[data-theme="mono"] .fl-num .fc { color: #444 !important; }
+html[data-theme="mono"] .mrow[data-st="final call"] .fl-st .fc, html[data-theme="mono"] .mrow[data-st="last seats"] .fl-st .fc { color: #000 !important; }
+html[data-theme="mono"] .mrow[data-st="now boarding"] .fl-st .fc, html[data-theme="mono"] .mrow[data-st="boarding"] .fl-st .fc { color: #000 !important; }
+html[data-theme="mono"] .mrow[data-st="delayed"] .fl-st .fc { color: #000 !important; }
+html[data-theme="mono"] .mrow[data-st="classified"] .fl-st .fc { color: #444 !important; }
+html[data-theme="mono"] .board-hint { color: #444 !important; }
+html[data-theme="mono"] .board-hint b { color: #000 !important; }
+html[data-theme="mono"] .holo-backdrop { background: #fff !important; }
+html[data-theme="mono"] .holo-backdrop::after { background: none !important; }
+html[data-theme="mono"] .holo-platform { background: none !important; }
+html[data-theme="mono"] .holo-platform::after { border: 1px solid #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .holo-beam { background: none !important; }
+html[data-theme="mono"] .holo-card { background: #fff !important; border: 1px solid #000 !important; box-shadow: none !important; color: #000 !important; }
+html[data-theme="mono"] .holo-card::before { box-shadow: none !important; }
+html[data-theme="mono"] .holo-scan { background: none !important; }
+html[data-theme="mono"] .hc-top { background: #fff !important; border-bottom: 1px solid rgba(0,0,0,.22) !important; color: #444 !important; }
+html[data-theme="mono"] .hc-top .id { color: #000 !important; }
+html[data-theme="mono"] .hc-status { border: 1px solid currentColor !important; }
+html[data-theme="mono"] .hc-status.hs-final, html[data-theme="mono"] .hc-status.hs-last { color: #000 !important; }
+html[data-theme="mono"] .hc-status.hs-boarding { color: #000 !important; }
+html[data-theme="mono"] .hc-status.hs-delayed { color: #000 !important; }
+html[data-theme="mono"] .hc-status.hs-classified { color: #444 !important; }
+html[data-theme="mono"] .hc-close { background: transparent !important; border: 1px solid #000 !important; color: #000 !important; }
+html[data-theme="mono"] .hc-close:hover, html[data-theme="mono"] .hc-close:focus-visible { border-color: #000 !important; }
+html[data-theme="mono"] .hc-logo { background: #fff !important; border: 1px solid color-mix(in srgb, var(--c1) 50%, transparent) !important; box-shadow: none !important; }
+html[data-theme="mono"] .hc-title { color: #000 !important; }
+html[data-theme="mono"] .hc-tags span { background: transparent !important; border: 1px solid #000 !important; color: #000 !important; }
+html[data-theme="mono"] .hc-facts { background: #fff !important; border: 1px solid #000 !important; }
+html[data-theme="mono"] .hc-facts div { background: #fff !important; }
+html[data-theme="mono"] .hc-facts dd { color: #000 !important; }
+html[data-theme="mono"] .hc-facts dd small { color: #444 !important; }
+html[data-theme="mono"] .hc-desc { color: #000 !important; }
+html[data-theme="mono"] .hc-punch { color: #000 !important; }
+html[data-theme="mono"] .hc-grid { border-top: 1px solid #000 !important; }
+html[data-theme="mono"] .hc-grid h3 { color: #000 !important; }
+html[data-theme="mono"] .hc-req li::before { background: transparent !important; border: 1px solid #000 !important; }
+html[data-theme="mono"] .hc-req li::after { border: solid #000 !important; }
+html[data-theme="mono"] .hc-req strong { color: #000 !important; }
+html[data-theme="mono"] .hc-req span { color: #444 !important; }
+html[data-theme="mono"] .hc-nice { background: transparent !important; border: 1px dashed #000 !important; color: #000 !important; }
+html[data-theme="mono"] .hc-avatar { color: #000 !important; }
+html[data-theme="mono"] .hc-boss strong { color: #000 !important; }
+html[data-theme="mono"] .hc-boss span { color: #444 !important; }
+html[data-theme="mono"] .hc-values li { color: #000 !important; }
+html[data-theme="mono"] .hc-cta { background: none !important; border: 1px solid #000 !important; }
+html[data-theme="mono"] .hc-cta .big { color: #000 !important; }
+html[data-theme="mono"] .hc-cta .big em { color: #000 !important; }
+html[data-theme="mono"] .hc-cta .small { color: #000 !important; }
+html[data-theme="mono"] .hc-share { background: #000 !important; color: #fff !important; }
+html[data-theme="mono"] .hc-share:hover, html[data-theme="mono"] .hc-share:focus-visible { box-shadow: none !important; }
+html[data-theme="mono"] .hc-foot { color: #444 !important; }
+html[data-theme="mono"] .hc-nav button { background: transparent !important; border: 1px solid #000 !important; color: #000 !important; }
+html[data-theme="mono"] .hc-nav button:hover, html[data-theme="mono"] .hc-nav button:focus-visible { border-color: #000 !important; color: #000 !important; }
+html[data-theme="mono"] .toast { background: #000 !important; color: #fff !important; }
+html[data-theme="mono"] .board-foot { border-top: 1px solid #000 !important; color: #444 !important; }
+html[data-theme="mono"] .board-foot a { color: #000 !important; }
+html[data-theme="mono"] .fc { background: #fff !important; color: #000 !important; }
+html[data-theme="mono"] .fc::after { background: transparent !important; }
+html[data-theme="mono"] .fl-sm .fc { color: #000 !important; }
+html[data-theme="mono"] .fl-num .fc { color: #444 !important; }
+html[data-theme="mono"] .mrow[data-st="classified"] .fl-st .fc { color: #444 !important; }
+html[data-theme="mono"] .hc-portrait { box-shadow: none !important; }
+html[data-theme="mono"] .intro-line2 { color: #000 !important; }
+html[data-theme="mono"] .intro-line2 em { color: #000 !important; }
+html[data-theme="mono"] .snd { background: transparent !important; color: #444 !important; }
+html[data-theme="mono"] .snd:hover, html[data-theme="mono"] .snd:focus-visible { color: #000 !important; border-color: #000 !important; }
+html[data-theme="mono"] .snd.on { color: #000 !important; border-color: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .hc-apply { background: #000 !important; color: #fff !important; }
+html[data-theme="mono"] .hc-apply:hover, html[data-theme="mono"] .hc-apply:focus-visible { box-shadow: none !important; color: #000 !important; }
+html[data-theme="mono"] .hc-wa { background: transparent !important; color: #000 !important; border: 1px solid #000 !important; }
+html[data-theme="mono"] .hc-wa svg { color: #000 !important; }
+html[data-theme="mono"] .hc-wa:hover, html[data-theme="mono"] .hc-wa:focus-visible { border-color: #000 !important; box-shadow: none !important; color: #000 !important; }
+html[data-theme="mono"] .hc-copy { background: transparent !important; color: #000 !important; border: 1px solid #000 !important; }
+html[data-theme="mono"] .hc-copy:hover, html[data-theme="mono"] .hc-copy:focus-visible { border-color: #000 !important; color: #000 !important; }
+html[data-theme="mono"] .hc-privacy { color: #444 !important; }
+html[data-theme="mono"] .hc-privacy a { color: #000 !important; }
+html[data-theme="mono"].menu-open .sysbar { background: transparent !important; border-color: transparent !important; }
+/* ---------- hand-tuned black & white layer (after the generated rules) ---------- */
+html[data-theme="mono"] { --bg: #fff; --pink: #000; --cyan: #000; --amber: #000; --lavender: #000; --muted: #444; --line: #000; --ticket: #fff;
+  color-scheme: light; background: #fff; }
+/* atmosphere that only works as light on dark */
+html[data-theme="mono"] :is(.glow, .stars, .horizon, .gap-flash, .pt.smoke) { display: none !important; }
+/* the words that are pink in colour keep their emphasis: a heavy underline */
+html[data-theme="mono"] :is(h1, h2, h3, .h2, .slogan, .mrail-h, .rift-label .wordmark, .mini, .wordmark) :is(em, span:not([class])) { text-decoration: underline; text-decoration-thickness: .085em; text-underline-offset: .12em; }
+html[data-theme="mono"] :is(.mini, .wordmark) span span, html[data-theme="mono"] .mini > span > span { text-decoration-thickness: .1em; }
+/* drawings: light ink becomes black, dark fills become paper */
+html[data-theme="mono"] svg [fill]:not([fill="none"]):not([fill^="url"]) { fill: #000; }
+html[data-theme="mono"] svg :is([fill="#07030f"], [fill="#0c081b"], [fill="#06030d"], [fill="#2a1a48"], [fill="#1a1430"]) { fill: #fff; }
+html[data-theme="mono"] svg [stroke]:not([stroke="none"]) { stroke: #000; }
+html[data-theme="mono"] .ij-mono { filter: none !important; }
+/* the boarding pass is paper: white ticket, black print, a hard black outline */
+html[data-theme="mono"] :is(.mrail-tab, .mrail-panel) { background: #fff !important; color: #000 !important; outline: 2px solid #000; outline-offset: -2px; filter: none !important; }
+html[data-theme="mono"] .mrail-tab * { color: #000 !important; }
+html[data-theme="mono"] .mrail-leds i, html[data-theme="mono"] .stub-code i, html[data-theme="mono"] .ticket-code i { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .mrail-leds i.wait { background: transparent !important; outline: 1.5px solid #000; outline-offset: -1.5px; }   /* activating: hollow */
+/* status everywhere: online = solid, activating = hollow ring */
+html[data-theme="mono"] .status { border: 1.5px solid #000 !important; color: #000 !important; }
+html[data-theme="mono"] .mod.online .status i, html[data-theme="mono"] .status .dot { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .mod.activating .status i { background: transparent !important; box-shadow: inset 0 0 0 1.5px #000 !important; }
+/* cards: white paper with a black frame and a hard print shadow on hover */
+html[data-theme="mono"] :is(.mod, .stat, .ix-card, .hc, .crew-fig) { box-shadow: none; }
+html[data-theme="mono"] :is(.mod, .stat, .ix-card) { border: 1.5px solid #000 !important; }
+html[data-theme="mono"] .mod:hover, html[data-theme="mono"] .ix-card:hover { box-shadow: 6px 6px 0 #000 !important; }
+html[data-theme="mono"] .mod::before, html[data-theme="mono"] .mod .scan { display: none !important; }
+html[data-theme="mono"] :is(.boot-bar, .ix-bar, .ri-bar) { background: #fff !important; outline: 1.5px solid #000; }
+html[data-theme="mono"] :is(.boot-bar, .ix-bar) i { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .mod.activating .boot-bar i, html[data-theme="mono"] .ix-boot.wait .ix-bar i { background: repeating-linear-gradient(-45deg, #000 0 4px, #fff 4px 8px) !important; }
+/* buttons that are pink in colour: solid black, white type */
+html[data-theme="mono"] :is(.ix-go:not(.ghost), .menu-btn .ico, .cta .arrow, .mail) { background: #000 !important; color: #fff !important; }
+html[data-theme="mono"] :is(.ix-go:not(.ghost), .cta .arrow, .mail) * { color: #fff !important; stroke: #fff !important; }
+/* the gap: black fracture lines on paper */
+html[data-theme="mono"] .gap-tear .edge { stroke: #000 !important; }
+html[data-theme="mono"] .gap-tear .edge.g2 { opacity: .25; } html[data-theme="mono"] .gap-tear .edge.g3 { opacity: .08; }
+html[data-theme="mono"] .gap-sec .gap-out { background: #fff !important; border: 1.5px solid #000; backdrop-filter: none; }
+/* the cursor */
+html[data-theme="mono"] .cur-ring i { border-color: #000 !important; filter: none !important; }
+html[data-theme="mono"] .cur-dot { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"].cursor-hot .cur-ring i { border-color: #000 !important; }
+/* LED art (tiles, crews, rocket) is redrawn by flap.js in black ink: no glow needed */
+html[data-theme="mono"] :is(.flap img, .crew-fig img, .flyer-rocket .fr-img, .flyer-rocket) { filter: none !important; }
+html[data-theme="mono"] .flap.led { box-shadow: 0 0 0 1.5px #000 !important; }
+html[data-theme="mono"] .flap.bare { box-shadow: none !important; }
+/* source stars */
+html[data-theme="mono"] .ref-star svg { filter: none !important; }
+
+/* ---------- the switch ---------- */
+.theme-switch { --w: 132px; position: fixed; top: 12px; right: 330px; z-index: 70; height: 48px; width: var(--w); display: flex; align-items: center; padding: 4px; border-radius: 999px;
+  border: 1px solid var(--line, #2a2145); background: rgba(12,8,28,.72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); cursor: pointer;
+  font: 500 10.5px/1 var(--mono, monospace); letter-spacing: .14em; text-transform: uppercase; color: var(--lavender, #d8ccf0); transition: opacity .3s; }
+.theme-switch span { position: relative; z-index: 1; flex: 1; text-align: center; transition: color .35s; }
+.theme-switch::before { content: ""; position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 999px;
+  background: linear-gradient(90deg, #ff5f9e, #00f0c8); transition: transform .45s cubic-bezier(.2,.9,.2,1), background .3s; }
+.theme-switch[aria-checked="true"]::before { transform: translateX(100%); background: #000; }
+.theme-switch[aria-checked="false"] span:first-child, .theme-switch[aria-checked="true"] span:last-child { color: #07030f; }
+.theme-switch:focus-visible { outline: 2px solid var(--cyan, #00f0c8); outline-offset: 3px; }
+html[data-theme="mono"] .theme-switch { background: #fff; border: 1.5px solid #000; color: #000; }
+html[data-theme="mono"] .theme-switch[aria-checked="true"] span:last-child { color: #fff; }
+html.menu-open .theme-switch.bar-switch { opacity: 0; pointer-events: none; }
+@media (max-width: 700px) { .theme-switch.bar-switch { display: none; } }
+/* phones: the switch lives in the menu */
+.theme-switch.menu-switch { position: relative; top: auto; right: auto; margin: 18px 0 8px; width: 200px; flex: none; }
+@media (min-width: 701px) { .theme-switch.menu-switch { display: none; } }
+
+/* ---------- the tear: the page cracks down the middle and the other mode is revealed through the gap ---------- */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { z-index: 2; animation: ijTearOpen 1.25s cubic-bezier(.7,0,.2,1) both; }
+::view-transition-old(root) { z-index: 1; animation: ijTearShake .5s cubic-bezier(.36,.07,.19,.97) .2s both; }
+@keyframes ijTearShake { 10%, 90% { transform: translate(-2px, 1px); } 30%, 50%, 70% { transform: translate(-6px, 2px); } 40%, 60% { transform: translate(6px, -1px); } }
+/* per-card colours written on the cards themselves (--c): black ink */
+html[data-theme="mono"] :is(.stat, .mod, [style*="--c"]) { --c: #000 !important; }
+/* the people grid: everyone is a light grey figure, the ones who count are solid black */
+html[data-theme="mono"] .person { color: #cfcfcf !important; filter: none !important; }
+html[data-theme="mono"] .person.on, html[data-theme="mono"] .person.cy.on { color: #000 !important; }
+/* "what jobs ask for": struck out in grey, crossed with a black line, no colour echo */
+html[data-theme="mono"] .gap-sec .side li { text-shadow: none !important; }
+html[data-theme="mono"] .gap-sec .side.l li { color: #6b6b6b !important; text-decoration-color: #000 !important; }
+html[data-theme="mono"] .gap-sec .side.l.cross li { text-decoration-color: #000 !important; }
+
+/* headline words that animate one by one are their own boxes: underline each emphasised word itself */
+html[data-theme="mono"] :is(h1, h2, .h2, .slogan) em:has(.w) { text-decoration: none !important; }
+html[data-theme="mono"] :is(h1, h2, .h2, .slogan) em .w { text-decoration: underline; text-decoration-thickness: .085em; text-underline-offset: .12em; }
+html[data-theme="mono"] :is(h1, h2, .h2, .slogan) em:has(.w) span:not([class]) { text-decoration: none !important; }   /* the space between split words */
+
+/* ---------- depth: light greys, used sparingly, the way print adds depth ---------- */
+html[data-theme="mono"] { --g1: #f4f4f4; --g2: #e6e6e6; --g3: #d2d2d2; }
+/* cards lift off the page: a soft grey offset under the black frame (hard black on hover) */
+html[data-theme="mono"] :is(.stat, .mod, .ix-card, .gap-sec .gap-out) { box-shadow: 5px 5px 0 var(--g2) !important; }
+html[data-theme="mono"] :is(.mod, .ix-card):hover { box-shadow: 6px 6px 0 #000 !important; }
+/* the boarding pass lies on top of the page */
+html[data-theme="mono"] .mrail-tab { box-shadow: 4px 4px 0 var(--g3) !important; }
+html[data-theme="mono"] .mrail.open .mrail-tab { box-shadow: none !important; }
+html[data-theme="mono"] .mrail-panel { box-shadow: 8px 8px 0 var(--g2) !important; }
+/* overlays: a light grey veil, so the page is still sensed underneath */
+html[data-theme="mono"] .ix-backdrop { background: rgba(236,236,236,.88) !important; }
+html[data-theme="mono"] .ix-backdrop::after { background: repeating-linear-gradient(0deg, rgba(0,0,0,.035) 0 1px, transparent 1px 4px) !important; }
+html[data-theme="mono"] :is(.ix-platform, .ix-beam) { display: none !important; }
+/* LED tiles: a faint grey display panel behind the black pixels */
+html[data-theme="mono"] .flap.led :is(.half, .leaf .face) { background: var(--g1) !important; }
+/* the top bar, floating over content: a hairline grey edge */
+html[data-theme="mono"] .bar.on { border-bottom: 1px solid var(--g2) !important; }
+/* the menu panel: the slightest grey, so it reads as a sheet over the page */
+html[data-theme="mono"] .menu { background: #fafafa !important; }
+
+/* the journey, in black & white */
+html[data-theme="mono"] .cta-main, html[data-theme="mono"] .steps li.now::before { background: #000 !important; color: #fff !important; box-shadow: none !important; }
+html[data-theme="mono"] .cta-main * { color: #fff !important; }
+html[data-theme="mono"] .cta-alt { color: #000 !important; border-bottom-color: #000 !important; }
+html[data-theme="mono"] .steps li { background: #fff !important; border: 1.5px solid #000 !important; box-shadow: 5px 5px 0 var(--g2) !important; }
+html[data-theme="mono"] .steps li.now { box-shadow: 6px 6px 0 #000 !important; }
+html[data-theme="mono"] .steps .n, html[data-theme="mono"] .steps a, html[data-theme="mono"] .cos .eyebrow, html[data-theme="mono"] .final .share a { color: #000 !important; }
+html[data-theme="mono"] .steps a { text-decoration: underline; }
+
+/* the companies page */
+html[data-theme="mono"] :is(.offer, .cos-contact, .cos-how li) { background: #fff !important; border: 1.5px solid #000 !important; box-shadow: 5px 5px 0 var(--g2) !important; }
+html[data-theme="mono"] :is(.offer h3, .cos-how b, .cos-contact h2, .cos-how .k, .offer .n, .cos-page h1, .cos-for h2) { color: #000 !important; }
+html[data-theme="mono"] :is(.offer p, .cos-how p, .cos-contact p, .cos-for ul) { color: #000 !important; }
+html[data-theme="mono"] .offer .who, html[data-theme="mono"] .cos-page .fine { color: #444 !important; }
+/* mission files: company colours become ink */
+html[data-theme="mono"] :is(.holo-card, .hc, .hc-top, .hc-in) { --c1: #000 !important; --c2: #000 !important; }
+html[data-theme="mono"] .hc-co, html[data-theme="mono"] .hc-top .id { color: #000 !important; }
+
+/* pages without a menu: a compact switch in the bar on phones */
+@media (max-width: 700px) {
+  .theme-switch.bar-switch.solo { display: flex; --w: 56px; padding: 0; justify-content: center; }
+  .theme-switch.bar-switch.solo span { display: none; }
+  .theme-switch.bar-switch.solo::before { display: none; }
+  .theme-switch.bar-switch.solo::after { content: "◐"; font: 700 20px/1 'Poppins', system-ui, sans-serif; color: #fff; }
+  html[data-theme="mono"] .theme-switch.bar-switch.solo::after { color: #000; }
+}
+
+/* the drift: the switch sits inside the bar, matching its small sound button */
+.theme-switch.inbar { position: relative; top: auto; right: auto; height: 32px; --w: 108px; padding: 3px; font-size: 9.5px; margin-left: auto; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.theme-switch.inbar::before { top: 3px; bottom: 3px; left: 3px; }
+@media (max-width: 700px) { .theme-switch.bar-switch.inbar { display: flex; --w: 44px; } .theme-switch.inbar::after { font-size: 16px; } }
+
+html[data-theme="mono"] .steps li.wip { border-style: dashed !important; }
+html[data-theme="mono"] .soon-tag { border-color: #000 !important; color: #000 !important; }

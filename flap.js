@@ -86,6 +86,10 @@
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* rasterise every icon once to a 24x24 grid with hard edges: that's what makes it an LED face */
+  // black & white: every artwork has a black-ink twin (light inks -> black, dark fills -> paper), keyed 'name@m'
+  function mono() { return document.documentElement.getAttribute('data-theme') === 'mono'; }
+  function monoSvg(src) { return src.replace(/#([0-9a-fA-F]{6})\b/g, function (m, h) { return /^(07030f|06030d|0c081b|2a1a48|1a1430)$/i.test(h) ? '#ffffff' : '#000000'; }); }
+  function tk(k) { return mono() ? k + '@m' : k; }
   function rasterOne(k, src) {
     return new Promise(function (res) {
       var vb = (src.match(/viewBox="0 0 (\d+) (\d+)"/) || [0, 32, 32]), w = +vb[1], h = +vb[2];
@@ -111,16 +115,18 @@
   function rasterise() {
     if (ready) return ready;
     var all = ORDER.map(function (k) { return rasterOne(k, ICONS[k]); })
+      .concat(ORDER.map(function (k) { return rasterOne(k + '@m', monoSvg(ICONS[k])); }))
       .concat(Object.keys(SPRITES).map(function (k) { return rasterOne(k, SPRITES[k]); }))
+      .concat(Object.keys(SPRITES).map(function (k) { return rasterOne(k + '@m', monoSvg(SPRITES[k])); }))
       .concat([].concat.apply([], Object.keys(CREW).map(function (g) {
-        return [].concat.apply([], CREW[g].map(function (m, i) { return m.f.map(function (svg, n) { return rasterOne(crewKey(g, i, n), svg); }); }));
+        return [].concat.apply([], CREW[g].map(function (m, i) { return m.f.map(function (svg, n) { return Promise.all([rasterOne(crewKey(g, i, n), svg), rasterOne(crewKey(g, i, n) + '@m', monoSvg(svg))]); }); }));
       })));
     ready = Promise.all(all);
     return ready;
   }
   function crewKey(g, i, n) { return 'crew-' + g + '-' + i + '-' + n; }
   function crewURL(g, i, n) {
-    var k = crewKey(g, i, n), src = CREW[g][i].f[n];
+    var k = tk(crewKey(g, i, n)), src = mono() ? monoSvg(CREW[g][i].f[n]) : CREW[g][i].f[n];
     return PX[k] || ('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(src.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ')));
   }
   // <div class="ij-crew" data-crew="who|what|contact" aria-hidden="true"></div>
@@ -133,6 +139,7 @@
     var root = document.documentElement;
     Array.prototype.forEach.call(el.querySelectorAll('.crew-fig img'), function (img, i) {
       var m = CREW[g][i], n = 0;
+      refreshers.push(function () { img.src = crewURL(g, i, n); });
       setInterval(function () {
         if (el.closest('.menu') && !root.classList.contains('menu-open')) return;   // asleep while the menu is closed
         if (!el.offsetParent) return;                                                // or while its panel is hidden
@@ -142,10 +149,13 @@
     });
   }
   function spriteURL(k) {
-    var src = SPRITES[k] || ICONS[k];
+    var src = SPRITES[k] || ICONS[k]; if (mono()) src = monoSvg(src); k = tk(k);
     return PX[k] || ('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(src.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ')));
   }
-  function art(k) { return PX[k] ? '<img src="' + PX[k] + '" alt="">' : (ICONS[k] || SPRITES[k]); }
+  function art(k) { var t = tk(k), v = ICONS[k] || SPRITES[k]; return PX[t] ? '<img src="' + PX[t] + '" alt="">' : (mono() ? monoSvg(v) : v); }
+  // when the mode changes, everything already drawn swaps to the matching ink
+  var refreshers = [];
+  document.addEventListener('ij:theme', function () { refreshers.forEach(function (f) { try { f(); } catch (e) {} }); });
 
   /* a real board: flat out at ~28 flips a second, then a short brake */
   var FAST = 36, BRAKE = [40, 46, 54, 64, 78, 96, 120, 150, 190, 240, 300, 370];
@@ -163,14 +173,14 @@
     if (size < 40) el.classList.add('tiny');
     if (mode === 'static') el.classList.add('bare');            // still = no tile
     var own = SPRITES[el.getAttribute('data-icon')] ? el.getAttribute('data-icon') : null;   // a still figure may use a sprite outside the flip set
-    if (mode === 'static') { el.innerHTML = '<span class="solo">' + art(own || ORDER[start]) + '</span>'; return; }   // a still figure has nothing to flip: one unclipped image, so its glow isn't boxed in
+    if (mode === 'static') { var paint = function () { el.innerHTML = '<span class="solo">' + art(own || ORDER[start]) + '</span>'; }; paint(); refreshers.push(paint); return; }   // a still figure has nothing to flip: one unclipped image, so its glow isn't boxed in
     el.innerHTML = '<span class="half t"></span><span class="half b"></span>' +
       '<span class="leaf"><span class="face front"></span><span class="face back"></span></span><span class="seam"></span>';
     var t = el.querySelector('.half.t'), b = el.querySelector('.half.b');
     var leaf = el.querySelector('.leaf'), front = leaf.querySelector('.front'), back = leaf.querySelector('.back');
     var cur = start, busy = false;
     function show(i) { var h = art(ORDER[i]); t.innerHTML = h; b.innerHTML = h; front.innerHTML = h; back.innerHTML = h; }
-    show(cur);
+    show(cur); refreshers.push(function () { if (!busy) show(cur); });
     if (mode === 'static' || mode === 'static-tile') return;
 
     var canWAAPI = typeof leaf.animate === 'function', anim = null;
@@ -240,3 +250,4 @@
   // loaded at the end of <body>: run now, so the tiles have their size before site.js measures the hero
   if (document.readyState === 'loading' && !document.querySelector('.ij-flap')) document.addEventListener('DOMContentLoaded', init); else init();
 })();
+

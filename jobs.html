@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>mission board · impossible jobs</title>
-<meta name="description" content="module 01: the job board. jobs that don't exist yet, posted from the future.">
+<meta name="description" content="module 03: the job board. jobs that don't exist yet, posted from the future.">
 <meta name="theme-color" content="#07030f">
+<script>try{if(localStorage.getItem('ij-theme')==='mono')document.documentElement.setAttribute('data-theme','mono')}catch(e){}</script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="impossible jobs">
 <meta property="og:description" content="the job you were made for hasn't been posted yet.">
@@ -18,6 +19,9 @@
 <link rel="stylesheet" href="site.css">
 <link rel="stylesheet" href="board.css">
 <link rel="stylesheet" href="flap.css">
+<link rel="stylesheet" href="mono.css">
+<link rel="stylesheet" href="mono-board.css">
+<link rel="stylesheet" href="seat.css">
 </head>
 <body data-year="2046" data-page="board">
   <div class="sys-bg" aria-hidden="true"></div>
@@ -38,14 +42,16 @@
       <div class="mnav" role="tablist" aria-orientation="vertical" aria-label="about impossible jobs">
         <button role="tab" id="t-who" aria-controls="p-who"><span>01</span>who we are</button>
         <button role="tab" id="t-what" aria-controls="p-what"><span>02</span>what we do</button>
-        <button role="tab" id="t-contact" aria-controls="p-contact"><span>03</span>contact</button>
+        <button role="tab" id="t-cos" aria-controls="p-cos"><span>03</span>companies</button>
+        <button role="tab" id="t-contact" aria-controls="p-contact"><span>04</span>contact</button>
         <a class="home" href="index.html">back to home</a>
       </div>
       <div>
         <div class="mpanel" role="tabpanel" id="p-who" aria-labelledby="t-who">
           <div class="ij-crew" data-crew="who" aria-hidden="true"></div>
           <p class="eyebrow pink">01 · who we are</p>
-          <h3>you don't know us yet. <em>that's sort of the point.</em></h3>
+          <h3>we write the jobs of the future <em>for the people who should have them.</em></h3>
+          <p class="who-plain"><strong>in plain words:</strong> impossible jobs publishes fictional job postings from the years ahead, built on real trajectories, so people can find out what they were made for before the world gets round to asking. we are for anyone who suspects their job was never designed for them, and for the few companies brave enough to write a role before it exists.</p>
           <p>we come from a little further down the timeline. not far. just far enough that introductions are awkward, our references won't land for another decade, and our LinkedIn says "starting soon".</p>
           <p>here's what we can tell you: <strong>we are experts in people.</strong> we have studied how humans work, why they light up, why they switch off, and exactly how long they can pretend to listen in a meeting. we usually know what you're good at before your CV does.</p>
           <p>we came back for one reason. too many brilliant people are spending their lives in jobs that were never designed for them. we'd like to fix that before it becomes history.</p>
@@ -59,16 +65,23 @@
           <p>the first three are coming online now. after that, we keep going. over time we'll activate more and more products and modules: each one <strong>more relevant, more personal and more engaging</strong> than the last, and frankly more fun than anything work has offered you so far.</p>
           <p>some will help you understand yourself. some will show you futures you didn't know you could want. some will put you to the test. a few we can't describe yet. temporal regulations. you understand.</p>
           <ul class="roadmap">
-            <li class="on"><i></i>module 01 · the job board · online</li>
-            <li class="soon"><i></i>module 02 · find who you are · activating</li>
-            <li class="soon"><i></i>module 03 · think you can do it? · activating</li>
+            <li class="on"><i></i>module 01 · the drift · online</li>
+            <li class="soon"><i></i>module 02 · the jobs built for you · activating</li>
+            <li class="on"><i></i>module 03 · the job board · online</li>
+            <li class="soon"><i></i>module 04 · the hiring manager · in progress</li>
             <li><i></i>modules 04 to ∞ · classified</li>
           </ul>
           <a class="mail" href="index.html#modules">see the modules</a>
         </div>
+        <div class="mpanel" role="tabpanel" id="p-cos" aria-labelledby="t-cos" hidden>
+          <p class="eyebrow pink">03 · for companies who live in the future</p>
+          <h3>the roles that will define your next decade <em>haven't been written yet.</em></h3>
+          <p>most companies hire for the organisation they were. a few hire for the one they're becoming. if you're the second kind, we help you describe a role before it exists, test whether the world is ready for it, and find the person who was built for it.</p>
+          <p><a class="mail" href="companies.html">how we work with companies →</a></p>
+        </div>
         <div class="mpanel" role="tabpanel" id="p-contact" aria-labelledby="t-contact" hidden>
           <div class="ij-crew" data-crew="contact" aria-hidden="true"></div>
-          <p class="eyebrow pink">03 · contact</p>
+          <p class="eyebrow pink">04 · contact</p>
           <h3>come and find us. <em>eventually.</em></h3>
           <div class="addr">
             <b>impossible jobs hq</b><br>
@@ -126,12 +139,14 @@
   <footer class="board-foot">
     <p class="foot-mark"><svg class="ij-mono sm" width="20" height="20" viewBox="0 0 100 100" fill="none" aria-hidden="true"><rect x="20" y="0" width="20" height="20" rx="2.5" fill="#ffffff"/><rect x="60" y="0" width="20" height="20" rx="2.5" fill="#ff5f9e"/><path d="M30 32v38" stroke="#ffffff" stroke-width="18"/><path d="M70 32v33a17 17 0 0 1-17 17H47" stroke="#ff5f9e" stroke-width="18"/></svg></p>
     <p><a href="index.html">← back to impossible jobs</a> · <a href="index.html#modules">all modules</a> · <a href="privacy.html">privacy</a> · <a href="mailto:hello@impossiblejobs.org">hello@impossiblejobs.org</a></p>
-    <p>ij/os mission board · module 01 · © impossible jobs</p>
+    <p>ij/os mission board · module 03 · © impossible jobs</p>
   </footer>
 
 <script src="missions.js"></script>
 <script src="flap.js"></script>
+<script src="seat.js"></script>
 <script src="site.js"></script>
+<script src="theme.js"></script>
 <script src="board.js"></script>
 </body>
 </html>

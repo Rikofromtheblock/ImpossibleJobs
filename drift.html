@@ -6,6 +6,7 @@
 <title>impossible jobs · drift</title>
 <meta name="description" content="measure the angle between what you were made for and how your days actually go. five minutes. nothing is stored.">
 <meta name="theme-color" content="#07030f">
+<script>try{if(localStorage.getItem('ij-theme')==='mono')document.documentElement.setAttribute('data-theme','mono')}catch(e){}</script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="impossible jobs · drift">
 <meta property="og:description" content="measure the angle between what you were made for and how your days actually go.">
@@ -278,6 +279,8 @@ input[type=range]{ width:100%; accent-color:var(--pink); height:28px; }
 @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
 </style>
 <link rel="stylesheet" href="flap.css">
+<link rel="stylesheet" href="seat.css">
+<link rel="stylesheet" href="mono-drift.css">
 </head>
 <body>
 <div class="sky" aria-hidden="true"><div class="g1"></div><div class="g2" id="g2"></div><div class="stars"></div></div>
@@ -309,9 +312,10 @@ input[type=range]{ width:100%; accent-color:var(--pink); height:28px; }
     <div><b style="color:var(--muted)">course</b><span>where you're actually going. how your working days really go.</span></div>
     <div><b style="color:var(--cyan)">drift</b><span>the angle between them. invisible on a tuesday. decisive over a career.</span></div>
   </div>
-  <p class="small">about five minutes. no account, no email. nothing leaves your phone.</p>
+  <p class="small">about five minutes. no account needed. your answers never leave your phone.</p>
   <div class="row"><button class="btn wide" id="go" type="button">measure my drift</button></div>
   <div class="row" style="justify-content:center;margin-top:10px"><button class="link" id="demo" type="button">just show me a sample result</button></div>
+  <form class="seat drift-seat" id="seatDrift" data-context="drift" data-label="optional · a seat on the boarding list" data-button="hold my seat" data-fine="your email joins the list; your answers don't. we write when a job built for your heading becomes real. unsubscribe any time."></form>
 </section>
 
 <!-- pre-flight -->
@@ -479,13 +483,18 @@ input[type=range]{ width:100%; accent-color:var(--pink); height:28px; }
     <div class="boardm" id="boardm"></div>
   </div>
 
+  <div class="sect">
+    <p class="sys">// module 02 · the jobs built for you</p>
+    <form class="seat drift-seat-end" id="seatDriftEnd" data-context="drift" data-label="claim a seat on the job built for your heading" data-button="claim my seat" data-fine="your email joins the boarding list with your heading's name (nothing else from this screen). we write the day a job like this becomes real."></form>
+  </div>
+
   <div class="row" style="margin-top:28px">
     <button class="btn" id="share" type="button">share my heading</button>
     <button class="btn ghost" id="again" type="button">fly again</button>
   </div>
   <div class="sharebox" id="sharebox"><p class="small">copied. if it didn't paste, copy it from here:</p><textarea id="sharetxt" readonly></textarea></div>
   <p class="small" style="margin-top:14px">your share shows your heading, never your drift. that part stays on this screen.</p>
-  <p class="foot">all missions are fictional. until they won't be.<br>module 02 · nothing you typed has left this page</p>
+  <p class="foot">all missions are fictional. until they won't be.<br>module 01 · the drift · nothing you typed has left this page</p>
 </section>
 
 </main>
@@ -854,6 +863,7 @@ function renderPosting(){
   if(noisy) catches.push(`${A[noisy[0]].l} under ${Math.max(1,noisy[1]-2)} hour${noisy[1]-2>1?'s':''} a day. the technology exists. the habit doesn't.`);
   const q=S.moment.split(/\s+/); const quote=q.length>26?q.slice(0,26).join(' ')+'…':S.moment;
   const bars=[2,4,1,3,1,5,2,1,3,2,4,1,2,3].map(h=>`<i style="width:${h}px"></i>`).join('');
+  window.IJ_DRIFT_HEADING = name; document.querySelectorAll('.drift-seat-end').forEach(function (f) { f.setAttribute('data-tag', 'heading-' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-')); });   // for the boarding list, only if the person ticks "attach my heading"
   $('ticket').innerHTML=`<article class="ticket">
     <div class="top"><span class="st">now boarding</span><span>private</span></div>
     <h3>${esc(title)}</h3>
@@ -887,5 +897,7 @@ function demo(){
 }
 </script>
 <script src="flap.js"></script>
+<script src="seat.js"></script>
+<script src="theme.js"></script>
 </body>
 </html>

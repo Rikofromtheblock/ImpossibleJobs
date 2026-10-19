@@ -1,0 +1,263 @@
+html[data-theme="mono"] body { background: #fff !important; color: #000 !important; }
+html[data-theme="mono"] a { color: #000 !important; }
+html[data-theme="mono"] body::before { background: #fff !important; }
+html[data-theme="mono"] .sky .g1 { background: none !important; }
+html[data-theme="mono"] .sky .g2 { background: none !important; }
+html[data-theme="mono"] .sky .stars { background: #000 !important; }
+html[data-theme="mono"] .bar { background: #fff !important; border-bottom: 1px solid #000 !important; }
+html[data-theme="mono"] .mark { color: #000 !important; }
+html[data-theme="mono"] .mark > span:last-child > span { color: #000 !important; }
+html[data-theme="mono"] .acts i { background: #fff !important; }
+html[data-theme="mono"] .acts i b { background: #000 !important; }
+html[data-theme="mono"] .snd { border: 1px solid #000 !important; color: #444 !important; }
+html[data-theme="mono"] .snd[aria-pressed="true"] { color: #000 !important; border-color: #000 !important; }
+html[data-theme="mono"] .sys { color: #444 !important; }
+html[data-theme="mono"] .sys .c { color: #000 !important; }
+html[data-theme="mono"] .sys .p { color: #000 !important; }
+html[data-theme="mono"] h1 em, html[data-theme="mono"] h2 em { color: #000 !important; }
+html[data-theme="mono"] .small { color: #444 !important; }
+html[data-theme="mono"] .btn { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .btn:not(:disabled):hover { box-shadow: none !important; }
+html[data-theme="mono"] .btn.ghost { background: transparent !important; border: 1px solid #000 !important; }
+html[data-theme="mono"] .btn.cyan { background: transparent !important; color: #000 !important; border: 1px solid #000 !important; }
+html[data-theme="mono"] .link { color: #444 !important; }
+html[data-theme="mono"] :focus-visible { outline: 2px solid #000 !important; }
+html[data-theme="mono"] textarea, html[data-theme="mono"] input[type=text] { border: 1px solid #000 !important; color: #000 !important; }
+html[data-theme="mono"] textarea:focus, html[data-theme="mono"] input[type=text]:focus { border-color: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] textarea::placeholder, html[data-theme="mono"] input::placeholder { color: #444 !important; }
+html[data-theme="mono"] .starter { border: 1px dashed #000 !important; color: #444 !important; }
+html[data-theme="mono"] .starter:hover { color: #000 !important; border-color: #000 !important; }
+html[data-theme="mono"] .meter { color: #444 !important; }
+html[data-theme="mono"] .meter .bar2 { background: #fff !important; }
+html[data-theme="mono"] .meter .bar2 i { background: #000 !important; }
+html[data-theme="mono"] .meter .ok { color: #000 !important; }
+html[data-theme="mono"] .card { border: 1px solid #000 !important; }
+html[data-theme="mono"] .card .d { color: #444 !important; }
+html[data-theme="mono"] .card:hover { border-color: #000 !important; }
+html[data-theme="mono"] .card.pick { background: transparent !important; border-color: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .card.pick.pk { background: transparent !important; border-color: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .card .ord { background: #000 !important; }
+html[data-theme="mono"] .hint { color: #444 !important; }
+html[data-theme="mono"] .lock { color: #000 !important; }
+html[data-theme="mono"] .chip { border: 1px solid #000 !important; }
+html[data-theme="mono"] .chip.on { background: transparent !important; border-color: #000 !important; color: #000 !important; }
+html[data-theme="mono"] .brush { border: 1.5px solid #000 !important; }
+html[data-theme="mono"] .brush.on { background: transparent !important; color: #000 !important; }
+html[data-theme="mono"] .slot .t { color: #444 !important; }
+html[data-theme="mono"] .slot .f { border: 1.5px dashed #000 !important; color: #444 !important; }
+html[data-theme="mono"] .slot.filled .f { border-color: transparent !important; }
+html[data-theme="mono"] .slot.filled .f.dark { color: #000 !important; }
+html[data-theme="mono"] .extend button { color: #444 !important; }
+html[data-theme="mono"] .painted { color: #444 !important; }
+html[data-theme="mono"] .painted b { color: #000 !important; }
+html[data-theme="mono"] .qcard { border: 1px solid #000 !important; }
+html[data-theme="mono"] .qhead .h { color: #444 !important; }
+html[data-theme="mono"] .opt { background: transparent !important; border: 1px solid #000 !important; }
+html[data-theme="mono"] .opt.on { background: transparent !important; border-color: #000 !important; color: #000 !important; }
+html[data-theme="mono"] .opts.pres .opt.on { background: transparent !important; border-color: #000 !important; }
+html[data-theme="mono"] .deckfoot { color: #444 !important; }
+html[data-theme="mono"] .radar { background: none !important; border: 1px solid #000 !important; }
+html[data-theme="mono"] .radar::before { background: #000 !important; }
+html[data-theme="mono"] .radar::after { border: 1px solid #000 !important; }
+html[data-theme="mono"] .scanlines { color: #444 !important; }
+html[data-theme="mono"] .scanlines span:last-child { color: #000 !important; }
+html[data-theme="mono"] .deg .num { background: #000 !important; color: #fff !important; }
+html[data-theme="mono"] .deg .lab { color: #444 !important; }
+html[data-theme="mono"] .verdict b { color: #000 !important; }
+html[data-theme="mono"] .analog { background: #fff !important; }
+html[data-theme="mono"] .corrnote .an { color: #000 !important; }
+html[data-theme="mono"] .word.h { background: #fff !important; }
+html[data-theme="mono"] .word.c { border: 1px solid #000 !important; }
+html[data-theme="mono"] .word.c .k { color: #444 !important; }
+html[data-theme="mono"] .tell { color: #000 !important; }
+html[data-theme="mono"] .gap { border: 1px solid #000 !important; }
+html[data-theme="mono"] .gap p b { color: #000 !important; }
+html[data-theme="mono"] .gap p em { color: #000 !important; }
+html[data-theme="mono"] .striplab { color: #444 !important; }
+html[data-theme="mono"] .alive b { color: #000 !important; }
+html[data-theme="mono"] .landing { border: 1px solid #000 !important; }
+html[data-theme="mono"] .sl label { color: #444 !important; }
+html[data-theme="mono"] .sl label b { color: #000 !important; }
+html[data-theme="mono"] .big div { background: transparent !important; }
+html[data-theme="mono"] .big span { color: #444 !important; }
+html[data-theme="mono"] .big .pk b { color: #000 !important; }
+html[data-theme="mono"] .fixbtn { border: 1px solid #000 !important; }
+html[data-theme="mono"] .fixbtn .fd { color: #444 !important; }
+html[data-theme="mono"] .fixbtn .fa { color: #000 !important; }
+html[data-theme="mono"] .fixbtn .fk { color: #444 !important; }
+html[data-theme="mono"] .fixbtn.on { background: transparent !important; border-color: #000 !important; }
+html[data-theme="mono"] .corrnote b { color: #000 !important; }
+html[data-theme="mono"] .ticket { background: #fff !important; box-shadow: none !important; }
+html[data-theme="mono"] .ticket .top .st::before { background: #000 !important; }
+html[data-theme="mono"] .ticket .co { color: #444 !important; }
+html[data-theme="mono"] .ticket .blk .k { color: #444 !important; }
+html[data-theme="mono"] .ticket .tear { border-top: 2px dashed rgba(0,0,0,.22) !important; }
+html[data-theme="mono"] .ticket .arch { background: transparent !important; }
+html[data-theme="mono"] .ticket .arch span { color: #444 !important; }
+html[data-theme="mono"] .ticket .fine { color: #444 !important; }
+html[data-theme="mono"] .bm { border: 1px solid #000 !important; color: #000 !important; }
+html[data-theme="mono"] .bm:hover { border-color: #000 !important; }
+html[data-theme="mono"] .bm .n { color: #444 !important; }
+html[data-theme="mono"] .bm .c { color: #444 !important; }
+html[data-theme="mono"] .bm .go { color: #000 !important; }
+html[data-theme="mono"] .foot { color: #444 !important; }
+html[data-theme="mono"] .toast { background: #000 !important; }
+/* ---------- hand-tuned black & white layer (after the generated rules) ---------- */
+html[data-theme="mono"] { --bg: #fff; --pink: #000; --cyan: #000; --amber: #000; --lavender: #000; --muted: #444; --line: #000; --ticket: #fff;
+  color-scheme: light; background: #fff; }
+/* atmosphere that only works as light on dark */
+html[data-theme="mono"] :is(.glow, .stars, .horizon, .gap-flash, .pt.smoke) { display: none !important; }
+/* the words that are pink in colour keep their emphasis: a heavy underline */
+html[data-theme="mono"] :is(h1, h2, h3, .h2, .slogan, .mrail-h, .rift-label .wordmark, .mini, .wordmark) :is(em, span:not([class])) { text-decoration: underline; text-decoration-thickness: .085em; text-underline-offset: .12em; }
+html[data-theme="mono"] :is(.mini, .wordmark) span span, html[data-theme="mono"] .mini > span > span { text-decoration-thickness: .1em; }
+/* drawings: light ink becomes black, dark fills become paper */
+html[data-theme="mono"] svg [fill]:not([fill="none"]):not([fill^="url"]) { fill: #000; }
+html[data-theme="mono"] svg :is([fill="#07030f"], [fill="#0c081b"], [fill="#06030d"], [fill="#2a1a48"], [fill="#1a1430"]) { fill: #fff; }
+html[data-theme="mono"] svg [stroke]:not([stroke="none"]) { stroke: #000; }
+html[data-theme="mono"] .ij-mono { filter: none !important; }
+/* the boarding pass is paper: white ticket, black print, a hard black outline */
+html[data-theme="mono"] :is(.mrail-tab, .mrail-panel) { background: #fff !important; color: #000 !important; outline: 2px solid #000; outline-offset: -2px; filter: none !important; }
+html[data-theme="mono"] .mrail-tab * { color: #000 !important; }
+html[data-theme="mono"] .mrail-leds i, html[data-theme="mono"] .stub-code i, html[data-theme="mono"] .ticket-code i { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .mrail-leds i.wait { background: transparent !important; outline: 1.5px solid #000; outline-offset: -1.5px; }   /* activating: hollow */
+/* status everywhere: online = solid, activating = hollow ring */
+html[data-theme="mono"] .status { border: 1.5px solid #000 !important; color: #000 !important; }
+html[data-theme="mono"] .mod.online .status i, html[data-theme="mono"] .status .dot { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .mod.activating .status i { background: transparent !important; box-shadow: inset 0 0 0 1.5px #000 !important; }
+/* cards: white paper with a black frame and a hard print shadow on hover */
+html[data-theme="mono"] :is(.mod, .stat, .ix-card, .hc, .crew-fig) { box-shadow: none; }
+html[data-theme="mono"] :is(.mod, .stat, .ix-card) { border: 1.5px solid #000 !important; }
+html[data-theme="mono"] .mod:hover, html[data-theme="mono"] .ix-card:hover { box-shadow: 6px 6px 0 #000 !important; }
+html[data-theme="mono"] .mod::before, html[data-theme="mono"] .mod .scan { display: none !important; }
+html[data-theme="mono"] :is(.boot-bar, .ix-bar, .ri-bar) { background: #fff !important; outline: 1.5px solid #000; }
+html[data-theme="mono"] :is(.boot-bar, .ix-bar) i { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .mod.activating .boot-bar i, html[data-theme="mono"] .ix-boot.wait .ix-bar i { background: repeating-linear-gradient(-45deg, #000 0 4px, #fff 4px 8px) !important; }
+/* buttons that are pink in colour: solid black, white type */
+html[data-theme="mono"] :is(.ix-go:not(.ghost), .menu-btn .ico, .cta .arrow, .mail) { background: #000 !important; color: #fff !important; }
+html[data-theme="mono"] :is(.ix-go:not(.ghost), .cta .arrow, .mail) * { color: #fff !important; stroke: #fff !important; }
+/* the gap: black fracture lines on paper */
+html[data-theme="mono"] .gap-tear .edge { stroke: #000 !important; }
+html[data-theme="mono"] .gap-tear .edge.g2 { opacity: .25; } html[data-theme="mono"] .gap-tear .edge.g3 { opacity: .08; }
+html[data-theme="mono"] .gap-sec .gap-out { background: #fff !important; border: 1.5px solid #000; backdrop-filter: none; }
+/* the cursor */
+html[data-theme="mono"] .cur-ring i { border-color: #000 !important; filter: none !important; }
+html[data-theme="mono"] .cur-dot { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"].cursor-hot .cur-ring i { border-color: #000 !important; }
+/* LED art (tiles, crews, rocket) is redrawn by flap.js in black ink: no glow needed */
+html[data-theme="mono"] :is(.flap img, .crew-fig img, .flyer-rocket .fr-img, .flyer-rocket) { filter: none !important; }
+html[data-theme="mono"] .flap.led { box-shadow: 0 0 0 1.5px #000 !important; }
+html[data-theme="mono"] .flap.bare { box-shadow: none !important; }
+/* source stars */
+html[data-theme="mono"] .ref-star svg { filter: none !important; }
+
+/* ---------- the switch ---------- */
+.theme-switch { --w: 132px; position: fixed; top: 12px; right: 330px; z-index: 70; height: 48px; width: var(--w); display: flex; align-items: center; padding: 4px; border-radius: 999px;
+  border: 1px solid var(--line, #2a2145); background: rgba(12,8,28,.72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); cursor: pointer;
+  font: 500 10.5px/1 var(--mono, monospace); letter-spacing: .14em; text-transform: uppercase; color: var(--lavender, #d8ccf0); transition: opacity .3s; }
+.theme-switch span { position: relative; z-index: 1; flex: 1; text-align: center; transition: color .35s; }
+.theme-switch::before { content: ""; position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 999px;
+  background: linear-gradient(90deg, #ff5f9e, #00f0c8); transition: transform .45s cubic-bezier(.2,.9,.2,1), background .3s; }
+.theme-switch[aria-checked="true"]::before { transform: translateX(100%); background: #000; }
+.theme-switch[aria-checked="false"] span:first-child, .theme-switch[aria-checked="true"] span:last-child { color: #07030f; }
+.theme-switch:focus-visible { outline: 2px solid var(--cyan, #00f0c8); outline-offset: 3px; }
+html[data-theme="mono"] .theme-switch { background: #fff; border: 1.5px solid #000; color: #000; }
+html[data-theme="mono"] .theme-switch[aria-checked="true"] span:last-child { color: #fff; }
+html.menu-open .theme-switch.bar-switch { opacity: 0; pointer-events: none; }
+@media (max-width: 700px) { .theme-switch.bar-switch { display: none; } }
+/* phones: the switch lives in the menu */
+.theme-switch.menu-switch { position: relative; top: auto; right: auto; margin: 18px 0 8px; width: 200px; flex: none; }
+@media (min-width: 701px) { .theme-switch.menu-switch { display: none; } }
+
+/* ---------- the tear: the page cracks down the middle and the other mode is revealed through the gap ---------- */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { z-index: 2; animation: ijTearOpen 1.25s cubic-bezier(.7,0,.2,1) both; }
+::view-transition-old(root) { z-index: 1; animation: ijTearShake .5s cubic-bezier(.36,.07,.19,.97) .2s both; }
+@keyframes ijTearShake { 10%, 90% { transform: translate(-2px, 1px); } 30%, 50%, 70% { transform: translate(-6px, 2px); } 40%, 60% { transform: translate(6px, -1px); } }
+/* per-card colours written on the cards themselves (--c): black ink */
+html[data-theme="mono"] :is(.stat, .mod, [style*="--c"]) { --c: #000 !important; }
+/* the people grid: everyone is a light grey figure, the ones who count are solid black */
+html[data-theme="mono"] .person { color: #cfcfcf !important; filter: none !important; }
+html[data-theme="mono"] .person.on, html[data-theme="mono"] .person.cy.on { color: #000 !important; }
+/* "what jobs ask for": struck out in grey, crossed with a black line, no colour echo */
+html[data-theme="mono"] .gap-sec .side li { text-shadow: none !important; }
+html[data-theme="mono"] .gap-sec .side.l li { color: #6b6b6b !important; text-decoration-color: #000 !important; }
+html[data-theme="mono"] .gap-sec .side.l.cross li { text-decoration-color: #000 !important; }
+
+/* headline words that animate one by one are their own boxes: underline each emphasised word itself */
+html[data-theme="mono"] :is(h1, h2, .h2, .slogan) em:has(.w) { text-decoration: none !important; }
+html[data-theme="mono"] :is(h1, h2, .h2, .slogan) em .w { text-decoration: underline; text-decoration-thickness: .085em; text-underline-offset: .12em; }
+html[data-theme="mono"] :is(h1, h2, .h2, .slogan) em:has(.w) span:not([class]) { text-decoration: none !important; }   /* the space between split words */
+
+/* ---------- depth: light greys, used sparingly, the way print adds depth ---------- */
+html[data-theme="mono"] { --g1: #f4f4f4; --g2: #e6e6e6; --g3: #d2d2d2; }
+/* cards lift off the page: a soft grey offset under the black frame (hard black on hover) */
+html[data-theme="mono"] :is(.stat, .mod, .ix-card, .gap-sec .gap-out) { box-shadow: 5px 5px 0 var(--g2) !important; }
+html[data-theme="mono"] :is(.mod, .ix-card):hover { box-shadow: 6px 6px 0 #000 !important; }
+/* the boarding pass lies on top of the page */
+html[data-theme="mono"] .mrail-tab { box-shadow: 4px 4px 0 var(--g3) !important; }
+html[data-theme="mono"] .mrail.open .mrail-tab { box-shadow: none !important; }
+html[data-theme="mono"] .mrail-panel { box-shadow: 8px 8px 0 var(--g2) !important; }
+/* overlays: a light grey veil, so the page is still sensed underneath */
+html[data-theme="mono"] .ix-backdrop { background: rgba(236,236,236,.88) !important; }
+html[data-theme="mono"] .ix-backdrop::after { background: repeating-linear-gradient(0deg, rgba(0,0,0,.035) 0 1px, transparent 1px 4px) !important; }
+html[data-theme="mono"] :is(.ix-platform, .ix-beam) { display: none !important; }
+/* LED tiles: a faint grey display panel behind the black pixels */
+html[data-theme="mono"] .flap.led :is(.half, .leaf .face) { background: var(--g1) !important; }
+/* the top bar, floating over content: a hairline grey edge */
+html[data-theme="mono"] .bar.on { border-bottom: 1px solid var(--g2) !important; }
+/* the menu panel: the slightest grey, so it reads as a sheet over the page */
+html[data-theme="mono"] .menu { background: #fafafa !important; }
+
+/* the journey, in black & white */
+html[data-theme="mono"] .cta-main, html[data-theme="mono"] .steps li.now::before { background: #000 !important; color: #fff !important; box-shadow: none !important; }
+html[data-theme="mono"] .cta-main * { color: #fff !important; }
+html[data-theme="mono"] .cta-alt { color: #000 !important; border-bottom-color: #000 !important; }
+html[data-theme="mono"] .steps li { background: #fff !important; border: 1.5px solid #000 !important; box-shadow: 5px 5px 0 var(--g2) !important; }
+html[data-theme="mono"] .steps li.now { box-shadow: 6px 6px 0 #000 !important; }
+html[data-theme="mono"] .steps .n, html[data-theme="mono"] .steps a, html[data-theme="mono"] .cos .eyebrow, html[data-theme="mono"] .final .share a { color: #000 !important; }
+html[data-theme="mono"] .steps a { text-decoration: underline; }
+
+/* the companies page */
+html[data-theme="mono"] :is(.offer, .cos-contact, .cos-how li) { background: #fff !important; border: 1.5px solid #000 !important; box-shadow: 5px 5px 0 var(--g2) !important; }
+html[data-theme="mono"] :is(.offer h3, .cos-how b, .cos-contact h2, .cos-how .k, .offer .n, .cos-page h1, .cos-for h2) { color: #000 !important; }
+html[data-theme="mono"] :is(.offer p, .cos-how p, .cos-contact p, .cos-for ul) { color: #000 !important; }
+html[data-theme="mono"] .offer .who, html[data-theme="mono"] .cos-page .fine { color: #444 !important; }
+/* mission files: company colours become ink */
+html[data-theme="mono"] :is(.holo-card, .hc, .hc-top, .hc-in) { --c1: #000 !important; --c2: #000 !important; }
+html[data-theme="mono"] .hc-co, html[data-theme="mono"] .hc-top .id { color: #000 !important; }
+
+/* pages without a menu: a compact switch in the bar on phones */
+@media (max-width: 700px) {
+  .theme-switch.bar-switch.solo { display: flex; --w: 56px; padding: 0; justify-content: center; }
+  .theme-switch.bar-switch.solo span { display: none; }
+  .theme-switch.bar-switch.solo::before { display: none; }
+  .theme-switch.bar-switch.solo::after { content: "◐"; font: 700 20px/1 'Poppins', system-ui, sans-serif; color: #fff; }
+  html[data-theme="mono"] .theme-switch.bar-switch.solo::after { color: #000; }
+}
+
+/* the drift: the switch sits inside the bar, matching its small sound button */
+.theme-switch.inbar { position: relative; top: auto; right: auto; height: 32px; --w: 108px; padding: 3px; font-size: 9.5px; margin-left: auto; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.theme-switch.inbar::before { top: 3px; bottom: 3px; left: 3px; }
+@media (max-width: 700px) { .theme-switch.bar-switch.inbar { display: flex; --w: 44px; } .theme-switch.inbar::after { font-size: 16px; } }
+
+html[data-theme="mono"] .steps li.wip { border-style: dashed !important; }
+html[data-theme="mono"] .soon-tag { border-color: #000 !important; color: #000 !important; }
+
+/* the drift (its own variables and script-drawn instruments) */
+html[data-theme="mono"] { --lav: #000 !important; --ink: #000 !important; --pink2: #000 !important; }
+html[data-theme="mono"] .btn, html[data-theme="mono"] .btn * { background: #000 !important; color: #fff !important; box-shadow: none !important; }
+html[data-theme="mono"] .btn.ghost, html[data-theme="mono"] .btn.ghost * { background: #fff !important; color: #000 !important; border: 1.5px solid #000 !important; }
+html[data-theme="mono"] .link { color: #000 !important; text-decoration: underline; }
+html[data-theme="mono"] :is(.lead, .small, .sys, .legend3 span, .foot, .sharebox p) { color: #000 !important; }
+html[data-theme="mono"] .legend3 b { color: #000 !important; }
+html[data-theme="mono"] .sys { color: #444 !important; }
+html[data-theme="mono"] .cards > *, html[data-theme="mono"] .card, html[data-theme="mono"] .starters > *, html[data-theme="mono"] .boardm > * { background: #fff !important; border: 1.5px solid #000 !important; color: #000 !important; box-shadow: 4px 4px 0 var(--g2) !important; }
+html[data-theme="mono"] :is(.cards > *, .card, .starters > *).on, html[data-theme="mono"] :is(.cards > *, .card, .starters > *)[aria-pressed="true"], html[data-theme="mono"] .sel { background: #000 !important; color: #fff !important; }
+html[data-theme="mono"] :is(.cards > *, .card, .starters > *).on *, html[data-theme="mono"] .sel * { color: #fff !important; }
+/* the result ticket is paper */
+html[data-theme="mono"] .ticket { background: #fff !important; color: #000 !important; border: 1.5px solid #000 !important; box-shadow: 6px 6px 0 var(--g2) !important; }
+html[data-theme="mono"] .ticket * { color: #000 !important; }
+html[data-theme="mono"] .ticket .arch { background: #f0f0f0 !important; }
+/* script-drawn instruments and the day strip: greys keep their shapes distinct */
+html[data-theme="mono"] :is(.intro-inst, #inst, .inst, .strip, .boardm svg, #scan, .scan) { filter: grayscale(1) contrast(1.25); }
+html[data-theme="mono"] .strip i { outline: 1px solid #fff; }
