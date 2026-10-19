@@ -174,6 +174,20 @@
     function shut() { pinnedUntil = 0; quietUntil = Date.now() + 400; setOpen(false); tab.focus({ preventScroll: true }); }
     var hover = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
     mods.forEach(function (m) { m.setAttribute('tabindex', '-1'); });
+    // four square cards that always fit: measure what the header, the companies ticket and the footer take, give the rest to the squares
+    var grid = panel.querySelector('.mod-grid');
+    function fitCards() {
+      if (!grid) return;
+      var gap = 12, maxW = (panel.clientWidth - parseFloat(getComputedStyle(panel).paddingLeft) - parseFloat(getComputedStyle(panel).paddingRight) - gap) / 2;
+      panel.style.setProperty('--card', Math.floor(Math.min(230, maxW)) + 'px');
+      // the companies ticket and footer follow the squares' width, so their height changes too: settle in a few passes
+      for (var pass = 0; pass < 4; pass++) {
+        var others = panel.scrollHeight - grid.offsetHeight, room = panel.clientHeight - others;
+        var side = Math.floor(Math.max(96, Math.min(230, maxW, (room - gap) / 2)));
+        panel.style.setProperty('--card', side + 'px');
+      }
+    }
+    addEventListener('resize', function () { if (open) fitCards(); });
     function setOpen(v) {
       clearTimeout(closeT);
       if (v === open) return;
@@ -182,6 +196,7 @@
       tab.setAttribute('aria-expanded', v ? 'true' : 'false');
       mods.forEach(function (m) { if (v) m.removeAttribute('tabindex'); else m.setAttribute('tabindex', '-1'); });
       if (v) {
+        fitCards();
         SFX.slide(); rail.classList.remove('nudge'); panel.scrollTop = 0;
         // the original boot sequence, every time the cards slide in: status flips offline > booting > online, % counts up, scan line
         mods.forEach(function (m) { if (window.IJBootModule) IJBootModule(m); else { m.classList.remove('in'); void m.offsetWidth; m.classList.add('in'); } });
@@ -228,6 +243,7 @@
       }
     }, location.hash === '#modules' ? 0 : 1600);
     function pinOpen() { root.classList.add('mrail-on'); pinnedUntil = Date.now() + 4000; setOpen(true); }
+    window.__ijPinOpen = pinOpen;
     if (location.hash === '#modules') setTimeout(pinOpen, 600);
     // "see the modules" links (hero, menu) open the rail
     document.querySelectorAll('[data-open-dock], a[href="#modules"]').forEach(function (el) {
@@ -239,6 +255,15 @@
       }, true);
     });
   }
-  window.IJHolo = { openRef: openRef, close: hide };
+  // how it works <-> the pass: 'open my pass' opens it; hovering a module card flares its light on the stub
+  (function () {
+    var leds = document.querySelectorAll('.mrail-leds i');
+    document.querySelectorAll('.open-pass').forEach(function (b) { b.addEventListener('click', function () { if (window.__ijPinOpen) window.__ijPinOpen(); }); });
+    document.querySelectorAll('.steps .step').forEach(function (s, i) {
+      s.addEventListener('mouseenter', function () { if (leds[i]) leds[i].classList.add('lit'); });
+      s.addEventListener('mouseleave', function () { if (leds[i]) leds[i].classList.remove('lit'); });
+    });
+  })();
+  window.IJHolo = { openRef: openRef, close: hide, openPass: function () { if (window.__ijPinOpen) window.__ijPinOpen(); } };
 })();
 

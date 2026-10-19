@@ -247,3 +247,46 @@ html[data-theme="mono"] .hc-co, html[data-theme="mono"] .hc-top .id { color: #00
 
 html[data-theme="mono"] .steps li.wip { border-style: dashed !important; }
 html[data-theme="mono"] .soon-tag { border-color: #000 !important; color: #000 !important; }
+/* the flip has to be seen: the folding leaf keeps its shade in black & white */
+html[data-theme="mono"] .flap .leaf .face::after { background: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,0)) !important; }
+html[data-theme="mono"] .flap .leaf .face.back { background: #f4f4f4 !important; }
+html[data-theme="mono"] .flap .seam { background: #000 !important; }
+html[data-theme="mono"] .flap .seam::before, html[data-theme="mono"] .flap .seam::after { background: #000 !important; box-shadow: none !important; }
+/* phones: the in-bar switch is compact on every page that has one */
+@media (max-width: 700px) {
+  .theme-switch.inbar { --w: 44px; padding: 0; justify-content: center; margin-left: 10px; }
+  .theme-switch.inbar span, .theme-switch.inbar::before { display: none; }
+  .theme-switch.inbar::after { content: "◐"; font: 700 16px/1 'Poppins', system-ui, sans-serif; color: #fff; }
+  html[data-theme="mono"] .theme-switch.inbar::after { color: #000; }
+}
+
+html[data-theme="mono"] .cos-band { background: #fff !important; border: 1.5px solid #000 !important; box-shadow: 6px 6px 0 var(--g2) !important; }
+html[data-theme="mono"] .bar-cos { background: #ffc857 !important; color: #000 !important; border: 1.5px solid #000 !important; box-shadow: 3px 3px 0 #000 !important; }   /* the one colour kept in black & white */
+
+html[data-theme="mono"] .pass-cos { background: #000 !important; color: #fff !important; border-color: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .pass-cos * { color: #fff !important; }
+html[data-theme="mono"] .pass-cos .pc-go { border-color: #fff !important; }
+
+html[data-theme="mono"] .cos-block { border-top-color: #000 !important; }
+html[data-theme="mono"] .cos-ask { background: #fff !important; border: 1.5px solid #000 !important; box-shadow: 6px 6px 0 var(--g2) !important; }
+html[data-theme="mono"] .cos-ask .mailto { background: #000 !important; color: #fff !important; box-shadow: none !important; }
+html[data-theme="mono"] :is(.cos-block p, .cos-block p strong, .cos-block h2, .cos-ask p, .cos-ask h2, .cos-ask .cos-addr, .cos-page .lede) { color: #000 !important; }
+
+/* how it works cards, in black & white: the pass cards' paper look */
+html[data-theme="mono"] .step-in { background: #fff !important; border: 1.5px solid #000 !important; box-shadow: 5px 5px 0 var(--g2) !important; }
+html[data-theme="mono"] .step.now .step-in, html[data-theme="mono"] a.step-in:hover { box-shadow: 6px 6px 0 #000 !important; }
+html[data-theme="mono"] .step.wip .step-in { border-style: dashed !important; }
+html[data-theme="mono"] :is(.step-t, .step-l, .step-p, .step-cta, a.step-in .step-cta, .step-top, .steps-pass) { color: #000 !important; }
+html[data-theme="mono"] .step .status { border: 1.5px solid #000 !important; color: #000 !important; }
+html[data-theme="mono"] .step.online .status i { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .step.activating .status i { background: transparent !important; box-shadow: inset 0 0 0 1.5px #000 !important; }
+html[data-theme="mono"] .step-bar { background: #fff !important; outline: 1.5px solid #000; }
+html[data-theme="mono"] .step-bar i { background: #000 !important; box-shadow: none !important; }
+html[data-theme="mono"] .step.activating .step-bar i { background: repeating-linear-gradient(-45deg, #000 0 4px, #fff 4px 8px) !important; }
+html[data-theme="mono"] .steps-pass .tick { background: #fff !important; outline: 1.5px solid #000; box-shadow: none !important; }
+html[data-theme="mono"] .open-pass { color: #000 !important; border-color: #000 !important; }
+html[data-theme="mono"] .mrail-leds i.lit { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #000 !important; }
+html[data-theme="mono"] a.step-in, html[data-theme="mono"] a.step-in * { text-decoration: none !important; }
+html[data-theme="mono"] a.step-in .step-cta { text-decoration: underline !important; text-underline-offset: .15em; }
+
+html[data-theme="mono"] .mrail .mod .mod-sub { color: #000 !important; }

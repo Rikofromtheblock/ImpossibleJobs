@@ -782,4 +782,125 @@ html.warping body { transition: transform .7s cubic-bezier(.6,0,.4,1), filter .7
   .steps li.wip { border-style: dashed; opacity: .85; }
   .steps li.wip h3 { color: var(--lavender); }
   .soon-tag { display: inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--amber); color: var(--amber); font: 500 10px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
-  .mrail .mod[data-i="3"] { grid-column: 1 / -1; }
+  .steps li.cos-step { border-color: rgba(0,240,200,.45); }
+  .steps li.cos-step .n { color: var(--amber); }
+
+  /* for companies: its own door, outside the candidate's steps */
+  .bar-cos { position: absolute; right: 500px; top: 50%; translate: 0 -50%; height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); color: var(--lavender); text-decoration: none;
+    font: 500 11px/40px var(--mono); letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; transition: border-color .25s, color .25s; }
+  .bar-cos:hover { border-color: var(--cyan); color: #fff; }
+  @media (max-width: 1100px) { .bar-cos { display: none; } }
+  .cos-band { position: relative; z-index: 1; margin: 40px 24px 0; padding: clamp(40px, 7vh, 72px) 24px; border-radius: 28px; border: 1px solid rgba(0,240,200,.3); background: linear-gradient(135deg, rgba(0,240,200,.08), rgba(107,43,217,.14)); text-align: center; }
+  .cos-band .eyebrow { color: var(--cyan); }
+  .cos-band h2 { max-width: 20ch; margin: 12px auto 12px; font-size: clamp(26px, 3.6vw, 40px); font-weight: 800; letter-spacing: -.03em; line-height: 1.05; }
+  .cos-band h2 em { font-style: normal; color: var(--pink); }
+  .cos-band p { max-width: 54ch; margin: 0 auto 22px; color: var(--lavender); font-weight: 300; line-height: 1.6; }
+
+  /* the pass: the companies door, apart from the modules (a different ticket) */
+  .pass-cos { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; align-items: center; margin: 14px 0 0; padding: 16px 18px; border-radius: 16px; text-decoration: none;
+    background: #07030f; color: #ece8f5; border: 1px solid rgba(0,240,200,.45); box-shadow: inset 4px 0 0 var(--cyan); }
+  .pass-cos .pc-k { grid-column: 1; font: 500 10px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--cyan); }
+  .pass-cos .pc-t { grid-column: 1; font-size: 15px; font-weight: 600; line-height: 1.35; color: #fff; letter-spacing: -.01em; }
+  .pass-cos .pc-go { grid-column: 2; grid-row: 1 / 3; height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--cyan); color: var(--cyan); font: 500 11px/40px var(--mono); letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
+  .pass-cos:hover .pc-go { background: var(--cyan); color: #07030f; }
+  @media (max-width: 480px) { .pass-cos { grid-template-columns: 1fr; } .pass-cos .pc-go { grid-column: 1; grid-row: auto; justify-self: start; } }
+
+  /* the pass: four square cards, two by two, so the whole ticket fits without scrolling */
+  .mrail .mod-grid { grid-template-columns: 1fr 1fr !important; gap: 12px; }
+  .mrail .mod[data-i="0"], .mrail .mod[data-i="3"] { grid-column: auto !important; }
+  .mrail .mod { aspect-ratio: 1 / 1; display: flex !important; flex-direction: column; padding: 14px 15px 13px !important; min-height: 0; overflow: hidden; }
+  .mrail .mod .top { margin-bottom: 8px !important; }
+  .mrail .mod .icon { width: 40px !important; height: 40px !important; margin: 0 0 8px !important; }
+  .mrail .mod h3 { margin: 0 0 4px !important; font-size: clamp(17px, 1.5vw, 20px) !important; line-height: 1.1; }
+  .mrail .mod p { font-size: 13px !important; line-height: 1.4 !important; max-height: 2.8em; -webkit-line-clamp: 2 !important; }
+  .mrail .mod .foot { margin-top: auto !important; padding-top: 8px !important; }
+  .mrail .mod .boot { margin-bottom: 6px !important; }
+  .mrail .mod .cta { margin-top: 8px !important; font-size: 14px !important; }
+  .mrail .mod .cta .arrow { width: 32px !important; height: 32px !important; }
+  .mrail .mod.activating .cta { font-size: 10px !important; height: auto !important; }
+  .mrail-head { margin-bottom: 0; } .mrail .mod-grid { margin-top: 14px !important; margin-bottom: 0 !important; }
+  .mrail-panel { width: min(600px, calc(96vw - var(--stubw))) !important; }
+  @media (max-width: 700px) {
+    .mrail .mod-grid { gap: 10px; }
+    .mrail .mod { padding: 10px 10px 9px !important; }
+    .mrail .mod .top .num { font-size: 9px; }
+    .mrail .mod .status b { display: none; }
+    .mrail .mod .icon { width: 30px !important; height: 30px !important; margin-bottom: 6px !important; }
+    .mrail .mod h3 { font-size: 15px !important; }
+    .mrail .mod p, .mrail .mod .boot { display: none !important; }
+    .mrail .mod .cta { font-size: 12px !important; }
+    .mrail .mod .cta .arrow { width: 28px !important; height: 28px !important; }
+  }
+  /* the companies door in the top bar: yellow, the pass's accent colour, in colour and in black & white */
+  .bar-cos { background: #ffc857; border-color: #ffc857; color: #07030f; font-weight: 600; box-shadow: 0 0 18px rgba(255,200,87,.35); }
+  .bar-cos:hover { background: #ffd47a; border-color: #ffd47a; color: #07030f; }
+
+  /* square size follows the screen height: four squares + the header + the companies ticket + the footer always fit */
+  .mrail-panel { --card: 200px; }   /* the exact size is measured by holo.js when the pass opens (fitCards) */
+  .mrail .mod-grid { grid-template-columns: repeat(2, var(--card)) !important; justify-content: start; }
+  .mrail .mod { width: var(--card); height: var(--card); aspect-ratio: auto; container-type: inline-size; }
+  .mrail-h { font-size: clamp(19px, 1.8vw, 24px) !important; }
+  /* the squares slim down in steps as they shrink, so nothing is ever cut */
+  @container (max-width: 226px) { .mod p, .mod .boot { display: none !important; } }
+  @container (max-width: 200px) { .mod .top .num { font-size: 9px; } .mod .status b { display: none; } .mod .icon { width: 32px !important; height: 32px !important; margin-bottom: 6px !important; } .mod h3 { font-size: 15px !important; } }
+  @container (max-width: 160px) { .mod .icon { display: none !important; } .mod .top { margin-bottom: 6px !important; } .mod h3 { font-size: 14px !important; } .mod .cta { margin-top: 4px !important; font-size: 12px !important; } .mod .cta .arrow { width: 26px !important; height: 26px !important; } .mod.activating .cta { font-size: 9px !important; } }
+  @container (max-width: 140px) { .mod .foot { padding-top: 4px !important; } .mod .cta span:first-child { display: none; } .mod.activating .cta { display: none !important; } .mod .cta { justify-content: flex-end !important; } }
+  @container (max-width: 125px) { .mod h3 { font-size: 13px !important; } .mod .top .num { font-size: 8px; letter-spacing: .1em; } .mod .top { margin-bottom: 4px !important; } .mod .foot { display: none !important; } }   /* smallest screens: the whole card is the link */
+  @media (max-width: 700px) {
+    .pass-cos { padding: 12px 14px; } .pass-cos .pc-t { display: none; }
+    .mrail-foot .ticket-code { display: none; }
+  }
+
+  /* the companies ticket matches the width of the squares */
+  .mrail .pass-cos { width: calc(2 * var(--card) + 12px); max-width: 100%; box-sizing: border-box; }
+
+  /* a narrow companies ticket keeps only its label and button, so its height never feeds back into the squares */
+  .mrail .pass-cos { container-type: inline-size; }
+  @container (max-width: 430px) {
+    .pass-cos .pc-t { display: none !important; }
+  }
+
+  /* how it works = the pass's module cards, on the page: same card, number, status light, icon and bar */
+  .steps .step { padding: 0; border: 0; background: none; box-shadow: none; }
+  .steps .step::before { z-index: 2; }
+  .step-in { height: 100%; box-sizing: border-box; display: flex; flex-direction: column; padding: 18px 18px 16px; border-radius: 18px; border: 1px solid var(--line); text-decoration: none; color: inherit;
+    background: linear-gradient(165deg, rgba(107,43,217,.25), rgba(7,3,15,.75) 60%); transition: border-color .3s, transform .3s, box-shadow .3s; }
+  a.step-in:hover { border-color: var(--pink); transform: translateY(-3px); box-shadow: 0 18px 40px rgba(255,95,158,.18); }
+  .step.now .step-in { border-color: var(--pink); box-shadow: 0 0 40px rgba(255,95,158,.18); }
+  .step.wip .step-in { border-style: dashed; }
+  .step-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .step-top .status { padding: 5px 9px; font-size: 10px; gap: 6px; }
+  .step.online .status { color: var(--cyan); border-color: rgba(0,240,200,.35); } .step.online .status i { box-shadow: 0 0 10px var(--cyan); }
+  .step.activating .status { color: var(--amber); border-color: rgba(255,200,87,.35); } .step.activating .status i { animation: blink 1s steps(2) infinite; }
+  .step-icon { display: block; width: 46px; height: 46px; margin: 18px 0 12px; } .step-icon svg { width: 100%; height: 100%; }
+  .step-t { font-size: 22px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; color: #fff; }
+  .step-l { margin-top: 4px; font: 500 11px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--pink); }
+  .step-p { margin: 10px 0 14px; color: var(--lavender); font-weight: 300; line-height: 1.5; font-size: 14.5px; }
+  .step-bar { display: block; margin-top: auto; height: 4px; border-radius: 999px; background: #1a1430; overflow: hidden; }
+  .step-bar i { display: block; height: 100%; width: var(--w); background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+  .step.activating .step-bar i { background: repeating-linear-gradient(-45deg, var(--amber) 0 6px, #c9952f 6px 12px); box-shadow: none; }
+  .step-cta { margin-top: 12px; font-weight: 700; font-size: 15px; color: #fff; }
+  a.step-in .step-cta { color: var(--pink); }
+  .step.activating .step-cta { font: 500 11px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .steps-pass { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 22px 0 0; font: 500 12px/1.5 var(--mono); letter-spacing: .08em; color: var(--muted); }
+  .steps-pass .tick { width: 22px; height: 30px; border-radius: 3px; background: #ece8f5; box-shadow: 0 0 10px rgba(255,95,158,.35); flex: none;
+    -webkit-mask-image: radial-gradient(circle 4px at 100% 50%, transparent 96%, #000 100%); mask-image: radial-gradient(circle 4px at 100% 50%, transparent 96%, #000 100%); }
+  .open-pass { appearance: none; border: 1px solid var(--line); background: none; color: var(--cyan); height: 36px; padding: 0 14px; border-radius: 999px; font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
+  .open-pass:hover { border-color: var(--cyan); color: #fff; }
+  /* the stub's lights answer the cards: hover a module, its light flares on the pass */
+  .mrail-leds i { transition: transform .25s, box-shadow .25s; }
+  .mrail-leds i.lit { transform: scale(1.7); box-shadow: 0 0 0 2px #07030f, 0 0 12px var(--pink) !important; }
+  a.step-in, a.step-in * { text-decoration: none; }
+
+  /* each square keeps a short description at every size */
+  .mrail .mod .mod-sub { display: block; margin: 0 0 6px; font: 500 10.5px/1.35 var(--mono); letter-spacing: .06em; color: var(--pink); }
+  @container (max-width: 200px) { .mod .mod-sub { font-size: 10px; } }
+  @container (max-width: 160px) { .mod .mod-sub { font-size: 9.5px; letter-spacing: .03em; margin-bottom: 4px; } .mod .boot-bar { display: none; } }
+  @container (max-width: 140px) { .mod .mod-sub { font-size: 9px; } }
+
+  /* small squares: tighter type so title + description always fit */
+  @container (max-width: 160px) { .mod h3 { font-size: 13px !important; line-height: 1.05 !important; margin-bottom: 3px !important; } .mod .top { margin-bottom: 5px !important; } }
+  @container (max-width: 130px) { .mod h3 { font-size: 12px !important; } .mod .mod-sub { font-size: 8.5px !important; line-height: 1.3; } .mod .status { padding: 4px 6px !important; } }
+  /* phones: the pass gives the room to the squares (the small print goes) */
+  @media (max-width: 700px) { .mrail-foot, .mrail-eyebrow { display: none !important; } .mrail .mod { padding: 9px 9px 8px !important; } }
+  .mrail .mod h3, .mrail .mod .mod-sub { align-self: flex-start !important; text-align: left; }

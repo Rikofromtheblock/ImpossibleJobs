@@ -255,6 +255,23 @@ input[type=range]{ width:100%; accent-color:var(--pink); height:28px; }
 .ticket ul{ margin:0; padding:0; list-style:none; display:grid; gap:8px; }
 .ticket li{ font-size:15px; line-height:1.45; padding-left:20px; position:relative; }
 .ticket li::before{ content:""; position:absolute; left:0; top:8px; width:9px; height:9px; border-radius:2px; border:1.5px solid var(--magenta); }
+
+.spot{ position:relative; margin:8px 0 0; padding:26px 22px 22px; border-radius:20px; background:#07030f; border:1px solid var(--line); overflow:hidden; }
+.spot::before{ content:""; position:absolute; inset:-40% -20% auto; height:140%; background:radial-gradient(ellipse at 50% 20%, rgba(255,95,158,.22), transparent 60%); pointer-events:none; }
+.spot-k{ position:relative; margin:0 0 10px; font:500 12px/1.5 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.spot-k b{ color:var(--cyan); }
+.spot-num{ position:relative; display:flex; flex-direction:column; align-items:flex-start; }
+.spot-num b{ font-size:clamp(56px,16vw,96px); font-weight:800; letter-spacing:-.05em; line-height:.95; color:var(--pink); text-shadow:0 0 40px rgba(255,95,158,.45); }
+.spot-num span{ margin-top:6px; font:500 12px/1.4 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--lav); }
+.spot-sub{ position:relative; margin:18px 0 0; font-size:16px; line-height:1.6; color:var(--lav); font-weight:300; }
+.spot-sub b{ color:#fff; font-weight:600; }
+.spot-stats{ position:relative; display:grid; gap:10px; margin:22px 0 0; }
+.spot-stats div{ padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(12,8,28,.7); }
+.spot-stats b{ display:block; font-size:26px; font-weight:800; letter-spacing:-.03em; color:var(--cyan); }
+.spot-stats span{ display:block; margin-top:4px; font-size:14px; line-height:1.5; color:var(--lav); }
+.spot-stats i{ display:block; margin-top:6px; font:500 10px/1.4 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-style:normal; }
+.spot-foot{ position:relative; margin:20px 0 0; font-size:15px; line-height:1.55; color:#fff; font-weight:600; }
+@media (min-width:600px){ .spot-stats{ grid-template-columns:repeat(3,1fr); } }
 .ticket .arch{ display:flex; gap:14px; align-items:center; margin-top:20px; padding:14px; border-radius:16px; background:rgba(7,3,15,.06); }
 .ticket .arch .gl{ font-size:34px; }
 .ticket .arch b{ display:block; font-size:18px; letter-spacing:-.02em; }
@@ -297,16 +314,6 @@ input[type=range]{ width:100%; accent-color:var(--pink); height:28px; }
 <section class="screen on" id="s-intro">
   <p class="sys">// drift · a navigation instrument for your working life</p>
   <h1>every ship has a heading <em>and a course.</em></h1>
-  <svg class="intro-inst" viewBox="0 0 340 190" aria-hidden="true">
-    <defs><linearGradient id="hg" gradientUnits="userSpaceOnUse" x1="170" y1="170" x2="170" y2="30"><stop offset="0" stop-color="#ff5f9e" stop-opacity=".2"/><stop offset="1" stop-color="#ff5f9e"/></linearGradient></defs>
-    <path d="M60 170 A110 110 0 0 1 280 170" fill="none" stroke="#2a2340" stroke-width="1"/>
-    <g id="iarc"></g>
-    <line x1="170" y1="170" x2="170" y2="30" stroke="url(#hg)" stroke-width="3" stroke-linecap="round"/>
-    <g id="icourse" style="transform-origin:170px 170px; transition:transform 2.4s cubic-bezier(.4,0,.2,1)"><line x1="170" y1="170" x2="170" y2="40" stroke="#a99cc6" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/></g>
-    <circle cx="170" cy="170" r="6" fill="#00f0c8"/>
-    <text x="170" y="20" text-anchor="middle" font-family="DM Mono" font-size="11" fill="#ff5f9e" letter-spacing="1.5">HEADING</text>
-    <text id="itxt" x="236" y="58" text-anchor="middle" font-family="DM Mono" font-size="11" fill="#a99cc6" letter-spacing="1.5" opacity="0" style="transition:opacity 1s 1.4s">COURSE</text>
-  </svg>
   <div class="legend3">
     <div><b style="color:var(--pink)">heading</b><span>where you're pointed. the moments you come alive.</span></div>
     <div><b style="color:var(--muted)">course</b><span>where you're actually going. how your working days really go.</span></div>
@@ -450,13 +457,16 @@ input[type=range]{ width:100%; accent-color:var(--pink); height:28px; }
 
   <div class="sect">
     <p class="sys">// where this course lands</p>
-    <div class="landing">
-      <div class="sl"><label>working hours a week <b id="hv">40</b></label><input type="range" id="hrs" min="10" max="70" step="1" value="40"></div>
-      <div class="sl"><label>working years ahead <b id="yv">25</b></label><input type="range" id="yrs" min="1" max="45" step="1" value="25"></div>
-      <div class="big">
-        <div><b id="tot">0</b><span>working hours ahead</span></div>
-        <div class="pk"><b id="you">0</b><span>with you actually in them</span></div>
+    <div class="spot">
+      <p class="spot-k">hold this course, and by <b>2046</b> you will have spent</p>
+      <div class="spot-num"><b id="lost">0</b><span>working hours somewhere else</span></div>
+      <p class="spot-sub" id="lostSub"></p>
+      <div class="spot-stats">
+        <div><b>20 in 100</b><span>people worldwide are engaged at work. the other 80 show up and switch off.</span><i>gallup, state of the global workplace 2026</i></div>
+        <div><b>68%</b><span>don't get enough uninterrupted time to focus. no room left to create.</span><i>microsoft, work trend index</i></div>
+        <div><b>$10 trillion</b><span>lost to low engagement in a single year. 9% of the world's gdp.</span><i>gallup</i></div>
       </div>
+      <p class="spot-foot">this isn't a productivity problem. it's a heading problem. headings can be corrected.</p>
     </div>
   </div>
 
@@ -527,6 +537,7 @@ const ACTS=[
  {id:'help',ic:'🤝',l:'helping someone',c:'#ff5f9e',w:{people:1},m:{fire:.6},noise:0},
  {id:'create',ic:'✏️',l:'writing & creating',c:'#ff9ec4',w:{expression:1},m:{flow:.6,spark:.25},noise:0},
  {id:'learn',ic:'🔍',l:'learning & research',c:'#7fd3ff',w:{ideas:1},m:{dawn:.6,flow:.3},noise:0},
+ {id:'move',ic:'🏃',l:'physical activity & sport',c:'#ffb36b',w:{nature:.4,people:.3},m:{spark:.3,fire:.25,dawn:.2},noise:0},
  {id:'admin',ic:'📊',l:'admin & reports',c:'#9aa0b5',w:{order:1},m:{},noise:.8},
  {id:'travel',ic:'🚇',l:'commuting',c:'#4a4560',w:{},m:{},noise:1,dark:1},
  {id:'break',ic:'🥪',l:'breaks',c:'#2a2340',w:{},m:{},noise:0,dark:1,skip:1}];
@@ -597,7 +608,6 @@ function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.r
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ============ intro ============ */
-setTimeout(()=>{ $('icourse').style.transform='rotate(28deg)'; $('itxt').setAttribute('opacity','1'); },500);
 $('go').onclick=()=>{ blip(520); show('pre'); };
 TASTES.forEach(t=>{ const b=mkCard(t); b.onclick=()=>{ S.taste=t.id; document.querySelectorAll('#tastes .card').forEach(c=>c.classList.remove('pick')); b.classList.add('pick'); blip(760); setTimeout(()=>{ show('moment'); setTimeout(()=>$('moment').focus({preventScroll:true}),400); },380); }; $('tastes').appendChild(b); });
 $('demo').onclick=demo;
@@ -805,8 +815,11 @@ function renderDrift(){
   buildCorrections();
   $('n-drift').onclick=()=>{ blip(620); renderPosting(); show('post'); chord(523); };
 }
-function updLanding(alive){ const h=+$('hrs').value, y=+$('yrs').value; $('hv').textContent=h; $('yv').textContent=y; const tot=h*46*y; $('tot').textContent=fmt(tot); $('you').textContent=fmt(tot*(alive??(S.corr?S.corr.alive:R.alive))); }
-$('hrs').oninput=()=>updLanding(); $('yrs').oninput=()=>updLanding();
+const LAND_H=40, LAND_Y=Math.max(1,2046-new Date().getFullYear());   // a 40-hour week, from now to 2046
+function updLanding(alive){ const a=alive??(S.corr?S.corr.alive:R.alive); const tot=LAND_H*46*LAND_Y, you=tot*a, lost=tot-you;
+  $('lost').textContent=fmt(Math.round(lost));
+  const days=Math.round(lost/8), yrs=(lost/(LAND_H*46)).toFixed(1);
+  $('lostSub').innerHTML=`that's <b>${fmt(days)} working days</b>. <b>${yrs} years</b> of your working life with your hands on the wheel and your mind somewhere else. of the <b>${fmt(tot)}</b> hours between now and 2046, only <b>${fmt(Math.round(you))}</b> would have you in them.`; }
 
 let CORR=[];
 function rankActs(h){ return ACTS.filter(a=>!a.skip&&a.noise<.5).map(a=>{ const v={}; DIMS.forEach(d=>v[d]=0); for(const k in a.w) v[k]=a.w[k]; for(const k in a.m) v[k]=a.m[k]; v.purpose=1; return [a,angle(h,v)]; }).sort((x,y)=>x[1]-y[1]).map(x=>x[0]); }
@@ -841,7 +854,7 @@ function buildCorrections(){
   $('corr').innerHTML=CORR.map((c,i)=>`<button type="button" class="fixbtn" data-i="${i}"><span><div class="fk">${esc(c.k)}</div><div class="ft">${esc(c.t)}</div><div class="fd">${esc(c.d)}</div></span><span class="fa">${c.drift}°</span></button>`).join('');
   [...$('corr').children].forEach(b=>b.onclick=()=>{ const c=CORR[+b.dataset.i]; S.corr=c; [...$('corr').children].forEach(x=>x.classList.toggle('on',x===b));
     animateGhost(c.drift); updLanding(c.alive);
-    const tot=+$('hrs').value*46*+$('yrs').value; const gain=tot*(c.alive-R.alive);
+    const tot=LAND_H*46*LAND_Y; const gain=tot*(c.alive-R.alive);
     const an=analogy(c.drift);
     $('corrnote').innerHTML=`<b>${R.drift}° → ${c.drift}°.</b> ${esc(c.note)}${gain>0?` <b>${fmt(gain)} more hours</b> with you in them.`:''}<span class="an">${esc(an.set)} ${esc(an.out)}</span>`;
     chord([523,587,659][+b.dataset.i]||587); });
@@ -861,7 +874,11 @@ function renderPosting(){
   if(best) catches.push(`a working day with two protected hours of ${best.l}. it doesn't exist in your calendar yet.`);
   catches.push(`one hour a day aimed at ${FIX_SHORT[S.fix]}. no employer has offered it yet. nobody has asked.`);
   if(noisy) catches.push(`${A[noisy[0]].l} under ${Math.max(1,noisy[1]-2)} hour${noisy[1]-2>1?'s':''} a day. the technology exists. the habit doesn't.`);
-  const q=S.moment.split(/\s+/); const quote=q.length>26?q.slice(0,26).join(' ')+'…':S.moment;
+  /* the deduction: what the instruments read, in the ship's words, never the person's own sentence */
+  const st0=STATUS[S.status], fuel0=FUELS.find(f=>f.id===S.fuel), taste0=TASTES.find(t=>t.id===S.taste)||TASTES[0];
+  const presence={}; S.slots.forEach(id=>{ if(!id||A[id].skip) return; presence[id]=(presence[id]||0)+((S.solve[id]?S.solve[id].p:.5)??.5); });
+  const ranked=Object.keys(presence).sort((x,y)=>presence[y]-presence[x]); const top=ranked[0]?A[ranked[0]].l:null, low=ranked.length>1?A[ranked[ranked.length-1]].l:null;
+  const because=`you run on ${fuel0.l}, and ${st0.day} gave you the most of yourself in ${top||'the hours that were yours'}${low?` and the least in ${low}`:''}. your first world is ${WORLDS.find(w=>w.id===w0).l}, and when a day is yours you reach for ${taste0.l}. the ship read it in your course, not in your words: this mission is ${R.drift<=25?'already on your heading':'where your heading points, not where your course goes'}.`;
   const bars=[2,4,1,3,1,5,2,1,3,2,4,1,2,3].map(h=>`<i style="width:${h}px"></i>`).join('');
   window.IJ_DRIFT_HEADING = name; document.querySelectorAll('.drift-seat-end').forEach(function (f) { f.setAttribute('data-tag', 'heading-' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-')); });   // for the boarding list, only if the person ticks "attach my heading"
   $('ticket').innerHTML=`<article class="ticket">
@@ -870,7 +887,7 @@ function renderPosting(){
     <div class="co">company: <b>not founded yet. possibly by you.</b><br>launch window: <b>${year}</b> · drift at posting: <b>${d}°</b></div>
     <div class="blk"><div class="k">the mission</div><p>${esc(FIX_LINE[S.fix])} ${esc(WORLD_LINE[w0])}</p></div>
     <div class="blk"><div class="k">how you'll work</div><p>${esc(FUEL_LINE[S.fuel])}</p></div>
-    <div class="blk"><div class="k">you'll know you're right for this because</div><p class="q">“${esc(quote)}”</p></div>
+    <div class="blk"><div class="k">you'll know you're right for this because</div><p>${esc(because)}</p></div>
     <div class="arch"><span class="gl">${gl}</span><div><b>${esc(name)}</b><span>${esc(tag)}</span></div></div>
     <div class="tear"></div>
     <div class="blk catch"><div class="k">the catch</div><ul>${catches.map(c=>`<li>${esc(c)}</li>`).join('')}</ul></div>

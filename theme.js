@@ -57,7 +57,7 @@
   function init() {
     // desktop: in the top bar, just left of the sound button
     var bar = make('bar-switch');
-    var inbar = document.querySelector('header.bar .snd');   // the drift: its bar is a flex row, so the switch joins it before the sound button
+    var inbar = document.querySelector('header.bar .snd, header.sysbar [data-sound-toggle]');   // the drift and the board: their bars are flex rows, so the switch joins them before the sound button
     if (inbar) { bar.classList.add('inbar'); inbar.parentNode.insertBefore(bar, inbar); } else document.body.appendChild(bar);
     var snd = document.querySelector('.snd-float, [data-sound-toggle]');
     function place() {
