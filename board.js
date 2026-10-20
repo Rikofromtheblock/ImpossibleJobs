@@ -139,14 +139,26 @@
     ['opening mission board', '']
   ];
   function finishBoot() { boot.classList.add('done'); }
+  var docking = false;
   function showBoard() {
-    intro.classList.add('docked');
-    setTimeout(function () { wrap.classList.add('on'); flipBoard(); }, reduce ? 0 : 650);
+    if (docking) return; docking = true;
+    if (reduce) { intro.classList.add('docked'); wrap.classList.add('on'); flipBoard(); return; }
+    // fade the big title out, switch to the docked layout while it's invisible, fade it back in:
+    // resizing the text live made the words re-wrap on every frame
+    intro.classList.add('docking');
+    setTimeout(function () {
+      intro.classList.add('docked');
+      // the scroll that triggered the docking would otherwise leave the docked title under the top bar
+      if (scrollY > 0) { try { scrollTo({ top: 0, behavior: 'instant' }); } catch (e) { scrollTo(0, 0); } }
+      void intro.offsetWidth;
+      intro.classList.remove('docking');
+      setTimeout(function () { wrap.classList.add('on'); flipBoard(); }, 300);
+    }, 260);
   }
   function startIntro() {
     intro.classList.add('show');
     if (deep) { showBoard(); return; }
-    var skip = function () { if (!intro.classList.contains('docked')) showBoard(); };
+    var skip = function () { showBoard(); };
     setTimeout(skip, 2300);
     addEventListener('wheel', skip, { once: true, passive: true });
     addEventListener('touchmove', skip, { once: true, passive: true });
@@ -208,7 +220,7 @@
             '<h3' + h() + '>our values</h3><ol class="hc-values hl" style="--k:' + (k++) + '">' + (m.values || []).map(function (v, j) { return '<li><b>0' + (j + 1) + '</b>' + esc(v) + '</li>'; }).join('') + '</ol>' +
           '</section>' +
         '</div>' +
-        '<div class="hc-cta hl" style="--k:' + (k++) + '"><div><p class="big">built for this? <em>' + (window.IJ_LIST && IJ_LIST.enabled ? 'claim your seat.' : 'apply now.') + '</em></p><p class="small">' + esc(m.slide5_future_line) + ' or send this mission to someone who was.</p><p class="hc-privacy">' + (window.IJ_LIST && IJ_LIST.enabled ? 'claiming a seat adds your email to the boarding list with this mission\u2019s number, nothing else.' : 'apply now opens your own email app. we only see what you choose to send.') + ' <a href="privacy.html">privacy</a></p></div>' +
+        '<div class="hc-cta hl" style="--k:' + (k++) + '"><div><p class="big">built for this? <em>' + (window.IJ_LIST && IJ_LIST.enabled ? 'claim your seat.' : 'apply now.') + '</em></p><p class="small">' + esc(m.slide5_future_line) + ' or send this mission to someone who was.</p><p class="hc-privacy">' + (window.IJ_LIST && IJ_LIST.enabled ? 'claiming a seat adds your email to the boarding list with this mission\u2019s number, nothing else.' : 'apply now opens your own email app. we only see what you choose to send.') + ' <a href="https://impossiblejobs.org/privacy.html">privacy</a></p></div>' +
           '<div class="hc-actions">' +
             (window.IJ_LIST && IJ_LIST.enabled ? '<button class="hc-apply" type="button" data-seat-open>claim your seat ' : '<a class="hc-apply" href="' + applyHref(m) + '">apply now ') + '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>' + (window.IJ_LIST && IJ_LIST.enabled ? '</button>' : '</a>') +
             '<a class="hc-wa" href="' + whatsappHref(m) + '" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2a8.2 8.2 0 01-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 01-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 00-.7.3 3 3 0 00-.9 2.2 5.2 5.2 0 001.1 2.7 11.8 11.8 0 004.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 001.8-1.3 2.2 2.2 0 00.1-1.3c0-.1-.2-.2-.5-.3z"/></svg>share on whatsapp</a>' +

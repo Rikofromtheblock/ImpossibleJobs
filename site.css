@@ -904,3 +904,28 @@ html.warping body { transition: transform .7s cubic-bezier(.6,0,.4,1), filter .7
   /* phones: the pass gives the room to the squares (the small print goes) */
   @media (max-width: 700px) { .mrail-foot, .mrail-eyebrow { display: none !important; } .mrail .mod { padding: 9px 9px 8px !important; } }
   .mrail .mod h3, .mrail .mod .mod-sub { align-self: flex-start !important; text-align: left; }
+
+  /* ---------- 20 oct: mobile fixes ---------- */
+  /* 1. phones: the year pill sits under the top bar. near the bottom edge, iPhone Safari stretched its dark
+     background into a band across the toolbar area as soon as it faded in */
+  @media (max-width: 700px) {
+    .year { top: calc(env(safe-area-inset-top, 0px) + 74px); bottom: auto; right: 14px; }
+  }
+  /* 2. the menu opens without a flash: the circle starts growing at once, and everything it replaces fades
+     instead of snapping away a few frames before the circle arrives */
+  .menu-btn { -webkit-tap-highlight-color: transparent; }
+  .menu { background: radial-gradient(60vmax 60vmax at 90% 0%, rgba(255,95,158,.18), transparent 60%), radial-gradient(50vmax 50vmax at 0% 100%, rgba(107,43,217,.3), transparent 60%), #07030f;
+    transition: clip-path .65s cubic-bezier(.3,.7,.2,1), visibility 0s .65s; will-change: clip-path; }
+  .menu::before { display: none; }   /* the glow is the menu's own background now: a fixed layer inside a clipped one can flash unclipped */
+  .menu-open .menu { transition: clip-path .65s cubic-bezier(.3,.7,.2,1), visibility 0s; }
+  .flyer { transition: opacity .3s; }
+  .snd-float { transition: color .25s, border-color .25s, box-shadow .25s, opacity .3s; }
+  html.menu-open .bar { transition: opacity .3s, background .3s; }
+  html.menu-open .sysbar { transition: background .3s, border-color .3s; }
+  html.menu-open .mrail-nudge { opacity: 0; transition: opacity .2s; }   /* the stub's bubble doesn't sit on the menu text */
+  /* touch screens: no scroll lock on the page behind (toggling it made Safari resize the whole page); the menu keeps its own scrolling */
+  @media (hover: none) and (pointer: coarse) {
+    .menu-open { overflow: visible; }
+    .menu { overscroll-behavior: contain; }
+  }
+  @media (prefers-reduced-motion: reduce) { .menu, .menu-open .menu { transition: none; } }
