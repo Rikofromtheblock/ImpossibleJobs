@@ -1,0 +1,40 @@
+/* impossible jobs · mission photos (see mission-photos.js)
+   Same approach as Instagram slide 1: the photo sits on the right, a dark gradient on the
+   left and bottom keeps every line of text readable. */
+
+.holo-card .hc-in { position: relative; }
+.holo-card .hc-in > :not(.hc-photo) { position: relative; z-index: 1; }
+
+.hc-photo { position: absolute; left: 0; right: 0; top: 0; height: min(600px, 72svh); z-index: 0; pointer-events: none;
+  background-size: cover; background-position: 70% 40%; background-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(180deg, #000 58%, transparent 100%); mask-image: linear-gradient(180deg, #000 58%, transparent 100%);
+  opacity: 0; animation: hcPhotoIn 1.1s cubic-bezier(.2,.9,.2,1) .35s both; }
+.hc-photo::after { content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, rgba(9,6,22,.95) 0%, rgba(9,6,22,.86) 34%, rgba(9,6,22,.45) 64%, rgba(9,6,22,.12) 100%),
+    linear-gradient(180deg, rgba(9,6,22,.45) 0%, rgba(9,6,22,0) 26%); }
+@keyframes hcPhotoIn { from { opacity: 0; transform: scale(1.04); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* text over the photo: soft dark halo, like the slides */
+.has-photo .hc-co, .has-photo .hc-title, .has-photo .hc-desc, .has-photo .hc-punch {
+  text-shadow: 0 0 6px rgba(7,3,15,.95), 0 0 18px rgba(7,3,15,.85), 0 2px 30px rgba(7,3,15,.7); }
+.has-photo .hc-title { max-width: 15ch; }
+.has-photo .hc-desc { max-width: 34em; }
+.has-photo .hc-tags span { background: rgba(9,6,22,.62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.has-photo .hc-facts { background: rgba(36,27,61,.7); }
+.has-photo .hc-facts div { background: rgba(12,8,27,.74); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.has-photo .hc-logo { background: rgba(7,3,15,.85); }
+
+/* a faint, blurred glow of the photo behind the whole card */
+.holo.has-photo .holo-backdrop::before { content: ""; position: absolute; inset: -60px; background: var(--mphoto) center / cover no-repeat;
+  filter: blur(36px) saturate(1.2); opacity: .3; }
+
+@media (max-width: 760px) {
+  .hc-photo { height: min(560px, 78svh); background-position: 65% 35%;
+    -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 100%); mask-image: linear-gradient(180deg, #000 62%, transparent 100%); }
+  .hc-photo::after { background:
+    linear-gradient(180deg, rgba(9,6,22,.35) 0%, rgba(9,6,22,.55) 30%, rgba(9,6,22,.88) 62%, rgba(9,6,22,.95) 100%),
+    linear-gradient(90deg, rgba(9,6,22,.6) 0%, rgba(9,6,22,.15) 100%); }
+  .has-photo .hc-title { max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) { .hc-photo { animation: none; opacity: 1; } }
