@@ -749,6 +749,198 @@ window.MISSIONS = [
   "portrait_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" style=\"flex-shrink: 0; border-radius: 50%; box-shadow: 0 0 0 3px #7c9a6b\" aria-label=\"Portrait of Hélène Duval\"><defs><clipPath id=\"m012-avclip\"><circle cx=\"50\" cy=\"50\" r=\"50\"></circle></clipPath></defs><g clip-path=\"url(#m012-avclip)\"><rect width=\"100\" height=\"100\" fill=\"#efe7df\"></rect><path d=\"M80 54 C76 66 74 84 70 100 H104 V54 C96 50 86 50 80 54Z\" fill=\"#7c9a6b\"></path><path d=\"M84 70 a4.5 4.5 0 0 1 9 0Z M78 86 a3.5 3.5 0 0 1 7 0Z M92 92 a4 4 0 0 1 8 0Z\" fill=\"#f2c4c8\"></path><path d=\"M88.5 70 v4 M81.5 86 v3 M96 92 v3\" stroke=\"#f4f1ea\" stroke-width=\"1.6\"></path><g transform=\"translate(-6 0)\"><circle cx=\"50\" cy=\"21\" r=\"8\" fill=\"#1c1410\"></circle><rect x=\"44\" y=\"55\" width=\"12\" height=\"15\" rx=\"4\" fill=\"#e3b593\"></rect><path d=\"M8 100 C10 80 29 72 50 72 C71 72 90 80 92 100Z\" fill=\"#141414\"></path><path d=\"M42 73 L50 90 L58 73\" fill=\"#f4f1ea\"></path><path d=\"M41 72 C43 86 45 92 44 100 M59 72 C57 86 55 92 56 100\" stroke=\"#e8c24a\" stroke-width=\"3\"></path><path d=\"M41 80 h3 M43 88 h2.5 M57 80 h-3 M55.5 88 h-2.5\" stroke=\"#5a4a1a\" stroke-width=\"0.8\"></path><ellipse cx=\"50\" cy=\"46\" rx=\"13\" ry=\"15.5\" fill=\"#efc6a6\"></ellipse><path d=\"M36 44 C35 30 42 27 50 27 C58 27 65 30 64 44 C60 35 40 35 36 44Z\" fill=\"#1c1410\"></path><circle cx=\"45\" cy=\"46.5\" r=\"1.3\" fill=\"#1a1a1a\"></circle><circle cx=\"55\" cy=\"46.5\" r=\"1.3\" fill=\"#1a1a1a\"></circle><path d=\"M42 42.5 L47.5 42 M52.5 42 L58 42.5\" stroke=\"#1c1410\" stroke-width=\"1.3\" stroke-linecap=\"round\"></path><path d=\"M46.5 55 L53.5 55\" stroke=\"#b04a4a\" stroke-width=\"1.3\" stroke-linecap=\"round\"></path><path d=\"M53 55 L61 51.5 M53.5 55.5 L62 55\" stroke=\"#9aa5b1\" stroke-width=\"0.9\"></path><circle cx=\"61.5\" cy=\"51.3\" r=\"1.3\" fill=\"#f2c4c8\"></circle><circle cx=\"62.5\" cy=\"55\" r=\"1.3\" fill=\"#c8643c\"></circle></g><g transform=\"translate(12 62)\"><path d=\"M3 8 H19 V24 H3Z\" fill=\"#c9a25a\"></path><path d=\"M19 12 L30 3\" stroke=\"#c9a25a\" stroke-width=\"3\" stroke-linecap=\"round\"></path><path d=\"M3 11 C-3 13 -3 20 3 22\" stroke=\"#a8823a\" stroke-width=\"2\" fill=\"none\"></path><circle cx=\"31\" cy=\"2.5\" r=\"2\" fill=\"#a8823a\"></circle></g></g></svg>",
   "photo": "images/missions/mission012.jpg",
   "photo_focus": "75% 32%"
+ },
+ {
+  "num": "013",
+  "title": "Director, Sahara Forests",
+  "company": "Verdance",
+  "headquarters": "Ouarzazate, Morocco\nVerdance Base One\n47 nursery domes across the Sahel",
+  "founded": "2033",
+  "turnover": "$64B",
+  "company_description": "Verdance is planting the largest forest in history, across the Sahara.",
+  "punchline": "The sand is not happy about it.",
+  "values": [
+   "Plant for a hundred years.",
+   "Every drop has a job.",
+   "Shade is a human right."
+  ],
+  "tags": [
+   "Field-based, Sahel",
+   "Executive level",
+   "Shade guaranteed by 2060"
+  ],
+  "posted": "Posted in 2048 · 1 opening",
+  "about_company": "Verdance is the world’s largest reforestation company, restoring green land along a 4,000 km front from Senegal to the Red Sea. Since 2033 we have planted 2.1 billion trees and brought rain back to places that had forgotten it.",
+  "about_role": "You’ll lead the planting front across five countries, turning sand into canopy at a pace nobody has tried before.\n\nThe first trees are now taller than the first engineers.",
+  "responsibilities": [
+   "Lead planting operations across 1.2 million hectares and five national programmes",
+   "Manage 14 regional leads, 3,000 field staff and a fleet of 900 planting drones",
+   "Schedule rain deliveries with Nimbus Exchange, our largest weather supplier",
+   "Work with village councils so every new forest has local owners from day one",
+   "Protect the Elder, our first acacia, now a national monument with its own guard",
+   "Report progress to governments and investors, measured by satellite, not by promises"
+  ],
+  "requirements": [
+   {
+    "skill": "15+ years running field operations",
+    "sectors": "Agriculture, forestry, mining, energy, NGOs"
+   },
+   {
+    "skill": "Leading teams across borders",
+    "sectors": "Humanitarian, infrastructure, development, military"
+   },
+   {
+    "skill": "Working with communities",
+    "sectors": "Public policy, diplomacy, land rights, CSR"
+   }
+  ],
+  "nice_to_have": "A habit of measuring success in centuries, not quarters",
+  "reports_to": {
+   "name": "Dr. Amina Diallo",
+   "title": "VP Sahel Operations",
+   "background": "Reports up to Youssef Benali, CEO · Dotted line to Nimbus Exchange’s Africa Rain Desk · You’ll lead 14 regional leads"
+  },
+  "slide5_future_line": "They’ll thank you in 2048.",
+  "company_colors": [
+   "#5fd07a",
+   "#e8c27a"
+  ],
+  "logo_svg": "<svg width=\"72\" height=\"72\" viewBox=\"0 0 64 64\" fill=\"none\"><defs><linearGradient id=\"vd-sky\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ffd98a\"></stop><stop offset=\"1\" stop-color=\"#e38b3c\"></stop></linearGradient><linearGradient id=\"vd-dune1\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#f0c27a\"></stop><stop offset=\"1\" stop-color=\"#b9823f\"></stop></linearGradient><linearGradient id=\"vd-dune2\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#d79a52\"></stop><stop offset=\"1\" stop-color=\"#8a5a28\"></stop></linearGradient><linearGradient id=\"vd-canopy\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#8ee69c\"></stop><stop offset=\"1\" stop-color=\"#2f8a46\"></stop></linearGradient><clipPath id=\"vd-c\"><circle cx=\"32\" cy=\"32\" r=\"24.6\"></circle></clipPath></defs><circle cx=\"32\" cy=\"32\" r=\"30\" stroke=\"#e8c27a\" stroke-width=\"0.8\"></circle><path d=\"M32.00 5.80 L32.00 3.00 M35.42 6.02 L35.79 3.25 M38.78 6.69 L39.51 3.99 M42.03 7.79 L43.10 5.21 M45.10 9.31 L46.50 6.89 M47.95 11.21 L49.65 8.99 M50.53 13.47 L52.51 11.49 M52.79 16.05 L55.01 14.35 M54.69 18.90 L57.11 17.50 M56.21 21.97 L58.79 20.90 M57.31 25.22 L60.01 24.49 M57.98 28.58 L60.75 28.21 M58.20 32.00 L61.00 32.00 M57.98 35.42 L60.75 35.79 M57.31 38.78 L60.01 39.51 M6.69 38.78 L3.99 39.51 M6.02 35.42 L3.25 35.79 M5.80 32.00 L3.00 32.00 M6.02 28.58 L3.25 28.21 M6.69 25.22 L3.99 24.49 M7.79 21.97 L5.21 20.90 M9.31 18.90 L6.89 17.50 M11.21 16.05 L8.99 14.35 M13.47 13.47 L11.49 11.49 M16.05 11.21 L14.35 8.99 M18.90 9.31 L17.50 6.89 M21.97 7.79 L20.90 5.21 M25.22 6.69 L24.49 3.99 M28.58 6.02 L28.21 3.25\" stroke=\"#e8c27a\" stroke-width=\"0.7\" opacity=\"0.85\" stroke-linecap=\"round\"></path><circle cx=\"32\" cy=\"32\" r=\"25.4\" stroke=\"#e8c27a\" stroke-width=\"1.2\"></circle><g clip-path=\"url(#vd-c)\"><rect x=\"0\" y=\"0\" width=\"64\" height=\"64\" fill=\"url(#vd-sky)\"></rect><circle cx=\"32\" cy=\"38\" r=\"11\" fill=\"#fff4cf\" opacity=\"0.9\"></circle><circle cx=\"32\" cy=\"38\" r=\"15\" fill=\"#fff4cf\" opacity=\"0.25\"></circle><path d=\"M38.5 18.5 H52 A3.6 3.6 0 0 0 51 11.6 A5 5 0 0 0 41.8 11 A4 4 0 0 0 38.5 18.5Z\" fill=\"#fdf6ea\" opacity=\"0.95\"></path><path d=\"M41 20.5 L39.8 25 M44 20.5 L42.8 26 M47 20.5 L45.8 25 M50 20.5 L48.8 24.5\" stroke=\"#cfe9ff\" stroke-width=\"0.7\" stroke-linecap=\"round\"></path><path d=\"M0 44 C12 39 22 42 34 40 C46 38 56 41 64 39 V64 H0Z\" fill=\"url(#vd-dune1)\"></path><path d=\"M0 50 C14 46 26 50 38 47 C50 45 58 48 64 46 V64 H0Z\" fill=\"url(#vd-dune2)\"></path><path d=\"M4 47.5 C16 45 26 48 38 45.6\" stroke=\"#ffe0a8\" stroke-width=\"0.5\" opacity=\"0.7\"></path><path d=\"M36 46 C40 42 46 43 50 41 C54 40 58 41 62 40 V48 C54 49 44 49 36 48Z\" fill=\"#2f8a46\"></path><path d=\"M37 45.2 q2 -3 4 0 q2 -3.4 4.2 0 q2 -3 4 0 q2.2 -3.6 4.4 0 q2 -3 4.4 0\" fill=\"#3fae5a\"></path><path d=\"M29.5 50 C30 45 29.6 41.5 28 38.5 M29.7 44 C31.5 41.5 34 40 36.8 38.6 M29.2 42 C27.6 40.6 25.4 40 23.4 39.4\" stroke=\"#3a2614\" stroke-width=\"1.2\" stroke-linecap=\"round\"></path><path d=\"M14.5 37.6 C17 32.6 24 31 30 31.4 C36.4 31 43.2 32.8 45.6 37.6 C38 39.4 22 39.4 14.5 37.6Z\" fill=\"url(#vd-canopy)\"></path><path d=\"M17 35.6 C22 33.6 28 33.2 32 33.4\" stroke=\"#c8f5c8\" stroke-width=\"0.6\" opacity=\"0.7\" stroke-linecap=\"round\"></path></g></svg>",
+  "status": "boarding",
+  "board_location": "OUARZAZATE, MOROCCO",
+  "board_company": "VERDANCE",
+  "year": "2048",
+  "portrait_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" style=\"flex-shrink: 0; border-radius: 50%; box-shadow: 0 0 0 3px #3fae5a\" aria-label=\"Portrait of Dr. Amina Diallo\"><defs><clipPath id=\"m013-avclip\"><circle cx=\"50\" cy=\"50\" r=\"50\"></circle></clipPath></defs><g clip-path=\"url(#m013-avclip)\"><rect width=\"100\" height=\"100\" fill=\"#f1c27d\"></rect><circle cx=\"22\" cy=\"30\" r=\"10\" fill=\"#fff0c8\" opacity=\"0.8\"></circle><path d=\"M0 66 Q30 56 60 64 T100 60 V100 H0Z\" fill=\"#e2a95c\"></path><path d=\"M70 62 v-8 M66 54 a5 3 0 0 1 9 0Z\" stroke=\"#2e7a40\" stroke-width=\"1.6\" fill=\"#3fae5a\"></path><g transform=\"translate(-10 0)\"><rect x=\"44\" y=\"55\" width=\"12\" height=\"15\" rx=\"4\" fill=\"#6b432f\"></rect><path d=\"M8 100 C10 80 29 72 50 72 C71 72 90 80 92 100Z\" fill=\"#8c7a4e\"></path><path d=\"M42 72 L50 84 L58 72\" fill=\"#6f603c\"></path><rect x=\"26\" y=\"84\" width=\"10\" height=\"8\" rx=\"1.5\" fill=\"#7a6a42\"></rect><rect x=\"64\" y=\"84\" width=\"10\" height=\"8\" rx=\"1.5\" fill=\"#7a6a42\"></rect><ellipse cx=\"50\" cy=\"46\" rx=\"13\" ry=\"15.5\" fill=\"#7a4e36\"></ellipse><path d=\"M37 44 C36 36 42 33 50 33 C58 33 64 36 63 44 C60 39 40 39 37 44Z\" fill=\"#1c1410\"></path><ellipse cx=\"50\" cy=\"35\" rx=\"24\" ry=\"5\" fill=\"#a88f5c\"></ellipse><path d=\"M38 35 C38 22 62 22 62 35Z\" fill=\"#b89d68\"></path><path d=\"M38.5 32 H61.5\" stroke=\"#3fae5a\" stroke-width=\"2.4\"></path><circle cx=\"45\" cy=\"46.5\" r=\"1.3\" fill=\"#1a1a1a\"></circle><circle cx=\"55\" cy=\"46.5\" r=\"1.3\" fill=\"#1a1a1a\"></circle><path d=\"M42 42.5 L47.5 42 M52.5 42 L58 42.5\" stroke=\"#1c1410\" stroke-width=\"1.3\" stroke-linecap=\"round\"></path><path d=\"M46.5 55 L53.5 55\" stroke=\"#3a1e14\" stroke-width=\"1.3\" stroke-linecap=\"round\"></path></g><path d=\"M76 100 C75 82 79 68 86 58\" stroke=\"#c8955a\" stroke-width=\"10\" fill=\"none\" stroke-linecap=\"round\"></path><ellipse cx=\"91\" cy=\"53\" rx=\"10\" ry=\"5.5\" transform=\"rotate(-12 91 53)\" fill=\"#c8955a\"></ellipse><circle cx=\"89\" cy=\"50.5\" r=\"1.1\" fill=\"#1a1a1a\"></circle><path d=\"M84 47 l-1 -4\" stroke=\"#a87742\" stroke-width=\"2\" stroke-linecap=\"round\"></path><rect x=\"78\" y=\"80\" width=\"22\" height=\"11\" rx=\"2\" fill=\"#6b4a2e\"></rect><path d=\"M78 84 H100\" stroke=\"#3fae5a\" stroke-width=\"1.5\"></path><path d=\"M82 80 v-9 M88 80 v-12 M94 80 v-8\" stroke=\"#2e7a40\" stroke-width=\"1.8\"></path><circle cx=\"82\" cy=\"70\" r=\"3\" fill=\"#3fae5a\"></circle><circle cx=\"88\" cy=\"67\" r=\"3.4\" fill=\"#3fae5a\"></circle><circle cx=\"94\" cy=\"71\" r=\"3\" fill=\"#3fae5a\"></circle><rect x=\"14\" y=\"82\" width=\"15\" height=\"11\" rx=\"2\" fill=\"#1c1c22\" transform=\"rotate(-8 21 87)\"></rect><rect x=\"16\" y=\"84\" width=\"11\" height=\"7\" fill=\"#3fae5a\" opacity=\"0.7\" transform=\"rotate(-8 21 87)\"></rect></g></svg>",
+  "photo": "images/missions/mission013.jpg",
+  "photo_focus": "75% 40%"
+ },
+ {
+  "num": "014",
+  "title": "Head of Composition",
+  "company": "Leitmotif",
+  "headquarters": "Vienna, Austria\nStudio 1, Europe’s largest scoring stage\nStudios in Seoul and Los Angeles",
+  "founded": "2038",
+  "turnover": "$38B",
+  "company_description": "Leitmotif composes a personal soundtrack for every subscriber’s life, live.",
+  "punchline": "Your commute now has a key change.",
+  "values": [
+   "Every life deserves a theme.",
+   "Never drown out the moment.",
+   "Silence is part of the score."
+  ],
+  "tags": [
+   "Hybrid, Vienna",
+   "Executive level",
+   "Your own theme, on day one"
+  ],
+  "posted": "Posted in 2046 · 1 opening",
+  "about_company": "Leitmotif is the world’s largest music company, scoring the daily lives of 900 million subscribers. Our composers write the themes; Opus, our orchestration engine, plays them live as each day unfolds. Mondays included.",
+  "about_role": "You’ll lead the composers who write the music behind millions of lives, and decide how each moment should sound.\n\nEvery day is a premiere.",
+  "responsibilities": [
+   "Lead 40 composers, orchestrators and sound designers in Vienna, Seoul and Los Angeles",
+   "Set the musical direction for 12 life themes, from first love to retirement",
+   "Approve every new motif before Opus, our orchestration engine, plays it to subscribers",
+   "Score the big moments live: weddings, finish lines, first days at work",
+   "Work with psychologists so every score lifts people up and never manipulates them",
+   "Represent Leitmotif with artists, orchestras and the music press"
+  ],
+  "requirements": [
+   {
+    "skill": "12+ years composing or producing",
+    "sectors": "Film, games, advertising, theatre, records"
+   },
+   {
+    "skill": "Leading creative teams at scale",
+    "sectors": "Studios, orchestras, agencies, live events"
+   },
+   {
+    "skill": "Knowing how music moves people",
+    "sectors": "Music therapy, psychology, UX, sound design"
+   }
+  ],
+  "nice_to_have": "A tune in your head you’re not ready to share yet",
+  "reports_to": {
+   "name": "Sung-min Park",
+   "title": "VP Music",
+   "background": "Reports up to Clara Weissmann, CEO · Dotted line to the Head of Wellbeing Science · You’ll lead 4 lead composers and 40 creatives"
+  },
+  "slide5_future_line": "They’ll thank you in 2046.",
+  "company_colors": [
+   "#9d86ff",
+   "#e0b450"
+  ],
+  "logo_svg": "<svg width=\"72\" height=\"72\" viewBox=\"0 0 64 64\" fill=\"none\"><defs><linearGradient id=\"lm-gold\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fff0c2\"></stop><stop offset=\"0.5\" stop-color=\"#e0b450\"></stop><stop offset=\"1\" stop-color=\"#9c7424\"></stop></linearGradient><radialGradient id=\"lm-core\" cx=\"0.5\" cy=\"0.5\" r=\"0.5\"><stop offset=\"0\" stop-color=\"#7b5cff\" stop-opacity=\"0.55\"></stop><stop offset=\"1\" stop-color=\"#7b5cff\" stop-opacity=\"0\"></stop></radialGradient></defs><circle cx=\"32\" cy=\"32\" r=\"30\" fill=\"url(#lm-core)\"></circle><circle cx=\"32\" cy=\"32\" r=\"29.6\" stroke=\"#9d86ff\" stroke-width=\"0.90\" opacity=\"0.95\" stroke-dasharray=\"none\"></circle><circle cx=\"32\" cy=\"32\" r=\"26.4\" stroke=\"#9d86ff\" stroke-width=\"0.70\" opacity=\"0.73\" stroke-dasharray=\"4.0 1.4\"></circle><circle cx=\"32\" cy=\"32\" r=\"23.2\" stroke=\"#9d86ff\" stroke-width=\"0.50\" opacity=\"0.51\" stroke-dasharray=\"5.0 1.4\"></circle><path d=\"M13.68 38.67 L15.74 37.92 M14.90 41.38 L19.54 38.84 M16.53 43.87 L19.58 41.53 M18.52 46.09 L21.56 42.91 M20.82 47.97 L23.70 43.86 M23.38 49.49 L24.65 46.90 M26.14 50.60 L27.76 45.45 M29.03 51.27 L29.52 48.09 M32.00 51.50 L32.00 46.65 M34.97 51.27 L34.26 46.69 M37.86 50.60 L36.80 47.22 M40.62 49.49 L38.25 44.68 M43.18 47.97 L41.73 45.89 M45.48 46.09 L41.91 42.35 M47.47 43.87 L44.19 41.35 M49.10 41.38 L45.47 39.39 M50.32 38.67 L45.46 36.90\" stroke=\"#9d86ff\" stroke-width=\"1.1\" stroke-linecap=\"round\" opacity=\"0.85\"></path><path d=\"M33.6 50 C29.4 52.2 26 49 28.4 46 C30.2 44.2 33.2 45.2 33 47.8 L30.4 12.6 C30.2 7 37.4 7.2 36.6 13.6 C35.8 19.6 23.4 24.4 23.4 33.4 C23.4 40.6 32.2 42.6 37.4 38.8 C42.4 35 40.2 27.4 33.6 28.2 C28.4 29 28.8 35.4 32.8 36.2\" stroke=\"#3a2a6a\" stroke-width=\"4.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" opacity=\"0.6\"></path><path d=\"M33.6 50 C29.4 52.2 26 49 28.4 46 C30.2 44.2 33.2 45.2 33 47.8 L30.4 12.6 C30.2 7 37.4 7.2 36.6 13.6 C35.8 19.6 23.4 24.4 23.4 33.4 C23.4 40.6 32.2 42.6 37.4 38.8 C42.4 35 40.2 27.4 33.6 28.2 C28.4 29 28.8 35.4 32.8 36.2\" stroke=\"url(#lm-gold)\" stroke-width=\"2.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M33.6 50 C29.4 52.2 26 49 28.4 46 C30.2 44.2 33.2 45.2 33 47.8 L30.4 12.6 C30.2 7 37.4 7.2 36.6 13.6 C35.8 19.6 23.4 24.4 23.4 33.4 C23.4 40.6 32.2 42.6 37.4 38.8 C42.4 35 40.2 27.4 33.6 28.2 C28.4 29 28.8 35.4 32.8 36.2\" stroke=\"#fff6d8\" stroke-width=\"0.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" opacity=\"0.7\" transform=\"translate(-0.5 -0.4)\"></path><path d=\"M8 41 H20 L22.4 37.5 L25 44.5 L27.2 39.5 H37 L39 35 L41.6 47 L44.2 39 L46 41 H56\" stroke=\"#e0b450\" stroke-width=\"1.1\" stroke-linecap=\"round\" stroke-linejoin=\"round\" opacity=\"0.9\"></path><circle cx=\"56.4\" cy=\"41\" r=\"1.2\" fill=\"#fff0c2\"></circle><circle cx=\"7.6\" cy=\"41\" r=\"1.2\" fill=\"#fff0c2\"></circle></svg>",
+  "status": "now boarding",
+  "board_location": "VIENNA, AUSTRIA",
+  "board_company": "LEITMOTIF",
+  "year": "2046",
+  "portrait_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" style=\"flex-shrink: 0; border-radius: 50%; box-shadow: 0 0 0 3px #7b5cff\" aria-label=\"Portrait of Sung-min Park\"><defs><clipPath id=\"m014-avclip\"><circle cx=\"50\" cy=\"50\" r=\"50\"></circle></clipPath></defs><g clip-path=\"url(#m014-avclip)\"><rect width=\"100\" height=\"100\" fill=\"#120d24\"></rect><path d=\"M0 20 H100 M0 25 H100 M0 30 H100 M0 35 H100 M0 40 H100\" stroke=\"#2a2250\" stroke-width=\"0.8\"></path><circle cx=\"66\" cy=\"34\" r=\"2.6\" fill=\"#e0b450\"></circle><path d=\"M68.4 34 V24\" stroke=\"#e0b450\" stroke-width=\"1\"></path><rect x=\"0\" y=\"44\" width=\"30\" height=\"30\" rx=\"2\" fill=\"#1d2a48\"></rect><g><circle cx=\"15\" cy=\"60\" r=\"7\" fill=\"#d9a57a\"></circle><path d=\"M8 59 C8 49 22 49 22 59\" stroke=\"#7b5cff\" stroke-width=\"2\" fill=\"none\"></path><rect x=\"6\" y=\"57\" width=\"3.4\" height=\"6\" rx=\"1\" fill=\"#7b5cff\"></rect><rect x=\"20.6\" y=\"57\" width=\"3.4\" height=\"6\" rx=\"1\" fill=\"#7b5cff\"></rect><path d=\"M11.5 58.5 h2 M16.5 58.5 h2\" stroke=\"#1a1a1a\" stroke-width=\"0.9\"></path><path d=\"M13 62 q0 3 -0.8 4.5\" stroke=\"#7cc6ff\" stroke-width=\"1.1\" fill=\"none\"></path><path d=\"M3 100 C3 76 27 76 27 100Z\" fill=\"#3a4a6a\"></path></g><g transform=\"translate(4 0)\"><rect x=\"44\" y=\"55\" width=\"12\" height=\"15\" rx=\"4\" fill=\"#dcb396\"></rect><path d=\"M8 100 C10 80 29 72 50 72 C71 72 90 80 92 100Z\" fill=\"#151515\"></path><rect x=\"42\" y=\"63\" width=\"16\" height=\"11\" rx=\"3\" fill=\"#1d1d1d\"></rect><ellipse cx=\"50\" cy=\"46\" rx=\"13\" ry=\"15.5\" fill=\"#e8c2a4\"></ellipse><path d=\"M36 44 C34 30 44 26 52 27 C60 27 66 32 64 42 C60 34 48 32 40 38 C38 40 37 42 36 44Z\" fill=\"#141010\"></path><circle cx=\"45\" cy=\"46.5\" r=\"1.3\" fill=\"#1a1a1a\"></circle><circle cx=\"55\" cy=\"46.5\" r=\"1.3\" fill=\"#1a1a1a\"></circle><path d=\"M42 42.5 L47.5 42 M52.5 42 L58 42.5\" stroke=\"#141010\" stroke-width=\"1.3\" stroke-linecap=\"round\"></path><path d=\"M46.5 55 L53.5 55\" stroke=\"#8a4a3e\" stroke-width=\"1.3\" stroke-linecap=\"round\"></path></g><path d=\"M76 100 L80 74 L84 56\" stroke=\"#151515\" stroke-width=\"9\" stroke-linecap=\"round\" fill=\"none\"></path><circle cx=\"84.5\" cy=\"53\" r=\"4.2\" fill=\"#e8c2a4\"></circle><path d=\"M86 50 L96 20\" stroke=\"#f4f1ea\" stroke-width=\"1.8\" stroke-linecap=\"round\"></path></g></svg>",
+  "photo": "images/missions/mission014.jpg",
+  "photo_focus": "80% 40%"
+ },
+ {
+  "num": "015",
+  "title": "Director, Body Migration",
+  "company": "Morrow",
+  "headquarters": "Lausanne, Switzerland\nRegeneration halls beneath Lake Geneva\nClinics in Singapore and Montreal",
+  "founded": "2044",
+  "turnover": "$180B",
+  "company_description": "Morrow grows new bodies from your own cells, and helps you move in.",
+  "punchline": "Same mind. New body. Better knees.",
+  "values": [
+   "Same you. New address.",
+   "Never rush a homecoming.",
+   "Every body deserves a goodbye."
+  ],
+  "tags": [
+   "On-site, Lausanne",
+   "Executive level",
+   "Staff migrate at cost"
+  ],
+  "posted": "Posted in 2052 · 1 opening",
+  "about_company": "Morrow is the world’s leading body regeneration house. We grow a new body from each client’s own cells over 14 months, then guide the move from one to the other. Since 2044, 61,000 people have migrated. 99.8% say they still feel like themselves.",
+  "about_role": "You’ll lead the Migration Programme: everything between a client’s last day in their old body and their first year in the new one.\n\nMost clients cry at the mirror. Then they go running.",
+  "responsibilities": [
+   "Lead the Migration Programme across Lausanne, Singapore and Montreal: 4,000 migrations a year",
+   "Design the 12-month return to life: movement, sleep, identity and relationships",
+   "Run a team of 140 clinicians, psychologists, physiotherapists and guides",
+   "Prepare families for their first meeting with the new body of someone they love",
+   "Host the Farewell Garden, where clients say goodbye to the body they leave behind",
+   "Work with Walter, 131, our first client to migrate twice, who mentors every new arrival"
+  ],
+  "requirements": [
+   {
+    "skill": "15+ years leading clinical care",
+    "sectors": "Hospitals, rehabilitation, transplant, palliative care"
+   },
+   {
+    "skill": "Guiding people through big change",
+    "sectors": "Psychology, coaching, HR, change management"
+   },
+   {
+    "skill": "Luxury-standard client care",
+    "sectors": "Private clinics, hospitality, wellness, concierge"
+   }
+  ],
+  "nice_to_have": "Calm in front of someone meeting themselves for the first time",
+  "reports_to": {
+   "name": "Dr. Sofia Lindqvist",
+   "title": "VP Client Journeys",
+   "background": "Reports up to Dr. Elena Varo, CEO · Dotted line to the Chief Medical Officer · You’ll lead 6 programme heads and 140 specialists"
+  },
+  "slide5_future_line": "They’ll thank you in 2052.",
+  "company_colors": [
+   "#a9c7ff",
+   "#f0c27a"
+  ],
+  "logo_svg": "<svg width=\"72\" height=\"72\" viewBox=\"0 0 64 64\" fill=\"none\"><defs><linearGradient id=\"mw-ring\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#e3eeff\"></stop><stop offset=\"0.5\" stop-color=\"#a9c7ff\"></stop><stop offset=\"1\" stop-color=\"#f0c27a\"></stop></linearGradient><linearGradient id=\"mw-gold\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fff2d2\"></stop><stop offset=\"0.55\" stop-color=\"#f0c27a\"></stop><stop offset=\"1\" stop-color=\"#a8762c\"></stop></linearGradient><linearGradient id=\"mw-mirror\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ffffff\" stop-opacity=\"0\"></stop><stop offset=\"0.5\" stop-color=\"#ffffff\" stop-opacity=\"0.95\"></stop><stop offset=\"1\" stop-color=\"#ffffff\" stop-opacity=\"0\"></stop></linearGradient><radialGradient id=\"mw-halo\" cx=\"0.5\" cy=\"0.5\" r=\"0.5\"><stop offset=\"0\" stop-color=\"#a9c7ff\" stop-opacity=\"0.35\"></stop><stop offset=\"1\" stop-color=\"#a9c7ff\" stop-opacity=\"0\"></stop></radialGradient></defs><circle cx=\"32\" cy=\"32\" r=\"30\" fill=\"url(#mw-halo)\"></circle><circle cx=\"32\" cy=\"32\" r=\"30\" stroke=\"url(#mw-ring)\" stroke-width=\"1.2\"></circle><circle cx=\"32\" cy=\"32\" r=\"27.6\" stroke=\"#a9c7ff\" stroke-width=\"0.4\" opacity=\"0.6\"></circle><path d=\"M32.00 4.40 L32.00 3.20 M34.88 4.55 L35.01 3.36 M37.74 5.00 L37.99 3.83 M40.53 5.75 L40.90 4.61 M43.23 6.79 L43.71 5.69 M45.80 8.10 L46.40 7.06 M48.22 9.67 L48.93 8.70 M50.47 11.49 L51.27 10.60 M52.51 13.53 L53.40 12.73 M54.33 15.78 L55.30 15.07 M55.90 18.20 L56.94 17.60 M57.21 20.77 L58.31 20.29 M58.25 23.47 L59.39 23.10 M59.00 26.26 L60.17 26.01 M59.45 29.12 L60.64 28.99 M59.60 32.00 L60.80 32.00 M59.45 34.88 L60.64 35.01 M59.00 37.74 L60.17 37.99 M58.25 40.53 L59.39 40.90 M57.21 43.23 L58.31 43.71 M55.90 45.80 L56.94 46.40 M54.33 48.22 L55.30 48.93 M52.51 50.47 L53.40 51.27 M50.47 52.51 L51.27 53.40 M48.22 54.33 L48.93 55.30 M45.80 55.90 L46.40 56.94 M43.23 57.21 L43.71 58.31 M40.53 58.25 L40.90 59.39 M37.74 59.00 L37.99 60.17 M34.88 59.45 L35.01 60.64 M32.00 59.60 L32.00 60.80 M29.12 59.45 L28.99 60.64 M26.26 59.00 L26.01 60.17 M23.47 58.25 L23.10 59.39 M20.77 57.21 L20.29 58.31 M18.20 55.90 L17.60 56.94 M15.78 54.33 L15.07 55.30 M13.53 52.51 L12.73 53.40 M11.49 50.47 L10.60 51.27 M9.67 48.22 L8.70 48.93 M8.10 45.80 L7.06 46.40 M6.79 43.23 L5.69 43.71 M5.75 40.53 L4.61 40.90 M5.00 37.74 L3.83 37.99 M4.55 34.88 L3.36 35.01 M4.40 32.00 L3.20 32.00 M4.55 29.12 L3.36 28.99 M5.00 26.26 L3.83 26.01 M5.75 23.47 L4.61 23.10 M6.79 20.77 L5.69 20.29 M8.10 18.20 L7.06 17.60 M9.67 15.78 L8.70 15.07 M11.49 13.53 L10.60 12.73 M13.53 11.49 L12.73 10.60 M15.78 9.67 L15.07 8.70 M18.20 8.10 L17.60 7.06 M20.77 6.79 L20.29 5.69 M23.47 5.75 L23.10 4.61 M26.26 5.00 L26.01 3.83 M29.12 4.55 L28.99 3.36\" stroke=\"#a9c7ff\" stroke-width=\"0.4\" opacity=\"0.6\" stroke-linecap=\"round\"></path><path d=\"M45 11 C39.5 11 36 14.5 35.6 19.5 C35.4 22 35.2 23.5 34.4 25 L32.2 29.2 C31.9 29.9 32.3 30.4 33 30.5 L34 30.8 C33.7 31.6 33.6 32.4 34.2 32.8 C33.8 33.4 33.8 34.2 34.4 34.6 C34.2 36.5 35 38.6 37.4 39 C38.6 39.2 39.6 39.6 39.8 41 L40 46 C37.5 47.5 36 49.5 35.5 52 H54 C53 49 51 47 50 45 C49.6 41 51 37 52.4 33 C54 28 53.4 21 51 16.5 C49.6 13.4 47.6 11 45 11Z\" transform=\"translate(64 0) scale(-1 1)\" stroke=\"#a9c7ff\" stroke-width=\"0.9\" stroke-dasharray=\"1.6 1\" opacity=\"0.75\"></path><path d=\"M18 14.5 C21 13 24 13 26 14 M14.5 20 C15 17.5 16.4 15.8 18 14.5\" transform=\"\" stroke=\"#a9c7ff\" stroke-width=\"0.5\" opacity=\"0.5\"></path><path d=\"M45 11 C39.5 11 36 14.5 35.6 19.5 C35.4 22 35.2 23.5 34.4 25 L32.2 29.2 C31.9 29.9 32.3 30.4 33 30.5 L34 30.8 C33.7 31.6 33.6 32.4 34.2 32.8 C33.8 33.4 33.8 34.2 34.4 34.6 C34.2 36.5 35 38.6 37.4 39 C38.6 39.2 39.6 39.6 39.8 41 L40 46 C37.5 47.5 36 49.5 35.5 52 H54 C53 49 51 47 50 45 C49.6 41 51 37 52.4 33 C54 28 53.4 21 51 16.5 C49.6 13.4 47.6 11 45 11Z\" fill=\"url(#mw-gold)\"></path><path d=\"M45 13.5 C40.8 13.8 38.4 16.6 37.9 20.4\" stroke=\"#fff6e2\" stroke-width=\"0.7\" opacity=\"0.8\" stroke-linecap=\"round\"></path><circle cx=\"38.6\" cy=\"23.8\" r=\"0.7\" fill=\"#5a3a14\"></circle><path d=\"M32 6 V58\" stroke=\"url(#mw-mirror)\" stroke-width=\"0.9\"></path><path d=\"M32 26.5 l0.9 2.6 2.6 0.9 -2.6 0.9 -0.9 2.6 -0.9 -2.6 -2.6 -0.9 2.6 -0.9Z\" fill=\"#ffffff\"></path><path d=\"M16 55.5 H48\" stroke=\"url(#mw-ring)\" stroke-width=\"0.7\" opacity=\"0.8\"></path></svg>",
+  "status": "now boarding",
+  "board_location": "LAUSANNE, SWITZERLAND",
+  "board_company": "MORROW",
+  "year": "2052",
+  "portrait_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" style=\"flex-shrink: 0; border-radius: 50%; box-shadow: 0 0 0 3px #a9c7ff\" aria-label=\"Portrait of Dr. Sofia Lindqvist\"><defs><clipPath id=\"m015-avclip\"><circle cx=\"50\" cy=\"50\" r=\"50\"></circle></clipPath></defs><g clip-path=\"url(#m015-avclip)\"><rect width=\"100\" height=\"100\" fill=\"#dfe6f2\"></rect><rect x=\"0\" y=\"0\" width=\"100\" height=\"40\" fill=\"#c9d6ea\"></rect><path d=\"M0 40 L20 30 L34 38 L50 26 L66 36 L80 28 L100 38 V40 H0Z\" fill=\"#9fb1cc\"></path><g transform=\"translate(-14 0)\"><path d=\"M34 56 C31 30 40 25 50 25 C60 25 69 30 66 56 L60 58 L62 42 C58 36 42 36 38 42 L40 58Z\" fill=\"#d9b46a\"></path><rect x=\"44\" y=\"55\" width=\"12\" height=\"15\" rx=\"4\" fill=\"#e6b996\"></rect><path d=\"M8 100 C10 80 29 72 50 72 C71 72 90 80 92 100Z\" fill=\"#f6f6f8\"></path><path d=\"M42 72 L50 86 L58 72\" stroke=\"#c9ced6\" stroke-width=\"1.6\" fill=\"#e9edf3\"></path><path d=\"M36 76 L44 100 M64 76 L56 100\" stroke=\"#d5dae2\" stroke-width=\"1.4\"></path><circle cx=\"62\" cy=\"82\" r=\"2\" fill=\"#a9c7ff\"></circle><ellipse cx=\"50\" cy=\"46\" rx=\"13\" ry=\"15.5\" fill=\"#f0c8a8\"></ellipse><path d=\"M37 44 C37 31 63 31 63 44 C58 36 42 36 37 44Z\" fill=\"#d9b46a\"></path><circle cx=\"45\" cy=\"46.5\" r=\"1.3\" fill=\"#1a1a1a\"></circle><circle cx=\"55\" cy=\"46.5\" r=\"1.3\" fill=\"#1a1a1a\"></circle><path d=\"M42 42.5 L47.5 42 M52.5 42 L58 42.5\" stroke=\"#8a6a3a\" stroke-width=\"1.3\" stroke-linecap=\"round\"></path><path d=\"M46.5 55 L53.5 55\" stroke=\"#b04a4a\" stroke-width=\"1.3\" stroke-linecap=\"round\"></path><rect x=\"22\" y=\"80\" width=\"17\" height=\"12\" rx=\"2\" fill=\"#1c2233\" transform=\"rotate(-10 30 86)\"></rect><rect x=\"24\" y=\"82\" width=\"13\" height=\"8\" fill=\"#a9c7ff\" opacity=\"0.6\" transform=\"rotate(-10 30 86)\"></rect></g><g><path d=\"M62 100 C63 84 67 78 74 78 C81 78 85 84 86 100Z\" fill=\"#ffffff\"></path><path d=\"M70 79 L74 90 L78 79\" stroke=\"#d5dae2\" stroke-width=\"1.2\" fill=\"none\"></path><circle cx=\"74\" cy=\"68\" r=\"7.5\" fill=\"#efc9a8\"></circle><path d=\"M66.5 67 C66 58 82 58 81.5 67 C79 62 69 62 66.5 67Z\" fill=\"#f2f2f2\"></path><path d=\"M70 66 h2.5 M75.5 66 h2.5\" stroke=\"#555\" stroke-width=\"0.8\"></path><path d=\"M71 71.5 q3 1.8 6 0\" stroke=\"#8a4a3e\" stroke-width=\"0.9\" fill=\"none\"></path><circle cx=\"64\" cy=\"84\" r=\"3\" fill=\"#efc9a8\"></circle><rect x=\"63\" y=\"78.5\" width=\"2.2\" height=\"5\" rx=\"1\" fill=\"#efc9a8\"></rect></g><g><path d=\"M80 100 C81 82 85 76 93 76 C101 76 105 82 106 100Z\" fill=\"#ffffff\"></path><path d=\"M89 77 L93 88 L97 77\" stroke=\"#d5dae2\" stroke-width=\"1.2\" fill=\"none\"></path><circle cx=\"93\" cy=\"64\" r=\"7.5\" fill=\"#efc9a8\"></circle><path d=\"M85.5 63 C85 53 101 53 100.5 63 C98 57 88 57 85.5 63Z\" fill=\"#3a2a1e\"></path><circle cx=\"90.5\" cy=\"63.5\" r=\"0.9\" fill=\"#1a1a1a\"></circle><circle cx=\"95.5\" cy=\"63.5\" r=\"0.9\" fill=\"#1a1a1a\"></circle><path d=\"M90 68 q3 1.8 6 0\" stroke=\"#8a4a3e\" stroke-width=\"0.9\" fill=\"none\"></path><circle cx=\"83\" cy=\"82\" r=\"3\" fill=\"#efc9a8\"></circle><rect x=\"82\" y=\"76.5\" width=\"2.2\" height=\"5\" rx=\"1\" fill=\"#efc9a8\"></rect></g></g></svg>",
+  "photo": "images/missions/mission015.jpg",
+  "photo_focus": "82% 35%"
  }
 ];
 /* newest missions first on the board: sort by mission number, highest at the top */
